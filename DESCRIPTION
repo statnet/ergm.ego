@@ -1,11 +1,11 @@
 Package: ergm.ego
-Version: 0.1
-Date: 2012-12-07
+Version: 0.1-11872-2012.12.13-02.02.14
+Date: 2012-12-13
 Title:  Fit, Simulate and Diagnose Exponential-Family Random Graph Models to Egocentrically Sampled Network Data
 Authors@R:c(
-	person("Pavel N.", "Krivitsky", role=c("aut","cre"), email="krivitsky@stat.psu.edu"),
-        person("Martina", "Morris", role=c("ctb"), email="morrism@uw.edu"),
-	person("Steven G." "Goodreau", role=c("ctb"), email="sgoodreau@uw.edu"))
+            person("Pavel N.", "Krivitsky", role=c("aut","cre"), email="krivitsky@stat.psu.edu"),
+            person("Steven M.", "Goodreau", role=c("ctb"), email="goodreau@u.washington.edu"),
+            person("Martina", "Morris", role=c("ctb"), email="morrism@u.washington.edu"))
 Depends: ergm (>= 3.0), network
 Enhances: ergm
 Description: A wrapper around the ergm package to process egocentrically sampled data.
