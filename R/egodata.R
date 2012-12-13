@@ -17,7 +17,11 @@ as.egodata.network<-function(object,special.cols=c("na","vertex.names"),...,egoI
   N<-network.size(object)
 
   egoIDs<-object%v%egoIDcol
-
+  if(any(duplicated(egoIDs))){
+    warning("Non-unique ego IDs; using 1..N.")
+    egoIDs <- seq_along(egoIDs)
+  }
+  
   egos<-list()
   egos[[egoIDcol]]<-egoIDs
   
