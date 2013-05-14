@@ -24,6 +24,7 @@ EgoStat.edges <- function(egodata){
   h[order(rownames(h)),,drop=FALSE]/2
 }
 
+
 EgoStat.nodecov <- function(egodata, attrname){
   egos <- egodata$egos
   alters <- egodata$alters
@@ -136,6 +137,26 @@ EgoStat.degree <- function(egodata, d, by=NULL, homophily=FALSE){
     h <- sapply(d, function(i) egos$.degree==i)
     colnames(h) <- if(homophily) paste("degree",d,".homophily.",by,sep="") else paste("degree",d,sep="")
   }
+  rownames(h) <- egos[[egoIDcol]]
+  
+  h[order(rownames(h)),,drop=FALSE]
+}
+
+EgoStat.degreepopularity <- function(egodata){
+  egos <- egodata$egos
+  alters <- egodata$alters
+  egoIDcol <- egodata$egoIDcol
+    
+  ties<-merge(egos[egoIDcol],alters[egoIDcol],by=egoIDcol,suffixes=c(".ego",".alter"))
+
+  alterct <- as.data.frame(table(ties[[egoIDcol]]))
+  colnames(alterct)<-c(egoIDcol,".degree")
+
+  egos <- merge(egos[c(egoIDcol,by)],alterct,by=egoIDcol,all=TRUE)
+  egos$.degree[is.na(egos$.degree)]<-0
+
+  h <- cbind(egos$.degree^(3/2))
+  colnames(h) <- "degreepopularity"
   rownames(h) <- egos[[egoIDcol]]
   
   h[order(rownames(h)),,drop=FALSE]
