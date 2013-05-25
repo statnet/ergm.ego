@@ -31,7 +31,7 @@ as.egodata.network<-function(object,special.cols=c("na","vertex.names"),...,egoI
   el<-as.edgelist(object)
   el<-rbind(el,el[,2:1])
   alterS<-unlist(tapply(el[,2],INDEX=el[,1],FUN=c,simplify=FALSE))
-  alter.eID<-unlist(tapply(el[,1],INDEX=el[,1],FUN=c,simplify=FALSE))
+  alter.eID<-egoIDs[unlist(tapply(el[,1],INDEX=el[,1],FUN=c,simplify=FALSE))]
   
   alters<-list()
 
@@ -134,7 +134,7 @@ subset.egodata <- function(x, subset, select, ..., dup.action=c("make.unique", "
                           numeric=seq_along(egoIDs),
                           make.unique=make.unique(as.character(egoIDs)))
   
-  egos <- cbind(x$egos[match(egoIDs,x$egos[[x$egoIDcol]]),egovars,drop=FALSE], .unique.egoIDs = unique.egoIDs)
+  egos <- cbind(x$egos[match(egoIDs,x$egos[[x$egoIDcol]]),egovars,drop=FALSE], .unique.egoIDs = unique.egoIDs, stringsAsFactors=FALSE)
   alters <- merge(egos[c(x$egoIDcol,".unique.egoIDs")], x$alters[altervars], by=x$egoIDcol)
   egoWt <- x$egoWt[match(egoIDs,x$egos[[x$egoIDcol]])]
 
