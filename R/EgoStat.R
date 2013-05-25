@@ -11,7 +11,7 @@ EgoStat.edges <- function(egodata){
 
   ties<-merge(egos[egoIDcol],alters[egoIDcol],by=egoIDcol,suffixes=c(".ego",".alter"))
 
-  alterct <- as.data.frame(table(ties[[egoIDcol]]))
+  alterct <- as.data.frame(table(ties[[egoIDcol]]), stringsAsFactors=FALSE)
   colnames(alterct)<-c(egoIDcol,".degree")
 
   egos <- merge(egos[egoIDcol],alterct,by=egoIDcol,all=TRUE)
@@ -20,8 +20,8 @@ EgoStat.edges <- function(egodata){
   h <- cbind(egos$.degree)
   colnames(h) <- "edges"
   rownames(h) <- egos[[egoIDcol]]
-  
-  h[order(rownames(h)),,drop=FALSE]/2
+
+  h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]/2
 }
 
 
@@ -33,12 +33,12 @@ EgoStat.nodecov <- function(egodata, attrname){
   ties<-merge(egos[c(egoIDcol,attrname)],alters[c(egoIDcol,attrname)],by=egoIDcol,suffixes=c(".ego",".alter"))
   names(ties) <- c(egoIDcol,".e",".a")
   isolates <- egos[[egoIDcol]][!(egos[[egoIDcol]]%in%ties[[egoIDcol]])] 
-  ties <- data.frame(egoID=c(ties[[egoIDcol]],ties[[egoIDcol]],isolates),x=c(ties$.e,ties$.a,rep(0,length(isolates))))
+  ties <- data.frame(egoID=c(ties[[egoIDcol]],ties[[egoIDcol]],isolates),x=c(ties$.e,ties$.a,rep(0,length(isolates))),stringsAsFactors=FALSE)
   
   h <- cbind(sapply(tapply(ties$x,list(egoID=ties$egoID),FUN=sum),identity))
   colnames(h) <- paste("nodecov",attrname,sep=".")
   
-  h[order(rownames(h)),,drop=FALSE]/2
+  h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]/2
 }
 
 
@@ -53,13 +53,13 @@ EgoStat.nodefactor <- function(egodata, attrname, base=1){
   ties<-merge(egos[c(egoIDcol,attrname)],alters[c(egoIDcol,attrname)],by=egoIDcol,suffixes=c(".ego",".alter"))
   names(ties) <- c(egoIDcol,".e",".a")
   isolates <- egos[[egoIDcol]][!(egos[[egoIDcol]]%in%ties[[egoIDcol]])] 
-  ties <- data.frame(egoID=c(ties[[egoIDcol]],ties[[egoIDcol]],isolates),x=c(ties$.e,ties$.a,rep(0,length(isolates))))
+  ties <- data.frame(egoID=c(ties[[egoIDcol]],ties[[egoIDcol]],isolates),x=c(ties$.e,ties$.a,rep(0,length(isolates))),stringsAsFactors=FALSE)
   
   h <- t(sapply(tapply(ties$x, list(egoID=ties$egoID), FUN=tabulate, nbins=length(levs)),identity))
   colnames(h) <- paste("nodefactor",attrname,levs,sep=".")  
 
-  if(length(base)==0 || base==0) h[order(rownames(h)),,drop=FALSE]/2
-  else h[order(rownames(h)),-base,drop=FALSE]/2
+  if(length(base)==0 || base==0) h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]/2
+  else h[match(egodata$egos[[egoIDcol]],rownames(h)),-base,drop=FALSE]/2
 }
 
 EgoStat.nodematch <- function(egodata, attrname, diff=FALSE, keep=NULL){
@@ -79,13 +79,13 @@ EgoStat.nodematch <- function(egodata, attrname, diff=FALSE, keep=NULL){
   
   isolates <- egos[[egoIDcol]][!(egos[[egoIDcol]]%in%ties[[egoIDcol]])] 
 
-  ties <- data.frame(egoID=c(ties[[egoIDcol]],isolates), match=c(ties$match,rep(0,length(isolates))))
+  ties <- data.frame(egoID=c(ties[[egoIDcol]],isolates), match=c(ties$match,rep(0,length(isolates))),stringsAsFactors=FALSE)
 
   h <- t(rbind(sapply(tapply(ties$match, list(egoID=ties$egoID), FUN=tabulate, nbins=if(diff) length(levs) else 1),identity)))
 
   colnames(h) <- if(diff) paste("nodematch",attrname,levs,sep=".") else paste("nodematch",attrname,sep=".")
   
-  h[order(rownames(h)),if(!is.null(keep) && diff) keep else TRUE,drop=FALSE]/2
+  h[match(egodata$egos[[egoIDcol]],rownames(h)),if(!is.null(keep) && diff) keep else TRUE,drop=FALSE]/2
 }
 
 EgoStat.absdiff <- function(egodata, attrname, pow=1){
@@ -98,12 +98,12 @@ EgoStat.absdiff <- function(egodata, attrname, pow=1){
   isolates <- egos[[egoIDcol]][!(egos[[egoIDcol]]%in%ties[[egoIDcol]])] 
   ties$.absdiff <- abs(ties$.e-ties$.a)^pow 
   
-  ties <- data.frame(egoID=c(ties[[egoIDcol]],isolates), absdiff=c(ties$.absdiff,rep(0,length(isolates))))
+  ties <- data.frame(egoID=c(ties[[egoIDcol]],isolates), absdiff=c(ties$.absdiff,rep(0,length(isolates))),stringsAsFactors=FALSE)
   
   h <- cbind(sapply(tapply(ties$absdiff,list(egoID=ties$egoID),FUN=sum),identity))         
   colnames(h) <- if(pow==1) paste("absdiff",attrname,sep=".") else paste("absdiff",pow,".",attrname,sep="")
   
-  h[order(rownames(h)),,drop=FALSE]/2
+  h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]/2
 }
 
 EgoStat.degree <- function(egodata, d, by=NULL, homophily=FALSE){
@@ -121,7 +121,7 @@ EgoStat.degree <- function(egodata, d, by=NULL, homophily=FALSE){
   if(!is.null(by) && homophily) ties <- ties[ties$.e==ties$.a,]
   ties$.a <- NULL
 
-  alterct <- as.data.frame(table(ties[[egoIDcol]]))
+  alterct <- as.data.frame(table(ties[[egoIDcol]]),stringsAsFactors=FALSE)
   colnames(alterct)<-c(egoIDcol,".degree")
 
   egos <- merge(egos[c(egoIDcol,by)],alterct,by=egoIDcol,all=TRUE)
@@ -139,7 +139,7 @@ EgoStat.degree <- function(egodata, d, by=NULL, homophily=FALSE){
   }
   rownames(h) <- egos[[egoIDcol]]
   
-  h[order(rownames(h)),,drop=FALSE]
+  h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]
 }
 
 EgoStat.degreepopularity <- function(egodata){
@@ -149,7 +149,7 @@ EgoStat.degreepopularity <- function(egodata){
     
   ties<-merge(egos[egoIDcol],alters[egoIDcol],by=egoIDcol,suffixes=c(".ego",".alter"))
 
-  alterct <- as.data.frame(table(ties[[egoIDcol]]))
+  alterct <- as.data.frame(table(ties[[egoIDcol]]),stringsAsFactors=FALSE)
   colnames(alterct)<-c(egoIDcol,".degree")
 
   egos <- merge(egos[c(egoIDcol,by)],alterct,by=egoIDcol,all=TRUE)
@@ -159,5 +159,5 @@ EgoStat.degreepopularity <- function(egodata){
   colnames(h) <- "degreepopularity"
   rownames(h) <- egos[[egoIDcol]]
   
-  h[order(rownames(h)),,drop=FALSE]
+  h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]
 }
