@@ -35,5 +35,7 @@ ergm.ego <- function(formula, popsize, ppopsize=popsize, offset.coef=NULL, na.ac
 
   rownames(vcov) <- colnames(vcov) <- names(coef)
   
-  list(coef=coef[-1], netsize.offset=coef[1], vcov=vcov[-1,-1,drop=FALSE], ergm.fit=ergm.fit, DtDe=DtDe, v=v)
+  out <- list(coef=coef[-1], netsize.offset=coef[1], vcov=vcov[-1,-1,drop=FALSE], ergm.fit=ergm.fit, DtDe=DtDe, v=v, formula=formula, egodata=egodata, ppopsize=ppopsize, popsize=popsize)
+  class(out) <- "ergm.ego"
+  out
 }
