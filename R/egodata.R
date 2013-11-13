@@ -4,7 +4,7 @@ as.egodata <- function(object, ..., egoIDcol="egoID"){
 
 as.egodata.data.frame <- function(object, alters, egoWt = 1, ..., egoIDcol="egoID"){
   egoWt <- rep(egoWt, length.out=nrow(object))
-  out <- list(egos=object[order(object[[egoIDcol]]),,drop=FALSE], alters=.prune.alters(object, alters, egoIDcol), egoWt = egoWt[order(object[[egoIDcol]])], egoIDcol=egoIDcol)  
+  out <- list(egos=object, alters=.prune.alters(object, alters, egoIDcol), egoWt = egoWt, egoIDcol=egoIDcol)  
   class(out) <- "egodata"
   out
 }
@@ -126,8 +126,6 @@ subset.egodata <- function(x, subset, select, ..., dup.action=c("make.unique", "
                    integer = x$egos[[x$egoIDcol]][subset],
                    character = x$egos[[x$egoIDcol]][match(subset, x$egos[[x$egoIDcol]])])
 
-  egoIDs <- sort(egoIDs)
-
   dup.action <- match.arg(dup.action)
   unique.egoIDs <- switch(dup.action,
                           fail=stop("Selected subset calls for duplicating egos."),
@@ -207,7 +205,7 @@ sample.default <- function(x, ...) base::sample(x, ...)
 sample.egodata <- function(x, size, replace=FALSE, prob=NULL){
   if(missing(size)) size <- nrow(x)
   
-  is <- sample(seq_len(nrow(x)), size, replace, prob)
+  is <- sample.int(nrow(x), size, replace, prob)
 
   out <- subset(x, is)
 
