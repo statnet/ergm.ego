@@ -1,6 +1,6 @@
-ergm.ego <- function(formula, popsize, ppopsize=popsize, offset.coef=NULL, na.action=na.fail, stats.var = c("ratio", "naive"), ..., control=control.ergm()){
+ergm.ego <- function(formula, popsize, ppopsize=popsize, offset.coef=NULL, na.action=na.fail, stats.est = c("asymptotic", "bootstrap", "naive"), R=10000, ..., control=control.ergm()){
   control$force.main <- TRUE
-  stats.var <- match.arg(stats.var)
+  stats.est <- match.arg(stats.est)
   egodata <- get(as.character(formula[[2]]), envir=environment(formula))
   
   popnw <- as.network(egodata, ppopsize)
@@ -14,15 +14,26 @@ ergm.ego <- function(formula, popsize, ppopsize=popsize, offset.coef=NULL, na.ac
   w <- tmp[,1]
   stats <- tmp[,-1, drop=FALSE]
 
-  # We can have summary() compute some of this, but that's likely to
-  # be slow.
-  # TODO: Jacknife for bias-correction and variance estimation?
-  w <- w/sum(w)
-  m <- colSums(stats*w)
+  wmean <- function(w,s){
+    w <- w/sum(w)
+    colSums(s*w)
+  }
+  m <- wmean(w,stats)
+  
+  if(stats.est=="bootstrap"){
+    m.b <- t(replicate(R,{
+      i <- sample.int(length(w),replace=TRUE)
+      wmean(w[i],stats[i,,drop=FALSE])
+    }))
+
+    m <- m - (colMeans(m.b)-m)
+  }
+  
   # TODO: Include finite-population correction here:
-  v <- switch(stats.var,
-              naive = crossprod(sweep(stats, 2, m, "-")*sqrt(w))/(1-sum(w^2))*sum(w^2)/sum(w)^2,
-              ratio = .ratio.var(stats, w)/length(w)
+  v <- switch(stats.est,
+              bootstrap = cov(m.b),
+              naive = {w <- w/sum(w); crossprod(sweep(stats, 2, m, "-")*sqrt(w))/(1-sum(w^2))*sum(w^2)},
+              asymptotic = .asymptotic.var(stats, w)/length(w)
               )
   
   ergm.formula <- ergm.update.formula(formula,popnw~offset(edges)+.,from.new="popnw")
@@ -45,7 +56,7 @@ ergm.ego <- function(formula, popsize, ppopsize=popsize, offset.coef=NULL, na.ac
   out
 }
 
-.ratio.var <- function(X, w){
+.asymptotic.var <- function(X, w){
   n <- length(w)
   p <- ncol(X)
   wX <- cbind(w,sweep(X,1,w,"*"))
@@ -54,3 +65,4 @@ ergm.ego <- function(formula, popsize, ppopsize=popsize, offset.coef=NULL, na.ac
   A <- 1/mean(w)*cbind(-m,diag(1,nrow=p))
   A%*%S%*%t(A)
 }
+
