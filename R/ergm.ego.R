@@ -30,7 +30,6 @@ ergm.ego <- function(formula, popsize, ppopsize=popsize, offset.coef=NULL, na.ac
       i <- sample.int(length(w),replace=TRUE)
       wmean(w[i],stats[i,,drop=FALSE])
     }))
-
     m <- m - (colMeans(m.b)-m)
     
   }else if(stats.est=="jackknife"){
