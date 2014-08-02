@@ -73,6 +73,7 @@ as.network.egodata<-function(x, N, scaling=c("greedy","sample"), ...){
       y0 <- set.vertex.attribute(y0,ego.col,as.character(egos[[ego.col]]))
     else
       y0 <- set.vertex.attribute(y0,ego.col,egos[[ego.col]])
+  y0 %n% "ego.inds" <- egoinds
   y0
 }
 
