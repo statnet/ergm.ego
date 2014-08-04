@@ -1,9 +1,15 @@
-ergm.ego <- function(formula, popsize, ppopsize=popsize, offset.coef=NULL, na.action=na.fail, stats.est = c("asymptotic", "bootstrap", "jackknife", "naive"), stats.wt = c("data","ppop"), R=10000, ..., control=control.ergm(), do.fit=TRUE){
+ergm.ego <- function(formula, popsize, ppopsize=popsize, offset.coef=NULL, na.action=na.fail, stats.est = c("asymptotic", "bootstrap", "jackknife", "naive"), stats.wt = c("data","ppop"), ppop.wt = "round", R=10000, ..., control=control.ergm(), do.fit=TRUE){
   stats.est <- match.arg(stats.est)
   stats.wt <- match.arg(stats.wt)
   egodata <- get(as.character(formula[[2]]), envir=environment(formula))
+
+  message("Constructiong pseudopopulation network.")
+  popnw <- as.network(egodata, ppopsize, scaling=ppop.wt)
+  if(network.size(popnw)!=ppopsize){
+    message("Note: Constructed network has size ", network.size(popnw), ", different from requested ", ppopsize,". Estimation should not be meaningfully affected.")
+    ppopsize <- network.size(popnw)
+  }
   
-  popnw <- as.network(egodata, ppopsize)
 
   w <- switch(stats.wt,
               data=egodata$egoWt,

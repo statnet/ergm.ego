@@ -53,19 +53,23 @@ as.egodata.network<-function(object,special.cols=c("na","vertex.names"),...,egoI
   else alters
 }
 
-as.network.egodata<-function(x, N, scaling=c("greedy","sample"), ...){
-  y0<-network.initialize(N,directed=FALSE)
-  egos <- x$egos
-  
+as.network.egodata<-function(x, N, scaling=c("round","greedy","sample"), ...){
   scaling <- match.arg(scaling)
   egoinds <- switch(scaling,
                     greedy={
                       .greedy.scaling(N,x$egoWt)
                     },
+                    round={
+                      .round.scaling(N,x$egoWt)
+                    },
                     sample={
                       sample(length(x$egoWt),N,TRUE,x$egoWt)
                     })
 
+  N <- length(egoinds) # round scaling may modify N.
+  y0<-network.initialize(N,directed=FALSE)
+  egos <- x$egos
+  
   egos <- egos[egoinds,]
   
   for(ego.col in names(egos))
@@ -88,6 +92,13 @@ as.network.egodata<-function(x, N, scaling=c("greedy","sample"), ...){
   }
   rep(seq_along(w),n)
 }
+
+.round.scaling <- function(N, w){
+  ideal<-N*w/sum(w)
+  n<-round(ideal)
+  rep(seq_along(w),n)
+}
+
 
 # Note: The following functions use parts of na.omit.data.frame() and
 # subset.data.frame() from the R's stats package under the terms of
