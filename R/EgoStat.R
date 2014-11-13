@@ -135,12 +135,139 @@ EgoStat.degree <- function(egodata, d, by=NULL, homophily=FALSE){
     colnames(h) <- paste("deg",degs,".",by,bys,sep="")
   }else{
     h <- sapply(d, function(i) egos$.degree==i)
-    colnames(h) <- if(homophily) paste("degree",d,".homophily.",by,sep="") else paste("degree",d,sep="")
+    colnames(h) <- if(homophily) paste("deg",d,".homophily.",by,sep="") else paste("degree",d,sep="")
   }
   rownames(h) <- egos[[egoIDcol]]
   
   h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]
 }
+
+EgoStat.degrange <- function(egodata, from=NULL, to=Inf, byarg=NULL, homophily=FALSE){
+  egos <- egodata$egos
+  alters <- egodata$alters
+  egoIDcol <- egodata$egoIDcol
+  
+  to <- ifelse(to==Inf, .Machine$integer.max, to)
+
+  if(length(to)==1 && length(from)>1) to <- rep(to, length(from))
+  else if(length(from)==1 && length(to)>1) from <- rep(from, length(to))
+  else if(length(from)!=length(to)) stop("The arguments of term degrange must have arguments either of the same length, or one of them must have length 1.")
+  else if(any(from>=to)) stop("Term degrange must have from<to.")
+
+  if(!is.null(byarg)){
+    levs <- sort(unique(c(egos[[byarg]],alters[[byarg]])))
+  }
+
+  ties<-merge(egos[c(egoIDcol,byarg)],alters[c(egoIDcol,byarg)],by=egoIDcol,suffixes=c(".ego",".alter"))
+
+  if(!is.null(byarg)) names(ties) <- c(egoIDcol,".e",".a")
+  if(!is.null(byarg) && homophily) ties <- ties[ties$.e==ties$.a,]
+  ties$.a <- NULL
+
+  alterct <- as.data.frame(table(ties[[egoIDcol]]),stringsAsFactors=FALSE)
+  colnames(alterct)<-c(egoIDcol,".degree")
+
+  egos <- merge(egos[c(egoIDcol,byarg)],alterct,by=egoIDcol,all=TRUE)
+  egos$.degree[is.na(egos$.degree)]<-0
+
+  if(!is.null(byarg) && !homophily){
+    bys <- rep(levs,each=length(from))
+    froms <- rep(from,length(levs))
+    tos <- rep(to,length(levs))
+    
+    h <- sapply(seq_along(bys), function(i) egos$.degree>=froms[i] & egos$.degree<tos[i] & egos[[byarg]]==bys[i])
+    colnames(h) <-  ifelse(tos>=.Machine$integer.max,
+                           paste("deg", from, "+.",          byarg, bys, sep=""),
+                           paste("deg", from, "to", to, ".", byarg, bys, sep=""))
+
+  }else{
+    h <- sapply(seq_along(from), function(i) egos$.degree>=from[i] & egos$.degree<to[i])
+    colnames(h) <-
+      if(homophily)
+        ifelse(to>=.Machine$integer.max,
+               paste("deg", from,  "+",     ".homophily.", byarg, sep=""),
+               paste("deg", from, "to", to, ".homophily.", byarg, sep=""))
+      else
+        ifelse(to>=.Machine$integer.max,
+               paste("deg", from,  "+", sep=""),
+               paste("deg", from, "to", to, sep=""))
+
+  }
+  rownames(h) <- egos[[egoIDcol]]
+  
+  h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]
+}
+
+EgoStat.concurrent <- function(egodata, by=NULL){
+  egos <- egodata$egos
+  alters <- egodata$alters
+  egoIDcol <- egodata$egoIDcol
+
+  if(!is.null(by)){
+    levs <- sort(unique(c(egos[[by]],alters[[by]])))
+  }
+
+  ties<-merge(egos[c(egoIDcol,by)],alters[c(egoIDcol,by)],by=egoIDcol,suffixes=c(".ego",".alter"))
+
+  if(!is.null(by)) names(ties) <- c(egoIDcol,".e",".a")
+  ties$.a <- NULL
+
+  alterct <- as.data.frame(table(ties[[egoIDcol]]),stringsAsFactors=FALSE)
+  colnames(alterct)<-c(egoIDcol,".degree")
+
+  egos <- merge(egos[c(egoIDcol,by)],alterct,by=egoIDcol,all=TRUE)
+  egos$.degree[is.na(egos$.degree)]<-0
+
+  if(!is.null(by)){
+    bys <- levs
+    
+    h <- sapply(seq_along(bys), function(i) egos$.degree>=2 & egos[[by]]==bys[i])
+    colnames(h) <- paste("concurrent.", by, bys, sep="")
+
+  }else{
+    h <- cbind(egos$.degree>=2)
+    colnames(h) <- "concurrent"
+  }
+  rownames(h) <- egos[[egoIDcol]]
+  
+  h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]
+}
+
+EgoStat.concurrentties <- function(egodata, by=NULL){
+  egos <- egodata$egos
+  alters <- egodata$alters
+  egoIDcol <- egodata$egoIDcol
+
+  if(!is.null(by)){
+    levs <- sort(unique(c(egos[[by]],alters[[by]])))
+  }
+
+  ties<-merge(egos[c(egoIDcol,by)],alters[c(egoIDcol,by)],by=egoIDcol,suffixes=c(".ego",".alter"))
+
+  if(!is.null(by)) names(ties) <- c(egoIDcol,".e",".a")
+  ties$.a <- NULL
+
+  alterct <- as.data.frame(table(ties[[egoIDcol]]),stringsAsFactors=FALSE)
+  colnames(alterct)<-c(egoIDcol,".degree")
+
+  egos <- merge(egos[c(egoIDcol,by)],alterct,by=egoIDcol,all=TRUE)
+  egos$.degree[is.na(egos$.degree)]<-0
+
+  if(!is.null(by)){
+    bys <- levs
+    
+    h <- sapply(seq_along(bys), function(i) cbind(ifelse(egos[[by]]==bys[i], pmax(egos$.degree-1,0), 0)))
+    colnames(h) <- paste("concurrentties.", by, bys, sep="")
+
+  }else{
+    h <- cbind(pmax(egos$.degree-1,0))
+    colnames(h) <- "concurrentties"    
+  }
+  rownames(h) <- egos[[egoIDcol]]
+  
+  h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]
+}
+
 
 EgoStat.degreepopularity <- function(egodata){
   egos <- egodata$egos
@@ -152,7 +279,7 @@ EgoStat.degreepopularity <- function(egodata){
   alterct <- as.data.frame(table(ties[[egoIDcol]]),stringsAsFactors=FALSE)
   colnames(alterct)<-c(egoIDcol,".degree")
 
-  egos <- merge(egos[c(egoIDcol,by)],alterct,by=egoIDcol,all=TRUE)
+  egos <- merge(egos[c(egoIDcol)],alterct,by=egoIDcol,all=TRUE)
   egos$.degree[is.na(egos$.degree)]<-0
 
   h <- cbind(egos$.degree^(3/2))
