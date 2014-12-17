@@ -1,4 +1,4 @@
-ergm.ego <- function(formula, popsize, ppopsize=popsize, offset.coef=NULL, na.action=na.fail, stats.est = c("asymptotic", "bootstrap", "jackknife", "naive"), stats.wt = c("data","ppop"), ppop.wt = "round", R=10000, ..., control=control.ergm(), do.fit=TRUE){
+ergm.ego <- function(formula, popsize, ppopsize=popsize, offset.coef=NULL, na.action=na.fail, stats.est = c("asymptotic", "bootstrap", "jackknife", "naive"), stats.wt = c("data","ppop"), ppop.wt = c("round","greedy","sample"), R=10000, ..., control=control.ergm(), do.fit=TRUE){
   stats.est <- match.arg(stats.est)
   stats.wt <- match.arg(stats.wt)
   egodata <- get(as.character(formula[[2]]), envir=environment(formula))
@@ -68,12 +68,18 @@ ergm.ego <- function(formula, popsize, ppopsize=popsize, offset.coef=NULL, na.ac
     vcov <- matrix(NA, length(coef), length(coef))
   
     vcov[!oi$theta,!oi$theta] <- solve(DtDe/ppopsize)%*%v%*%solve(DtDe/ppopsize)
-
+    
     rownames(vcov) <- colnames(vcov) <- names(coef)
-  
-    out <- c(out, list(coef=coef[-1], netsize.offset=coef[1], vcov=vcov, ergm.fit=ergm.fit, DtDe=DtDe))
+
+    
+    
+    out <- c(out, list(coef=coef, covar=vcov, est.cov=ergm.fit$est.cov, ergm.coef=ergm.fit$coef, ergm.covar=ergm.fit$covar, ergm.est.cov=ergm.fit$est.cov, DtDe=DtDe))
+
+    for(name in names(out)) ergm.fit[[name]] <- out[[name]]
+
+    out <- ergm.fit
   }
-  class(out) <- "ergm.ego"
+  class(out) <- c("ergm.ego","ergm")
   out
 }
 
