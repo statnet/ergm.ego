@@ -1,2 +1,48 @@
-# Export all names that do not begin with a dot.
-exportPattern("^[^\\.]")
+import(network,ergm,statnet.common)
+importFrom(stats,na.omit)
+importFrom(stats,simulate)
+
+export(
+  as.egodata,
+  as.egodata.data.frame,
+  as.egodata.network,  
+  as.network.egodata,
+  category.weights.egodata,
+  control.simulate.ergm.ego ,
+  dim.egodata,
+  dimnames.egodata,
+  '[.egodata',
+  EgoStat.absdiff,
+  EgoStat.concurrent,
+  EgoStat.concurrentties  ,  
+  EgoStat.degrange,
+  EgoStat.degree,
+  EgoStat.degreepopularity,
+  EgoStat.edges,
+  EgoStat.nodecov,
+  EgoStat.nodefactor,   
+  EgoStat.nodematch,
+  ergm.ego,
+  na.omit.egodata  ,         
+  reweight.egodata,
+  sample,
+  sample.default,
+  sample.egodata,
+  simulate.ergm.ego,
+  subset.egodata,
+  summary.statistics.egodata
+)
+
+# register S3 methods
+S3method('as.egodata','data.frame')
+S3method('as.egodata','network')
+S3method('as.network','egodata')
+S3method('dim','egodata') 
+S3method('dimnames','egodata')
+S3method('na.omit','egodata' )
+S3method('sample','default')
+S3method('sample','egodata' )
+S3method('simulate','ergm.ego' )
+S3method('subset','egodata')
+S3method('summary.statistics','egodata' )
+S3method('summary.statistics','egodata')
