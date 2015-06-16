@@ -1,6 +1,5 @@
 \name{ergm.ego}
 \alias{ergm.ego}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
   Inference for Exponential-Family Random Graph Models based on
   Egocentrically Sampled Data
@@ -10,16 +9,10 @@
 }
 \usage{
 ergm.ego(formula, 
-        popsize, 
-        ppopsize = popsize, 
+        popsize = 1, 
         offset.coef = NULL, 
-        na.action = na.fail, 
-        stats.est = c("asymptotic", "bootstrap", "jackknife", "naive"), 
-        stats.wt = c("data", "ppop"), 
-        ppop.wt = c("round", "greedy", "sample"), 
-        R = 10000, 
         ..., 
-        control = control.ergm(), 
+        control = control.ergm.ego(), 
         do.fit = TRUE)
 }
 \arguments{
@@ -32,29 +25,9 @@ ergm.ego(formula,
   \item{popsize}{
     The size \eqn{|N|} of the finite population network from which the egocentric
     sample was taken; only affects the shift in the coefficients of the
-    terms modeling the overall propensity to have ties.
-  }
-  \item{ppopsize, ppop.wt}{
-    Parameters for constructing the pseudopopulation
-    network. \code{ppopsize} \eqn{|N'|} is the target size of the pseudopopulation network used for the
-    \code{\link[ergm]{ergm}} call. It must be at least equal to the sample
-    size, and, particularly if there are sampling weights in the data,
-    must be bigger.
-
-    Because each ego must be represented in the pseuodopopulation
-    network an integral number of times, if the sample is weighted (or \code{ppopsize} is not a
-    multiple of the sample size), it may not be possible, for a finite
-    \code{ppopsize} to represent each ego exactly according to its
-    relative weight, and \code{ppop.wt} controls how the fractional egos
-    are allocated:
-    \describe{
-      \item{\code{"round"} (default)}{Rather than treating
-	\code{ppopsize} as a hard setting, calculate \eqn{|N'|
-	  w_i / w_\cdot} for each ego \eqn{i} and round it to the
-	nearest integer. Then, the \eqn{|N'|} actually used will be the
-	sum of these rounded freqencies.}
-      \item{\code{"sample"}}{Resample in proportion to \eqn{w_i}.} 
-    }
+    terms modeling the overall propensity to have ties. Setting it to 1
+    (the default) essentially uses the \eqn{-\log |N'|} offset on the
+    edges term.
   }
   \item{offset.coef}{
     A vector of coefficients for the offset terms.
@@ -63,34 +36,12 @@ ergm.ego(formula,
     How to handle missing actor attributes in egos or alters, when the
     terms need them.
   }
-  \item{stats.est, R}{
-    Method to be used to estimate the ERGM's sufficient statistics and their
-    variance:
-    \describe{
-      \item{\code{"asymptotic"} (default)}{Delta method, as derived by Krivitsky and
-	Morris (2015), assuming the ego weights are sampled alongside the egos.}
-      \item{\code{"bootstrap"}}{Nonparametric bootstrap with bias correction, resampling
-	egos, using \code{R} replications.}
-      \item{\code{"jackknife"}}{Jackknife.}
-      \item{\code{"naive"}}{"Naive" estimator, assuming that weights are fixed.}
-      }
-}
-  \item{stats.wt}{
-    Weight assigned to each ego's contribution to the ERGM's sufficient
-    statistic:
-    \describe{
-      \item{\code{"data"} (default)}{Use weights \eqn{|N'|
-	  w_i / w_\cdot} for each ego \eqn{i} as in the data.}
-      \item{\code{"ppop"}}{Use weights ultimately used in the
-	pseudopopulation network.} 
-    }
-}
   \item{\dots}{
     Additional arguments passed to \code{\link[ergm]{ergm}}.
-}
+  }
   \item{control}{
-    A \code{\link[ergm]{control.ergm}} control list.
-}
+    A \code{\link{control.ergm.ego}} control list.
+  }
   \item{do.fit}{
     Whether to actually call \code{\link[ergm]{ergm}}
   }
@@ -123,14 +74,14 @@ ergm.ego(formula,
 }
 \references{
   
-Pavel N. Krivitsky and Martina Morris. Inference for Social Network
-    Models from Egocentrically-Sampled Data, with Application to
-    Understanding Persistent Racial Disparities in HIV Prevalence in the
-    US. Thechnical Report. National Institute for Applied Statistics
-    Research Australia, University of Wollongong,
-    2015(05-15). \url{http://niasra.uow.edu.au/publications/UOW190187.html}
-
-  }
+  Pavel N. Krivitsky and Martina Morris. Inference for Social Network
+  Models from Egocentrically-Sampled Data, with Application to
+  Understanding Persistent Racial Disparities in HIV Prevalence in the
+  US. Thechnical Report. National Institute for Applied Statistics
+  Research Australia, University of Wollongong,
+  2015(05-15). \url{http://niasra.uow.edu.au/publications/UOW190187.html}
+  
+}
 \author{
 Pavel N. Krivitsky
 }

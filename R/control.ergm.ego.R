@@ -1,11 +1,10 @@
 control.ergm.ego <- function(
   ppopsize = c("samp", "pop"),
-  ppopsize.samp.mul = 1,
-  ppopsize.pop.div = 1,
+  ppopsize.mul = 1,
+  ppop.wt = c("round","greedy","sample"),                                      
+  stats.wt = c("data","ppop"),
   stats.est = c("asymptotic", "bootstrap", "jackknife", "naive"),
   boot.R = 10000,
-  stats.wt = c("data","ppop"),
-  ppop.wt = c("round","greedy","sample"),                                      
   ergm.control = control.ergm(),
   ...){
   match.arg.pars <- c("stats.est", "ppop.wt", "stats.wt", if(!is.numeric(ppopsize)) "ppopsize")

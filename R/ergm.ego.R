@@ -7,13 +7,12 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.
   ppopsize <-
     if(is.numeric(control$ppopsize)) control$ppopsize
     else switch(control$ppopsize,
-                samp = sampsize*control$ppopsize.samp.mul,
-                pop = ppopsize <- popsize*control$popsize.samp.mul,
-                control$ppopsize)
+                samp = sampsize*control$ppopsize.mul,
+                pop = popsize*control$ppopsize.mul)
   
   if(ppopsize < sampsize) stop("Using a smaller pseudopopulation size than sample size does not make sense.")
   else if(ppopsize == sampsize && !is.null(egodata$egoWt) && var(egodata$egoWt)>sqrt(.Machine$double.eps))
-    warning("Using pseudopoulation size equal to sample size under weighted sampling: results may be highly biased. Recommend increasing popsize.samp.mul control parameter.")
+    warning("Using pseudopoulation size equal to sample size under weighted sampling: results may be highly biased. Recommend increasing popsize.mul control parameter.")
   
   message("Constructiong pseudopopulation network.")
   popnw <- as.network(egodata, ppopsize, scaling=control$ppop.wt)
