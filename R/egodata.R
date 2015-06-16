@@ -1,12 +1,16 @@
+egodata <- function(egos, alters, egoWt=1, ..., egoIDcol="egoID"){
+  egoWt <- rep(egoWt, length.out=nrow(egos))
+  out <- list(egos=egos, alters=.prune.alters(egos, alters, egoIDcol), egoWt = egoWt, egoIDcol=egoIDcol)  
+  class(out) <- "egodata"
+  out
+}
+
 as.egodata <- function(object, ..., egoIDcol="egoID"){
   UseMethod("as.egodata")
 }
 
 as.egodata.data.frame <- function(object, alters, egoWt = 1, ..., egoIDcol="egoID"){
-  egoWt <- rep(egoWt, length.out=nrow(object))
-  out <- list(egos=object, alters=.prune.alters(object, alters, egoIDcol), egoWt = egoWt, egoIDcol=egoIDcol)  
-  class(out) <- "egodata"
-  out
+  egodata(egos=object, alters=alters, egoWt=egoWt, ..., egoIDcol=egoIDcol)
 }
 
 # Conduct an egocentric census from the undirected network y=,
@@ -40,7 +44,7 @@ as.egodata.network<-function(object,special.cols=c("na","vertex.names"),...,egoI
   for(a in list.vertex.attributes(object))
     if(!(a %in% special.cols)) alters[[a]]<-get.vertex.attribute(object,attrname=a)[alterS]
 
-  as.egodata(as.data.frame(egos,stringsAsFactors=FALSE),alters=as.data.frame(alters,stringsAsFactors=FALSE), egoIDcol=egoIDcol)
+  egodata(egos=as.data.frame(egos,stringsAsFactors=FALSE),alters=as.data.frame(alters,stringsAsFactors=FALSE), egoIDcol=egoIDcol)
 }
 
 .prune.alters <- function(egos, alters, egoIDcol){
