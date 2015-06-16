@@ -1,15 +1,26 @@
-ergm.ego <- function(formula, popsize, ppopsize=popsize, offset.coef=NULL, na.action=na.fail, stats.est = c("asymptotic", "bootstrap", "jackknife", "naive"), stats.wt = c("data","ppop"), ppop.wt = c("round","greedy","sample"), R=10000, ..., control=control.ergm(), do.fit=TRUE){
-  stats.est <- match.arg(stats.est)
-  stats.wt <- match.arg(stats.wt)
+ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.ergm.ego(), na.action=na.fail, do.fit=TRUE){
+  stats.est <- control$stats.est
+  stats.wt <- control$stats.wt
   egodata <- get(as.character(formula[[2]]), envir=environment(formula))
 
+  sampsize <- dim(egodata)[1]
+  ppopsize <-
+    if(is.numeric(control$ppopsize)) control$ppopsize
+    else switch(control$ppopsize,
+                samp = sampsize*control$ppopsize.samp.mul,
+                pop = ppopsize <- popsize*control$popsize.samp.mul,
+                control$ppopsize)
+  
+  if(ppopsize < sampsize) stop("Using a smaller pseudopopulation size than sample size does not make sense.")
+  else if(ppopsize == sampsize && !is.null(egodata$egoWt) && var(egodata$egoWt)>sqrt(.Machine$double.eps))
+    warning("Using pseudopoulation size equal to sample size under weighted sampling: results may be highly biased. Recommend increasing popsize.samp.mul control parameter.")
+  
   message("Constructiong pseudopopulation network.")
-  popnw <- as.network(egodata, ppopsize, scaling=ppop.wt)
+  popnw <- as.network(egodata, ppopsize, scaling=control$ppop.wt)
   if(network.size(popnw)!=ppopsize){
     message("Note: Constructed network has size ", network.size(popnw), ", different from requested ", ppopsize,". Estimation should not be meaningfully affected.")
     ppopsize <- network.size(popnw)
   }
-  
 
   w <- switch(stats.wt,
               data=egodata$egoWt,
@@ -32,7 +43,7 @@ ergm.ego <- function(formula, popsize, ppopsize=popsize, offset.coef=NULL, na.ac
   m <- wmean(w,stats)
   
   if(stats.est=="bootstrap"){
-    m.b <- t(replicate(R,{
+    m.b <- t(replicate(control$boot.R,{
       i <- sample.int(length(w),replace=TRUE)
       wmean(w[i],stats[i,,drop=FALSE])
     }))
@@ -58,7 +69,7 @@ ergm.ego <- function(formula, popsize, ppopsize=popsize, offset.coef=NULL, na.ac
   if(do.fit){
     ergm.formula <- ergm.update.formula(formula,popnw~offset(edges)+.,from.new="popnw")
 
-    ergm.fit <- ergm(ergm.formula, target.stats=m*ppopsize, offset.coef=c(-log(ppopsize/popsize),offset.coef),..., eval.loglik=FALSE,control=control)
+    ergm.fit <- ergm(ergm.formula, target.stats=m*ppopsize, offset.coef=c(-log(ppopsize/popsize),offset.coef),..., eval.loglik=FALSE,control=control$ergm.control)
     coef <- coef(ergm.fit)
 
     oi <- offset.info.formula(ergm.formula)
