@@ -79,7 +79,8 @@ control.ergm.ego(ppopsize = c("samp", "pop"),
     }
   }
   \item{ergm.control}{
-    Control parameters for the \code{\link[ergm]{ergm}} call to fit the model.
+    Control parameters for the \code{\link[ergm]{ergm}} call to fit the
+    model, constructed by \code{\link[ergm]{control.ergm}}.
   }
   \item{\dots}{
     Not used at this time.
