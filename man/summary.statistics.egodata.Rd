@@ -16,6 +16,9 @@ summary.statistics.egodata(object, ..., basis = NULL, individual = FALSE, scalet
   \item{object}{
     An \code{\link[ergm]{ergm}}-style formula with a \code{\link{egodata}}
     object as the LHS.
+
+    For a list of currently implemented egocentric terms for the RHS, see
+    \code{\link{ergm.ego-terms}}. 
   }
   \item{\dots}{
     Not used at this time.

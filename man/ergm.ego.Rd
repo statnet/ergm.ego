@@ -20,8 +20,12 @@ ergm.ego(formula,
     An \R \code{\link{formula}} object, of the form
     \code{e ~ <model terms>},
     where \code{e} is a \code{\link{egodata}} object. See
-    \code{\link[ergm]{ergm}} for details and examples. 
+    \code{\link[ergm]{ergm}} for details and examples.
+
+    For a list of currently implemented egocentric terms for the RHS, see
+    \code{\link{ergm.ego-terms}}. 
   }
+  
   \item{popsize}{
     The size \eqn{|N|} of the finite population network from which the egocentric
     sample was taken; only affects the shift in the coefficients of the
