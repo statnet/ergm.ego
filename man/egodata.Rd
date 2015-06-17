@@ -1,4 +1,4 @@
-\name{as.egodata}
+\name{egodata}
 \alias{as.egodata}
 \alias{as.egodata.data.frame}
 \alias{egodata.object}
