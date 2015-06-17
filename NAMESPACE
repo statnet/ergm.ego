@@ -1,6 +1,7 @@
 import(network,ergm,statnet.common)
 importFrom(stats,na.omit)
 importFrom(stats,simulate)
+importFrom(coda,nchain)
 exportPattern("^[^\\.]")
 ## export(
 ##   as.egodata,

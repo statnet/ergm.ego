@@ -41,6 +41,7 @@ What to do when an ego is referenced multiple times:
 }
 }
 }
+}
 \details{
 %%  ~~ If necessary, more details than the description above ~~
 }

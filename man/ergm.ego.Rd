@@ -5,14 +5,15 @@
   Egocentrically Sampled Data
 }
 \description{
-  A wrapper around the \code{\link[ergm]{ergm}} to fit an ERGM to an \code{\link[=egodata-object]{egodata}}.
+  A wrapper around the \code{\link[ergm]{ergm}} to fit an ERGM to an \code{\link{egodata}}.
 }
 \usage{
 ergm.ego(formula, 
         popsize = 1, 
         offset.coef = NULL, 
         ..., 
-        control = control.ergm.ego(), 
+        control = control.ergm.ego(),
+        na.action = na.fail,
         do.fit = TRUE)
 }
 \arguments{

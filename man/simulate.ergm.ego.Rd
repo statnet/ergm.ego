@@ -9,7 +9,7 @@
   networks from an ERGM fit using \code{\link{ergm.ego}}.
 }
 \usage{
-simulate.ergm.ego(object, nsim = 1, seed = NULL, popsize=if(object$popsize==1) object$ppopsize else object$popsize, control = control.simulate.ergm.ego(), ..., verbose = FALSE)
+\method{simulate}{ergm.ego}(object, nsim = 1, seed = NULL, popsize=if(object$popsize==1) object$ppopsize else object$popsize, control = control.simulate.ergm.ego(), ..., verbose = FALSE)
 }
 \arguments{
   \item{object}{

@@ -57,7 +57,7 @@ as.egodata.network<-function(object,special.cols=c("na","vertex.names"),...,egoI
   else alters
 }
 
-as.network.egodata<-function(x, N, scaling=c("round","greedy","sample"), ...){
+as.network.egodata<-function(x, N, scaling=c("round","sample"), ...){
   scaling <- match.arg(scaling)
   egoinds <- switch(scaling,
                     greedy={

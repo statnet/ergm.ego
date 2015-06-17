@@ -1,14 +1,12 @@
 \name{as.egodata}
 \alias{as.egodata}
 \alias{as.egodata.data.frame}
-\alias{as.egodata.network}
 \alias{egodata.object}
 \alias{egodata}
 \alias{na.omit.egodata}
-\alias{subset.egodata}
 \alias{dim.egodata}
 \alias{dimnames.egodata}
-\alias{[.egodata}
+\alias{sample.egodata}
 \title{
   Convert to or Construct \code{\link{egodata}} Objects
 }

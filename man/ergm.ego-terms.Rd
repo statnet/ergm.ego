@@ -23,7 +23,8 @@
 \title{\code{\link[ergm]{ergm}} Terms Implemented for \code{\link[=egodata.object]{egodata}}}
 \description{
   This page describes the \code{\link[ergm]{ergm}} terms (and hence network statistics)
-  for which inference based on egocentrically sampled data is implemented in \code{\link[=ergm.ego-package]{ergm.ego}}. Other packages may add their own terms.
+  for which inference based on egocentrically sampled data is
+  implemented in \code{ergm.ego} package. Other packages may add their own terms.
 
   The current recommendation for any package implementing additional
   egocentric calculator terms is to create a help file with a name or

@@ -1,7 +1,7 @@
 control.ergm.ego <- function(
   ppopsize = c("samp", "pop"),
   ppopsize.mul = 1,
-  ppop.wt = c("round","greedy","sample"),                                      
+  ppop.wt = c("round","sample"),                                      
   stats.wt = c("data","ppop"),
   stats.est = c("asymptotic", "bootstrap", "jackknife", "naive"),
   boot.R = 10000,
