@@ -7,9 +7,31 @@
   Constructs and checks the list of control parameters for simulation by \code{\link{simulate.ergm.ego}}.
 }
 \usage{
-control.simulate.ergm.ego(SAN.control = control.san(), simulate.control = control.simulate(), ...)
+control.simulate.ergm.ego(ppop.wt = c("round","sample"),
+                          SAN.control = control.san(),
+                          simulate.control = control.simulate(),
+                          ...)
 }
 \arguments{
+    \item{ppop.wt}{
+    Because each ego must be represented in the pseuodopopulation
+    network an integral number of times, if the sample is weighted (or
+    the target \eqn{|N'|} calculated from \code{ppopsize} and \code{ppopsize.mul} is not a
+    multiple of the sample size), it may not be possible, for a finite
+    \eqn{|N'|} to represent each ego exactly according to its
+    relative weight, and \code{ppop.wt} controls how the fractional egos
+    are allocated:
+    \describe{
+      \item{\code{"round"} (default)}{Rather than treating
+	\code{ppopsize} as a hard setting, calculate \eqn{|N'|
+	  w_i / w_\cdot} for each ego \eqn{i} and round it to the
+	nearest integer. Then, the \eqn{|N'|} actually used will be the
+	sum of these rounded freqencies.}
+      \item{\code{"sample"}}{Resample in proportion to \eqn{w_i}.} 
+    }
+
+  }
+  
   \item{SAN.control}{
     A list of control parameters for \code{\link[ergm]{san}} constructed
     by \code{\link[ergm]{control.ergm}}, called to construct a
