@@ -1,6 +1,7 @@
 \name{summary.statistics.egodata}
 \alias{summary.statistics.egodata}
 \alias{summary}
+\alias{summary.formula}
 \title{
   Claculation of ERGM-style summary statistics for \code{\link{egodata}} objects.
 }
@@ -9,7 +10,7 @@
   \code{\link{egodata}} object.
 }
 \usage{
-summary.statistics.egodata(object, ..., basis = NULL, individual = FALSE, scaleto = NULL)
+\method{summary.statistics}{egodata}(object, ..., basis = NULL, individual = FALSE, scaleto = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -66,9 +67,13 @@ summary.statistics.egodata(object, ..., basis = NULL, individual = FALSE, scalet
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\code{\link[ergm]{summary.statistics}}, \code{\link[ergm]{summary.statistics.ergm}}
 }
 \examples{
+data(faux.mesa.high)
+fmh.ego <- as.egodata(faux.mesa.high)
+all.equal(summary(faux.mesa.high~edges+degree(0:3)+nodematch("Race")+nodematch("Sex")+absdiff("Grade")),
+summary(fmh.ego~edges+degree(0:3)+nodematch("Race")+nodematch("Sex")+absdiff("Grade"), scaleto=network.size(faux.mesa.high)))
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
