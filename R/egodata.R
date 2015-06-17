@@ -218,7 +218,7 @@ dim.egodata <- function(x){
 sample <- function(x, size, replace=FALSE, prob=NULL, ...) UseMethod("sample")
 sample.default <- function(x, ...) base::sample(x, ...)
 
-sample.egodata <- function(x, size, replace=FALSE, prob=NULL){
+sample.egodata <- function(x, size, replace=FALSE, prob=NULL, ...){
   if(missing(size)) size <- nrow(x)
   
   is <- sample.int(nrow(x), size, replace, prob)
