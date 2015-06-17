@@ -16,7 +16,6 @@ control.ergm.ego(ppopsize = c("samp", "pop"),
                  boot.R = 10000,
                  ergm.control = control.ergm(), \dots)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{ppopsize, ppopsize.mul}{
     Parameters to determine the size \eqn{|N'|} of the pseudopopulation

@@ -19,5 +19,5 @@ control.ergm.ego <- function(
   for(arg in match.arg.pars)
     control[arg]<-list(match.arg(control[[arg]][1],eval(formal.args[[arg]])))
 
-  set.control.class("control.simulate.ergm.ego")
+  set.control.class("control.ergm.ego")
 }

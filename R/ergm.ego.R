@@ -1,4 +1,6 @@
 ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.ergm.ego(), na.action=na.fail, do.fit=TRUE){
+  check.control.class()
+  
   stats.est <- control$stats.est
   stats.wt <- control$stats.wt
   egodata <- get(as.character(formula[[2]]), envir=environment(formula))
