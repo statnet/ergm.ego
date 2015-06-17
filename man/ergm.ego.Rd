@@ -63,16 +63,19 @@ ergm.ego(formula,
     \item{\code{egodata}}{The egodata object passed}
     \item{\code{popsize}, \code{ppopsize}}{Population network size and
       pseudopopulation size used, respectively}
-    \item{\code{coef}}{The coefficients adjusted for network size.}
+    \item{\code{coef}}{The coefficients, along with the network size
+    adjustment \code{netsize.adj} coefficient.}
     \item{\code{covar}}{Pseudo-MLE estimate of the variance-covariance
       matrix of the parameter estimates under repeated egocentric
       sampling}
-    \item{\code{ergm.coef}, \code{ergm.covar},
-      \code{ergm.est.cov}, \code{est.cov}}{Respectively, the
-      unadjusted ERGM parameter estimates, the variance-covariance matrix of
-      parameter estimates under the ERGM superpopulation process, and two
-      copies of the variance-covariance matrix of uncertainty due to MCMLE
-      approximation.}
+    \item{\code{ergm.covar}}{%% Respectively, the
+      %% unadjusted ERGM parameter estimates,
+      The variance-covariance matrix of
+      parameter estimates under the ERGM superpopulation process
+      (without incorporating sampling)%% , and two
+      %% copies of the variance-covariance matrix of uncertainty due to MCMLE
+      %% approximation.
+    }
     \item{\code{DtDe}}{Estimated Jacobian of the expectation of the
       sufficient statistics with respect to the model parameters}
 }
@@ -99,6 +102,17 @@ Pavel N. Krivitsky
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
+data(faux.mesa.high)
+fmh.ego <- as.egodata(faux.mesa.high)
+egofit <- ergm.ego(fmh.ego~edges+degree(0:3)+nodefactor("Race")+nodematch("Race")
+                         +nodefactor("Sex")+nodematch("Sex")+absdiff("Grade"), popsize=network.size(faux.mesa.high))
+summary(egofit)
+
+# Note that we recover the ergm() parameters:
+coef(ergm(faux.mesa.high~edges+degree(0:3)+nodefactor("Race")+nodematch("Race")
+                         +nodefactor("Sex")+nodematch("Sex")+absdiff("Grade")))
+
+mcmc.diagnostics(egofit)
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

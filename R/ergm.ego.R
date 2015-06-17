@@ -14,7 +14,7 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.
   else if(ppopsize == sampsize && !is.null(egodata$egoWt) && var(egodata$egoWt)>sqrt(.Machine$double.eps))
     warning("Using pseudopoulation size equal to sample size under weighted sampling: results may be highly biased. Recommend increasing popsize.mul control parameter.")
   
-  message("Constructiong pseudopopulation network.")
+  message("Constructing pseudopopulation network.")
   popnw <- as.network(egodata, ppopsize, scaling=control$ppop.wt)
   if(network.size(popnw)!=ppopsize){
     message("Note: Constructed network has size ", network.size(popnw), ", different from requested ", ppopsize,". Estimation should not be meaningfully affected.")
@@ -23,7 +23,7 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.
 
   w <- switch(stats.wt,
               data=egodata$egoWt,
-              ppop=tabulate(popnw %n% "ego.inds", nbins=nrow(egodata))
+              ppop=tabulate(popnw %v% "ego.ind", nbins=nrow(egodata))
               )
   
   # Get the sample h values.
@@ -66,9 +66,17 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.
   out <- list(v=v, m=m, formula=formula, egodata=egodata, ppopsize=ppopsize, popsize=popsize)
   
   if(do.fit){
-    ergm.formula <- ergm.update.formula(formula,popnw~offset(edges)+.,from.new="popnw")
+    ergm.formula <- ergm.update.formula(formula,popnw~offset(netsize.adj)+.,from.new="popnw")
 
     ergm.fit <- ergm(ergm.formula, target.stats=m*ppopsize, offset.coef=c(-log(ppopsize/popsize),offset.coef),..., eval.loglik=FALSE,control=control$ergm.control)
+
+    ## Workaround to keep mcmc.diagnostics from failing. Should be removed after fix is released.
+    if(inherits(ergm.fit$sample,"mcmc.list")){
+      for(thread in 1:nchain(ergm.fit$sample))
+        ergm.fit$sample[[thread]][,1] <- 0
+    } else ergm.fit$sample[,1] <- 0
+    ergm.fit$drop[1] <- 0
+
     coef <- coef(ergm.fit)
 
     oi <- offset.info.formula(ergm.formula)
@@ -81,13 +89,8 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.
     
     rownames(vcov) <- colnames(vcov) <- names(coef)
 
-    
-    
-    out <- c(out, list(coef=coef, covar=vcov, est.cov=ergm.fit$est.cov, ergm.coef=ergm.fit$coef, ergm.covar=ergm.fit$covar, ergm.est.cov=ergm.fit$est.cov, DtDe=DtDe))
-
-    for(name in names(out)) ergm.fit[[name]] <- out[[name]]
-
-    out <- ergm.fit
+    out <- c(out, list(covar=vcov, ergm.covar=ergm.fit$covar, DtDe=DtDe))
+    out <- modifyList(ergm.fit, out)
   }
   class(out) <- c("ergm.ego","ergm")
   out
