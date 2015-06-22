@@ -38,7 +38,9 @@ f <- ~ edges +
                                   
                                   concurrentties + concurrentties("a") +
                                     
-                                    degreepopularity
+                                    degreepopularity +
+
+                                      nodemix("a") + nodemix("a", base=1) + nodemix("a", base=2) + nodemix("a", base=2:3)
 
 
 f.y <- ergm.update.formula(f, y~.)
