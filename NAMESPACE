@@ -2,6 +2,8 @@ import(network,ergm,statnet.common)
 importFrom(stats,na.omit)
 importFrom(stats,simulate)
 importFrom(coda,nchain)
+importFrom(RColorBrewer, brewer.pal)
+
 exportPattern("^[^\\.]")
 ## export(
 ##   as.egodata,

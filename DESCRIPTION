@@ -8,7 +8,7 @@ Authors@R:c(
             person("Martina", "Morris", role=c("ctb"), email="morrism@u.washington.edu"),
 	    person("Kirk", "Li", role=c("ctb"), email="kirkli@uw.edu"))
 Depends: ergm (>= 3.4), network
-Imports: statnet.common, coda
+Imports: statnet.common, coda, RColorBrewer
 Description: A wrapper around the ergm package to process egocentrically sampled data.
 License: GPL-3 + file LICENSE
 URL: http://www.statnet.org
