@@ -12,6 +12,7 @@
 \alias{EgoStat.nodecov}
 \alias{EgoStat.nodefactor}
 \alias{EgoStat.nodematch}
+\alias{EgoStat.nodemix}
 \alias{EgoStat.absdiff}
 \alias{EgoStat.degree}
 \alias{EgoStat.degrange}
@@ -42,6 +43,7 @@
     \item nodecov
     \item nodefactor
     \item nodematch
+    \item nodemix
     \item absdiff
     \item degree
     \item degrange
