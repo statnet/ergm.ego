@@ -88,6 +88,48 @@ EgoStat.nodematch <- function(egodata, attrname, diff=FALSE, keep=NULL){
   h[match(egodata$egos[[egoIDcol]],rownames(h)),if(!is.null(keep) && diff) keep else TRUE,drop=FALSE]/2
 }
 
+
+EgoStat.nodemix <- function(egodata, attrname, base=NULL){
+	egos <- egodata$egos
+	alters <- egodata$alters
+	egoIDcol <- egodata$egoIDcol
+	
+	levs <- sort(unique(c(egos[[attrname]],alters[[attrname]])))
+	egos[[attrname]] <- match(egos[[attrname]], levs, 0)
+	alters[[attrname]] <- match(alters[[attrname]], levs, 0)
+	
+	ties<-merge(egos[c(egoIDcol,attrname)],alters[c(egoIDcol,attrname)],by=egoIDcol,suffixes=c(".ego",".alter"))
+	names(ties) <- c(egoIDcol,".e",".a")
+	
+	isolates <- egos[[egoIDcol]][!(egos[[egoIDcol]]%in%ties[[egoIDcol]])] 
+	
+	
+	namevec <- outer(levs,levs,paste,sep=".")
+	namevec <- namevec[upper.tri(namevec,diag=TRUE)]
+	
+	if (!is.null(base) && !identical(base,0)) {
+	namevec <- namevec[-base]
+	}
+	
+	mat <- t(apply(cbind(ties[,2:3]),1,sort))
+	h <- table(ties[,1],paste(mat[,1],mat[,2],sep="."))
+	
+	h<- t(apply(h,1,function(x)x[namevec,drop=FALSE]))
+	
+	if(length(isolates)){
+	isolates.mat <- matrix(0,nrow=length(isolates),ncol=length(namevec))
+	rownames(isolates.mat) <- isolates	
+}
+
+	h <- rbind(h,isolates.mat)
+	h <- h[order(as.numeric(rownames(h))),]
+	h[is.na(h)] <- 0
+	colnames(h) <- paste("mix",attrname,namevec,sep=".")
+	h[match(egodata$egos[[egoIDcol]],rownames(h)),]/2
+}
+
+
+
 EgoStat.absdiff <- function(egodata, attrname, pow=1){
   egos <- egodata$egos
   alters <- egodata$alters
