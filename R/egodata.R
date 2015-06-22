@@ -230,3 +230,5 @@ sample.egodata <- function(x, size, replace=FALSE, prob=NULL, ...){
   out$egoWt <- x$egoWt[is]/prob[is]
   out
 }
+
+head.egodata <- function(x, n=6L, ...) lapply(x, head, n=n, ...)

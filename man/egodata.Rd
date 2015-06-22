@@ -7,6 +7,7 @@
 \alias{dim.egodata}
 \alias{dimnames.egodata}
 \alias{sample.egodata}
+\alias{head.egodata}
 \title{
   Convert to or Construct \code{\link{egodata}} Objects
 }
@@ -97,6 +98,12 @@ egodata(egos, alters, egoWt=1, ..., egoIDcol="egoID")
       egos, adjusting ego weights as necessary, if weighted sampling
       was used.
     }
+
+    \item{\code{\link{head.egodata}}}{
+      As \code{\link{head}}, but returns the first \code{n} rows of
+      egos, alters, and weights.
+    }
+
     
     \item{\code{\link{na.omit.egodata}}}{
       As \code{\link{na.omit.data.frame}}, but takes and returns an
@@ -122,10 +129,9 @@ egodata(egos, alters, egoWt=1, ..., egoIDcol="egoID")
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
+  \code{\link{ergm.ego}} for examples,
   \code{\link{as.network.egodata}}, \code{\link{as.egodata.network}},
   \code{\link{subset.egodata}}, \code{\link{[.egodata}}
-}
-\examples{
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
