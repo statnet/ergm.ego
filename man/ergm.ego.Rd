@@ -93,15 +93,6 @@ ergm.ego(formula,
 \author{
 Pavel N. Krivitsky
 }
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-}
 \examples{
 data(faux.mesa.high)
 fmh.ego <- as.egodata(faux.mesa.high)
@@ -115,8 +106,14 @@ coef(ergm(faux.mesa.high~edges+degree(0:3)+nodefactor("Race")+nodematch("Race")
 
 mcmc.diagnostics(egofit)
 
+# Check whether the model "converged":
+(modelgof <- gof(egofit, GOF="model"))
+plot(modelgof)
+
+# Check whether the model reconstructs the degree distribution:
+# Check whether the model "converged":
+(deggof <- gof(egofit, GOF="degree"))
+plot(deggof)
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+
+\keyword{ models }

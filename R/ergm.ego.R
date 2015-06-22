@@ -65,12 +65,13 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.
               asymptotic = .asymptotic.var(stats, w)/length(w)
               )
 
-  out <- list(v=v, m=m, formula=formula, egodata=egodata, ppopsize=ppopsize, popsize=popsize)
+  ergm.formula <- ergm.update.formula(formula,popnw~offset(netsize.adj)+.,from.new="popnw")
+  ergm.offset.coef <- c(-log(ppopsize/popsize),offset.coef)
+  out <- list(v=v, m=m, formula=formula, ergm.formula=ergm.formula, offset.coef=offset.coef, ergm.offset.coef=ergm.offset.coef, egodata=egodata, ppopsize=ppopsize, popsize=popsize)
   
   if(do.fit){
-    ergm.formula <- ergm.update.formula(formula,popnw~offset(netsize.adj)+.,from.new="popnw")
 
-    ergm.fit <- ergm(ergm.formula, target.stats=m*ppopsize, offset.coef=c(-log(ppopsize/popsize),offset.coef),..., eval.loglik=FALSE,control=control$ergm.control)
+    ergm.fit <- ergm(ergm.formula, target.stats=m*ppopsize, offset.coef=ergm.offset.coef,..., eval.loglik=FALSE,control=control$ergm.control)
 
     ## Workaround to keep mcmc.diagnostics from failing. Should be removed after fix is released.
     if(inherits(ergm.fit$sample,"mcmc.list")){
