@@ -9,6 +9,7 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.
   ppopsize <-
     if(is.numeric(control$ppopsize)) control$ppopsize
     else switch(control$ppopsize,
+                auto = if(missing(popsize) || popsize==1) sampsize*control$ppopsize.mul else popsize*control$ppopsize.mul,  
                 samp = sampsize*control$ppopsize.mul,
                 pop = popsize*control$ppopsize.mul)
   

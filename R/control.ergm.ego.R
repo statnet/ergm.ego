@@ -1,5 +1,5 @@
 control.ergm.ego <- function(
-  ppopsize = c("samp", "pop"),
+  ppopsize = c("auto", "samp", "pop"),
   ppopsize.mul = 1,
   ppop.wt = c("round","sample"),                                      
   stats.wt = c("data","ppop"),

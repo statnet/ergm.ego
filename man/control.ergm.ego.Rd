@@ -7,7 +7,7 @@
   Constructs and checks the list of control parameters for estimation by \code{\link{ergm.ego}}.
 }
 \usage{
-control.ergm.ego(ppopsize = c("samp", "pop"),
+control.ergm.ego(ppopsize = c("auto", "samp", "pop"),
                  ppopsize.mul = 1,
                  ppop.wt = c("round", "sample"),
                  stats.wt = c("data", "ppop"),
@@ -21,6 +21,9 @@ control.ergm.ego(ppopsize = c("samp", "pop"),
     Parameters to determine the size \eqn{|N'|} of the pseudopopulation
     network. \code{popsize} can be
     \describe{
+      \item{\code{"auto"}}{If the \code{popsize} (\eqn{|N|}) argument is
+	specified and is different from 1, as if \code{"pop"};
+	otherwise, as \code{"pop"}.} 
       \item{\code{"samp"}}{set \eqn{|N'|} based on the sample size: \eqn{|N'|=|S| \times \code{popsize.mul}}}
       \item{\code{"pop"}}{set \eqn{|N'|} based on the population size: \eqn{|N'|=|N| \times \code{popsize.mul}}}
       \item{a number}{set \eqn{|N'|} directly (\code{popsize.mul}
