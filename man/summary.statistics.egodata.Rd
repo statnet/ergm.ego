@@ -10,7 +10,8 @@
   \code{\link{egodata}} object.
 }
 \usage{
-\method{summary.statistics}{egodata}(object, ..., basis = NULL, individual = FALSE, scaleto = NULL)
+\method{summary.statistics}{egodata}(object, ..., basis = NULL, 
+                            individual = FALSE, scaleto = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -72,8 +73,10 @@
 \examples{
 data(faux.mesa.high)
 fmh.ego <- as.egodata(faux.mesa.high)
-all.equal(summary(faux.mesa.high~edges+degree(0:3)+nodematch("Race")+nodematch("Sex")+absdiff("Grade")),
-summary(fmh.ego~edges+degree(0:3)+nodematch("Race")+nodematch("Sex")+absdiff("Grade"), scaleto=network.size(faux.mesa.high)))
+all.equal(summary(faux.mesa.high~edges+degree(0:3)+nodematch("Race")+
+                                 nodematch("Sex")+absdiff("Grade")),
+summary(fmh.ego~edges+degree(0:3)+nodematch("Race")+nodematch("Sex")+
+             absdiff("Grade"), scaleto=network.size(faux.mesa.high)))
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
