@@ -35,7 +35,7 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.
   # h is just a matrix, so this will do the sensible thing.
   tmp <- na.action(cbind(w,stats))
   w <- tmp[,1]
-  stats <- tmp[,-1, drop=FALSE]
+  stats <- tmp[,-1, drop=FALSE] * ppopsize
   n <- length(w)
   
   wmean <- function(w,s){
@@ -56,7 +56,7 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.
       wmean(w[-i],stats[-i,,drop=FALSE])
     }))
     m <- n*m - (n-1)*colMeans(m.j)
-  }    
+  }
   
   # TODO: Include finite-population correction here:
   v <- switch(stats.est,
@@ -72,7 +72,7 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.
   
   if(do.fit){
 
-    ergm.fit <- ergm(ergm.formula, target.stats=m*ppopsize, offset.coef=ergm.offset.coef,..., eval.loglik=FALSE,control=control$ergm.control)
+    ergm.fit <- ergm(ergm.formula, target.stats=m, offset.coef=ergm.offset.coef,..., eval.loglik=FALSE,control=control$ergm.control)
 
     ## Workaround to keep mcmc.diagnostics from failing. Should be removed after fix is released.
     if(inherits(ergm.fit$sample,"mcmc.list")){
@@ -89,7 +89,7 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.
 
     vcov <- matrix(NA, length(coef), length(coef))
   
-    vcov[!oi$theta,!oi$theta] <- solve(DtDe/ppopsize)%*%v%*%solve(DtDe/ppopsize)
+    vcov[!oi$theta,!oi$theta] <- solve(DtDe)%*%v%*%solve(DtDe)
     
     rownames(vcov) <- colnames(vcov) <- names(coef)
 
