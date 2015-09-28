@@ -3,7 +3,11 @@ summary.statistics.egodata <- function(object,..., basis=NULL, individual=FALSE,
     if(!is.null(basis)) basis
     else get(as.character(object[[2]]), envir=environment(object))
 
-  stats <- NULL
+  scalable.stats <- NULL
+  scalable.pos <- c(0)
+  nonscalable.stats <- c()
+  nonscalable.pos <- c(0)
+  
   
   for(trm in term.list.formula(object[[length(object)]])){
     if(is.call(trm)){
@@ -13,13 +17,32 @@ summary.statistics.egodata <- function(object,..., basis=NULL, individual=FALSE,
       init.call <- list(as.name(paste("EgoStat.", trm,sep="")),egodata=egodata)
     }
     stat<-eval(as.call(init.call), environment(object))
-    stats<-cbind(stats,stat)
+    if(isTRUE(attr(stat, "nonscaling"))){
+      if(individual) stop("Nonscaling statistic detected. Individual contributions are meaningless.")
+      nonscaling.stats <- c(nonscaling.stats, stat)
+      nonscaling.pos <- c(nonscaling.pos, max(scaling.pos,nonscaling.pos) + seq_len(length(stat)))
+    }else{
+      scaling.stats<-cbind(scaling.stats,stat)
+      scaling.pos <- c(scaling.pos, max(scaling.pos,nonscaling.pos) + seq_len(ncol(stat)))
+    }
   }
-  rownames(stats) <- egodata$egos[[egodata$egoIDcol]]
+  rownames(scaling.stats) <- egodata$egos[[egodata$egoIDcol]]
 
   if(!individual){
     scaleto <- if(is.null(scaleto)) nrow(egodata$egos) else scaleto
-    stats <- colSums(stats*egodata$egoWt)/sum(rep(egodata$egoWt,length.out=nrow(stats)))
-    stats*scaleto
-  }else stats
+    scaling.stats <- colSums(scaling.stats*egodata$egoWt)/sum(rep(egodata$egoWt,length.out=nrow(scaling.stats)))
+    scaling.stats <- scaling.stats*scaleto
+
+    stats <- numeric(max(scaling.pos,nonscaling.pos))
+    scaling.pos <- scaling.pos[scaling.pos>0]
+    nonscaling.pos <- nonscaling.pos[nonscaling.pos>0]
+
+    stats[scaling.pos] <- scaling.stats
+    stats[nonscaling.pos] <- nonscaling.stats
+    
+    names(stats)[scaling.pos] <- names(scaling.stats)
+    names(stats)[nonscaling.pos] <- names(nonscaling.stats)
+    
+    stats
+  }else scaling.stats
 }
