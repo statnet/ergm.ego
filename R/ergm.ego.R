@@ -30,42 +30,68 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.
               )
   
   # Get the sample h values.
-  stats <- summary(remove.offset.formula(formula), individual=TRUE)
-
-  # h is just a matrix, so this will do the sensible thing.
-  tmp <- na.action(cbind(w,stats))
-  w <- tmp[,1]
-  stats <- tmp[,-1, drop=FALSE] * ppopsize
-  n <- length(w)
-  
-  wmean <- function(w,s){
-    w <- w/sum(w)
-    colSums(s*w)
-  }
-  m <- wmean(w,stats)
-  
-  if(stats.est=="bootstrap"){
-    m.b <- t(replicate(control$boot.R,{
-      i <- sample.int(length(w),replace=TRUE)
-      wmean(w[i],stats[i,,drop=FALSE])
-    }))
-    m <- m - (colMeans(m.b)-m)
+  stats <- try(summary(remove.offset.formula(formula), individual=TRUE))
+  if(!inherits(stats,"try-error")){
+    # h is just a matrix, so this will do the sensible thing.
+    tmp <- na.action(cbind(w,stats))
+    w <- tmp[,1]
+    stats <- tmp[,-1, drop=FALSE] * ppopsize
+    n <- length(w)
     
-  }else if(stats.est=="jackknife"){
-    m.j <- t(sapply(seq_len(n), function(i){
-      wmean(w[-i],stats[-i,,drop=FALSE])
-    }))
-    m <- n*m - (n-1)*colMeans(m.j)
+    wmean <- function(w,s){
+      w <- w/sum(w)
+      colSums(s*w)
+    }
+    m <- wmean(w,stats)
+    
+    if(stats.est=="bootstrap"){
+      m.b <- t(replicate(control$boot.R,{
+                           i <- sample.int(length(w),replace=TRUE)
+                           wmean(w[i],stats[i,,drop=FALSE])
+                         }))
+      m <- m - (colMeans(m.b)-m)
+      
+    }else if(stats.est=="jackknife"){
+      m.j <- t(sapply(seq_len(n), function(i){
+                        wmean(w[-i],stats[-i,,drop=FALSE])
+                      }))
+      m <- n*m - (n-1)*colMeans(m.j)
+    }
+    
+    # TODO: Include finite-population correction here:
+    v <- switch(stats.est,
+                bootstrap = cov(m.b),
+                jackknife = (n-1)/n*crossprod(sweep(m.j,2,colMeans(m.j))),
+                naive = {w <- w/sum(w); crossprod(sweep(stats, 2, m, "-")*sqrt(w))/(1-sum(w^2))*sum(w^2)},
+                asymptotic = .asymptotic.var(stats, w)/length(w)
+                )
+  }else{
+    if(stats.est %in% c("naive","asymptotic") || popsize!=ppopsize)
+      stop("Non-scaling statistic detected: use bootstrap or jackknife variance estimator, and network-size invariant parametrization probably does not exist so pseudopopulation size should equal the population size.")
+    
+    if(stats.est=="bootstrap"){
+      m.b <- t(replicate(control$boot.R,{
+                           i <- sample.int(length(w),replace=TRUE)
+                           e <- egodata[i,]
+                           summary(remove.offset.formula(formula), basis=e, individual=FALSE, scaleto=ppopsize)
+                         }))
+      m <- m - (colMeans(m.b)-m)
+      
+    }else if(stats.est=="jackknife"){
+      m.j <- t(sapply(seq_len(n), function(i){
+                        e <- egodata[i,]
+                        summary(remove.offset.formula(formula), basis=e, individual=FALSE, scaleto=ppopsize)
+                      }))
+      m <- n*m - (n-1)*colMeans(m.j)
+    }
+    
+    # TODO: Include finite-population correction here:
+    v <- switch(stats.est,
+                bootstrap = cov(m.b),
+                jackknife = (n-1)/n*crossprod(sweep(m.j,2,colMeans(m.j)))
+                )
   }
   
-  # TODO: Include finite-population correction here:
-  v <- switch(stats.est,
-              bootstrap = cov(m.b),
-              jackknife = (n-1)/n*crossprod(sweep(m.j,2,colMeans(m.j))),
-              naive = {w <- w/sum(w); crossprod(sweep(stats, 2, m, "-")*sqrt(w))/(1-sum(w^2))*sum(w^2)},
-              asymptotic = .asymptotic.var(stats, w)/length(w)
-              )
-
   ergm.formula <- ergm.update.formula(formula,popnw~offset(netsize.adj)+.,from.new="popnw")
   ergm.offset.coef <- c(-log(ppopsize/popsize),offset.coef)
   out <- list(v=v, m=m, formula=formula, ergm.formula=ergm.formula, offset.coef=offset.coef, ergm.offset.coef=ergm.offset.coef, egodata=egodata, ppopsize=ppopsize, popsize=popsize)
