@@ -58,9 +58,9 @@ ergm.ego(formula,
   An object of class \code{ergm.ego} inheriting from
     \code{\link[ergm]{ergm}}, with the following additional or
     overridden elements:
-    \item{\code{v}}{Estimated variance-covariance matrix of the estimate
+    \item{\code{v}}{Variance-covariance matrix of the estimate
       of the sufficient statistics}
-    \item{\code{m}}{Per-capita estimate of the sufficient statistics}
+    \item{\code{m}}{Estimate of the sufficient statistics}
     \item{\code{egodata}}{The egodata object passed}
     \item{\code{popsize}, \code{ppopsize}}{Population network size and
       pseudopopulation size used, respectively}
