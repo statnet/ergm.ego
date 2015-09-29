@@ -66,9 +66,14 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.
                 asymptotic = .asymptotic.var(stats, w)/length(w)
                 )
   }else{
-    if(stats.est %in% c("naive","asymptotic") || popsize!=ppopsize)
-      stop("Non-scaling statistic detected: use bootstrap or jackknife variance estimator, and network-size invariant parametrization probably does not exist so pseudopopulation size should equal the population size.")
-    
+    if(stats.est %in% c("naive","asymptotic"))
+      stop("Non-scaling statistic detected: use bootstrap or jackknife variance estimator.")
+    if(do.fit && popsize!=ppopsize)
+      warning("Non-scaling statistic detected when trying to fit a model: network-size invariant parametrization probably does not exist so pseudopopulation size should equal the population size.")
+
+    n <- nrow(egodata)
+    m <- summary(remove.offset.formula(formula), basis=egodata, individual=FALSE, scaleto=ppopsize)
+      
     if(stats.est=="bootstrap"){
       m.b <- t(replicate(control$boot.R,{
                            i <- sample.int(length(w),replace=TRUE)
@@ -79,7 +84,7 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.
       
     }else if(stats.est=="jackknife"){
       m.j <- t(sapply(seq_len(n), function(i){
-                        e <- egodata[i,]
+                        e <- egodata[-i,]
                         summary(remove.offset.formula(formula), basis=e, individual=FALSE, scaleto=ppopsize)
                       }))
       m <- n*m - (n-1)*colMeans(m.j)
