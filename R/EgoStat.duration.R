@@ -10,14 +10,13 @@ EgoStat.mean.age <- function(egodata, emptyval=0){
     alters <- egodata$alters
     egoIDcol <- egodata$egoIDcol
    
-    ties<-merge(egos[c(egoIDcol,egodata$egoWt)],alters[c(egoIDcol,startcol)],by=egoIDcol,suffixes=c(".ego",".alter"))
+    ties<-merge(egos[c(egoIDcol,"egoWt")],alters[c(egoIDcol,startcol)],by=egoIDcol,suffixes=c(".ego",".alter"))
     names(ties) <- c(egoIDcol, "w", "a")
-    total.ages <- sum(ties$a*ties$w)/sum(ties$w)
-    out <- total.ages/nedges
+    out <- sum(ties$a*ties$w)/sum(ties$w)
   }    
 
   names(out) <- "mean.age"
-  attr(out, "nonscalable") <- TRUE
+  attr(out, "nonscaling") <- TRUE
   out
 }
 
