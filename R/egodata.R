@@ -126,13 +126,17 @@ subset.egodata <- function(x, subset, select, ..., dup.action=c("make.unique", "
     nl <- as.list(seq_along(x$egos))
     names(nl) <- names(x$egos)
     vars <- eval(substitute(select), nl, parent.frame())
-    eIDi <- which(names(x$egos)==x$egoIDcol)
+    eIDi <- switch(mode(vars),
+                   numeric = which(names(x$egos)==x$egoIDcol),
+                   character = x$egoIDcol)                   
     egovars <- union(eIDi,vars)
 
     nl <- as.list(seq_along(x$alters))
     names(nl) <- names(x$alters)
     vars <- eval(substitute(select), nl, parent.frame())
-    eIDi <- which(names(x$alters)==x$egoIDcol)
+    eIDi <- switch(mode(vars),
+                   numeric = which(names(x$alters)==x$egoIDcol),
+                   character = x$egoIDcol)
     altervars <- union(eIDi,vars)
   }
 
@@ -148,8 +152,8 @@ subset.egodata <- function(x, subset, select, ..., dup.action=c("make.unique", "
                           numeric=seq_along(egoIDs),
                           make.unique=make.unique(as.character(egoIDs)))
   
-  egos <- cbind(x$egos[match(egoIDs,x$egos[[x$egoIDcol]]),egovars,drop=FALSE], .unique.egoIDs = unique.egoIDs, stringsAsFactors=FALSE)
-  alters <- merge(egos[c(x$egoIDcol,".unique.egoIDs")], x$alters[altervars], by=x$egoIDcol)
+  egos <- cbind(x$egos[match(egoIDs,x$egos[[x$egoIDcol]]),if(is.character(egovars)) intersect(egovars,names(x$egos)) else egovars,drop=FALSE], .unique.egoIDs = unique.egoIDs, stringsAsFactors=FALSE)
+  alters <- merge(egos[c(x$egoIDcol,".unique.egoIDs")], x$alters[if(is.character(altervars)) intersect(altervars,names(x$alters)) else altervars], by=x$egoIDcol)
   egoWt <- x$egoWt[match(egoIDs,x$egos[[x$egoIDcol]])]
 
   # If we have duplicated egoIDs, we have to handle it per dup.action.
@@ -161,7 +165,11 @@ subset.egodata <- function(x, subset, select, ..., dup.action=c("make.unique", "
   egos[[".unique.egoIDs"]] <- NULL
   alters[[".unique.egoIDs"]] <- NULL
 
-  out <- list(egos=egos, alters=alters, egoWt = egoWt, egoIDcol=x$egoIDcol)  
+  out <- x
+  out$egos <- egos
+  out$alters <- alters
+  out$egoWt <- egoWt
+  
   class(out) <- "egodata"
   out
 }
