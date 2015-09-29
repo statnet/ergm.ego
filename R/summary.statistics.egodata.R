@@ -3,10 +3,10 @@ summary.statistics.egodata <- function(object,..., basis=NULL, individual=FALSE,
     if(!is.null(basis)) basis
     else get(as.character(object[[2]]), envir=environment(object))
 
-  scalable.stats <- NULL
-  scalable.pos <- c(0)
-  nonscalable.stats <- c()
-  nonscalable.pos <- c(0)
+  scaling.stats <- NULL
+  scaling.pos <- c(0)
+  nonscaling.stats <- c()
+  nonscaling.pos <- c(0)
   
   
   for(trm in term.list.formula(object[[length(object)]])){
@@ -26,13 +26,14 @@ summary.statistics.egodata <- function(object,..., basis=NULL, individual=FALSE,
       scaling.pos <- c(scaling.pos, max(scaling.pos,nonscaling.pos) + seq_len(ncol(stat)))
     }
   }
-  rownames(scaling.stats) <- egodata$egos[[egodata$egoIDcol]]
-
+  
   if(!individual){
-    scaleto <- if(is.null(scaleto)) nrow(egodata$egos) else scaleto
-    scaling.stats <- colSums(scaling.stats*egodata$egoWt)/sum(rep(egodata$egoWt,length.out=nrow(scaling.stats)))
-    scaling.stats <- scaling.stats*scaleto
-
+    if(length(scaling.stats)){
+      scaleto <- if(is.null(scaleto)) nrow(egodata$egos) else scaleto
+      scaling.stats <- colSums(scaling.stats*egodata$egoWt)/sum(rep(egodata$egoWt,length.out=nrow(scaling.stats)))
+      scaling.stats <- scaling.stats*scaleto
+    }
+      
     stats <- numeric(max(scaling.pos,nonscaling.pos))
     scaling.pos <- scaling.pos[scaling.pos>0]
     nonscaling.pos <- nonscaling.pos[nonscaling.pos>0]
@@ -44,5 +45,8 @@ summary.statistics.egodata <- function(object,..., basis=NULL, individual=FALSE,
     names(stats)[nonscaling.pos] <- names(nonscaling.stats)
     
     stats
-  }else scaling.stats
+  }else{
+    rownames(scaling.stats) <- egodata$egos[[egodata$egoIDcol]]
+    scaling.stats
+  }
 }
