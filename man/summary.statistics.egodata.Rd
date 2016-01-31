@@ -3,7 +3,7 @@
 \alias{summary}
 \alias{summary.formula}
 \title{
-  Claculation of ERGM-style summary statistics for \code{\link{egodata}} objects.
+  Calculation of ERGM-style summary statistics for \code{\link{egodata}} objects.
 }
 \description{
   Used to calculate the specified network statistics inferred from a
@@ -73,12 +73,16 @@
 \examples{
 data(faux.mesa.high)
 fmh.ego <- as.egodata(faux.mesa.high)
-all.equal(summary(faux.mesa.high~edges+degree(0:3)+nodematch("Race")+
-                                 nodematch("Sex")+absdiff("Grade")),
-summary(fmh.ego~edges+degree(0:3)+nodematch("Race")+nodematch("Sex")+
-             absdiff("Grade"), scaleto=network.size(faux.mesa.high)))
+(nw.summ <- summary(faux.mesa.high~edges+degree(0:3)+nodematch("Race")+
+                    nodematch("Sex")+absdiff("Grade")+nodemix("Grade")))
+
+(ego.summ <- summary(fmh.ego~edges+degree(0:3)+nodematch("Race")+nodematch("Sex")+
+                     absdiff("Grade")+nodemix("Grade"),
+                     scaleto=network.size(faux.mesa.high)))
+
+stopifnot(isTRUE(all.equal(nw.summ,ego.summ)))
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+%% \keyword{ ~kwd1 }
+%% \keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
