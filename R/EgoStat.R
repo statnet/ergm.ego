@@ -112,7 +112,7 @@ EgoStat.nodemix <- function(egodata, attrname, base=NULL){
 	}
 	
 	mat <- t(apply(cbind(ties[,2:3]),1,sort))
-	h <- table(ties[,1],paste(mat[,1],mat[,2],sep="."))
+	h <- table(ties[,1],paste(levs[mat[,1]],levs[mat[,2]],sep="."))
 	
 	h<- t(apply(h,1,function(x)x[namevec,drop=FALSE]))
 	
