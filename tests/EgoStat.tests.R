@@ -6,7 +6,7 @@ e <- 150
 ds <- c(10,15,5,20)
 
 y <- network.initialize(n, directed=FALSE)
-y %v% "a" <- sample(1:3,n,replace=TRUE)
+y %v% "a" <- sample(1:3+6,n,replace=TRUE)
 y <- san(y~edges+degree(0:3), target.stats=c(e,ds))
 
 y.e <- as.egodata(y)
