@@ -19,6 +19,9 @@
 \alias{EgoStat.concurrent}
 \alias{EgoStat.concurrentties}
 \alias{EgoStat.degreepopularity}
+\alias{EgoStat.mean.age}
+\alias{netsize.adj}
+\alias{InitErgmTerm.netsize.adj}
 
 \docType{methods}
 \title{\code{\link[ergm]{ergm}} Terms Implemented for \code{\link[=egodata.object]{egodata}}}
@@ -35,23 +38,45 @@
 }
 
 \section{Currently implemented egocentric statistics}{
-  For each of these, please see \code{\link[ergm]{ergm-terms}} for
-  meaning and parameters.
-
-  \itemize{
-    \item edges
-    \item nodecov
-    \item nodefactor
-    \item nodematch
-    \item nodemix
-    \item absdiff
-    \item degree
-    \item degrange
-    \item concurrent
-    \item concurrentties
-    \item degreepopularity
+  For each of these, please see their respective package's
+  \code{ergm-terms} help for meaning and parameters. The simplest way to
+  do this is usually via \code{? \emph{TERM}}.
+  
+  \describe{
+    \item{Special-purpose terms:}{
+      \describe{
+	\item{\code{netsize.adj}}{A special-purpose term equivalent to
+	  \code{\link[ergm]{edges}}, to house the network-size
+	  adjustment offset. This term is added to the model
+	  automatically and should not be used in the model formula
+	  directly.
+	}
+      }
+    }
+      
+    \item{\code{\link[=ergm:ergm-terms]{ergm}}:}{
+      \itemize{
+	\item \code{edges}
+	\item \code{nodecov}
+	\item \code{nodefactor}
+	\item \code{nodematch}
+	\item \code{nodemix}
+	\item \code{absdiff}
+	\item \code{degree}
+	\item \code{degrange}
+	\item \code{concurrent}
+	\item \code{concurrentties}
+	\item \code{degreepopularity}
+      }
+    }
+    
+    \item{\code{\link[=tergm:ergm-terms]{tergm}}:}{
+      \itemize{
+	\item \code{mean.age}
+      }
+    }
   }
-}  
+}
 
-\seealso{\code{\link[ergm]{ergm-terms}}}
+%\seealso{\code{\link[ergm]{ergm-terms}}}
 \keyword{models}
