@@ -23,7 +23,7 @@ control.ergm.ego(ppopsize = c("auto", "samp", "pop"),
     \describe{
       \item{\code{"auto"}}{If the \code{popsize} (\eqn{|N|}) argument is
 	specified and is different from 1, as if \code{"pop"};
-	otherwise, as \code{"pop"}.} 
+	otherwise, as \code{"samp"}.} 
       \item{\code{"samp"}}{set \eqn{|N'|} based on the sample size: \eqn{|N'|=|S| \times \code{popsize.mul}}}
       \item{\code{"pop"}}{set \eqn{|N'|} based on the population size: \eqn{|N'|=|N| \times \code{popsize.mul}}}
       \item{a number}{set \eqn{|N'|} directly (\code{popsize.mul}
