@@ -59,7 +59,7 @@ fmh.ego <- as.egodata(faux.mesa.high)
 (mm <- mixingmatrix(faux.mesa.high,"Grade"))
 (mm.ego <- mixingmatrix.egodata(fmh.ego,"Grade"))
 
-stopifnot(isTRUE(all.equal({tmp<-matrix(mm$matrix); diag(tmp) <- diag(tmp)*2;
+stopifnot(isTRUE(all.equal({tmp<-unclass(mm$matrix); diag(tmp) <- diag(tmp)*2;
 tmp}, mm.ego, check.attributes=FALSE)))
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
