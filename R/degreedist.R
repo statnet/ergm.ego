@@ -33,7 +33,7 @@ degreedist.egodata <- function(egodata, freq = FALSE, prob = !freq,
       color <- colorRampPalette(RColorBrewer::brewer.pal(9,"Blues"))(ncolors)
     }
     
-    ltext <- sort(unique(egodata$egos[by]))
+    ltext <- levs
     lfill <- c(color, 0)
     lborder <- c(rep("black", times = ncolors), 0)
     ltitle <- by
