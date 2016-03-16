@@ -1,6 +1,5 @@
 \name{as.network.egodata}
 \alias{as.network.egodata}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
   Construct an Empty ``Template'' Network Consistent with an Egocentric Sample
 }
@@ -39,30 +38,29 @@
     Additional arguments, currently unused.
   }
 }
-\details{
-  %%  ~~ If necessary, more details than the description above ~~
-}
 \value{
   A \code{\link[network]{network}} object.
 }
-\references{
-%% ~put references to the literature/web site here ~
-}
 \author{
-%%  ~~who you are~~
+  Pavel N. Krivitsky
 }
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
   \code{\link{as.egodata.network}}, which performs the inverse operation.
 }
 \examples{
+
+data(faux.mesa.high)
+summary(faux.mesa.high, print.adj = FALSE)
+
+fmh.ego <- as.egodata(faux.mesa.high)
+
+# Same actor attributes
+fmh.template <- as.network(fmh.ego, N=network.size(faux.mesa.high))
+summary(fmh.template, print.adj = FALSE)
+
+# Twice the actors, same distribution
+fmh2.template <- as.network(fmh.ego, N=2*network.size(faux.mesa.high))
+summary(fmh2.template, print.adj = FALSE)
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{ manip }
