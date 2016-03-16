@@ -31,7 +31,7 @@ degreedist.egodata(egodata, freq = FALSE, prob = !freq, by = NULL, brgmod = FALS
   }
 }
 \seealso{
-  \code{\link{degreedist}}, \code{\link[=ergm:summary.formula]{summary}}
+  \code{\link{degreedist}}, \code{\link[ergm:summary.formula]{summary}}
 }
 \examples{
 data(faux.mesa.high)

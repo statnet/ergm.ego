@@ -36,9 +36,6 @@
     Verbosity of output.
 }
 }
-\details{
-%%  ~~ If necessary, more details than the description above ~~
-}
 \value{
   The ouput has the same format (with the same options) as
   \code{\link[ergm]{simulate.formula}}. If \code{statsonly=TRUE} is
@@ -48,15 +45,22 @@
   a multiple of the egocentric sample size or the sampling weights.
 }
 \references{
-%% ~put references to the literature/web site here ~
+  Pavel N. Krivitsky and Martina Morris. Inference for Social Network
+  Models from Egocentrically-Sampled Data, with Application to
+  Understanding Persistent Racial Disparities in HIV Prevalence in the
+  US. Thechnical Report. National Institute for Applied Statistics
+  Research Australia, University of Wollongong,
+  2015(05-15). \url{http://niasra.uow.edu.au/publications/UOW190187.html}
+
+  Pavel N. Krivitsky, Mark S. Handcock, and Martina Morris. Adjusting
+  for Network Size and Composition Effects in Exponential-Family Random
+  Graph Models. \emph{Statistical Methodology}, 2011, 8(4),
+  319-339. \doi{10.1016/j.stamet.2011.01.005}
+  
 }
 \author{
   Pavel N. Krivitsky
 }
-\note{
-%%  ~~further notes~~
-}
-
 \seealso{
   \code{\link[ergm]{simulate.formula}}, \code{\link[ergm]{simulate.ergm}}
 }

@@ -51,9 +51,6 @@ ergm.ego(formula,
     Whether to actually call \code{\link[ergm]{ergm}}
   }
 }
-\details{
-%%  ~~ If necessary, more details than the description above ~~
-}
 \value{
   An object of class \code{ergm.ego} inheriting from
     \code{\link[ergm]{ergm}}, with the following additional or
@@ -115,7 +112,6 @@ mcmc.diagnostics(egofit)
 plot(modelgof)
 
 # Check whether the model reconstructs the degree distribution:
-# Check whether the model "converged":
 (deggof <- gof(egofit, GOF="degree"))
 plot(deggof)
 }

@@ -13,7 +13,6 @@
 \method{summary.statistics}{egodata}(object, ..., basis = NULL, 
                             individual = FALSE, scaleto = NULL)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{object}{
     An \code{\link[ergm]{ergm}}-style formula with a \code{\link{egodata}}
@@ -42,9 +41,6 @@
     statistics. Defaults to the number of egos in the dataset.
   }
 }
-\details{
-  %%  ~~ If necessary, more details than the description above ~~
-}
 \value{
   If \code{individual==FALSE}, a named vector of statistics. If
     \code{individual==TRUE}, a matrix with a row for each ego, giving
@@ -57,15 +53,16 @@
   US. Thechnical Report. National Institute for Applied Statistics
   Research Australia, University of Wollongong,
   2015(05-15). \url{http://niasra.uow.edu.au/publications/UOW190187.html}
+
+  Pavel N. Krivitsky, Mark S. Handcock, and Martina Morris. Adjusting
+  for Network Size and Composition Effects in Exponential-Family Random
+  Graph Models. \emph{Statistical Methodology}, 2011, 8(4),
+  319-339. \doi{10.1016/j.stamet.2011.01.005}
+
 }
 \author{
   Pavel N. Krivitsky
 }
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
 \code{\link[ergm]{summary.statistics}}, \code{\link[ergm]{summary.statistics.ergm}}
@@ -82,7 +79,3 @@ fmh.ego <- as.egodata(faux.mesa.high)
 
 stopifnot(isTRUE(all.equal(nw.summ,ego.summ)))
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-%% \keyword{ ~kwd1 }
-%% \keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

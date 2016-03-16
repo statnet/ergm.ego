@@ -36,12 +36,10 @@
   }
 }
 \value{
-  An object of class \code{\link{gofobject}}.
+  An object of class \code{\link[ergm:gof]{gofobject}}.
 }
 \author{
   Pavel N. Krivitsky
 }
 \seealso{For examples, see \code{\link{ergm.ego}}.}
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
 \keyword{ models }

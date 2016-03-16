@@ -8,6 +8,8 @@
 \alias{dimnames.egodata}
 \alias{sample.egodata}
 \alias{head.egodata}
+\alias{sample}
+\alias{sample.default}
 \title{
   Convert to or Construct \code{\link{egodata}} Objects
 }
@@ -49,9 +51,6 @@ egodata(egos, alters, egoWt=1, ..., egoIDcol="egoID")
   \item{egoIDcol}{
     Name of the column in the ego table containing the unique ego identifier.
 }
-}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
 }
 \value{
   An \code{\link{egodata}} object. The object is a list containing the
@@ -116,24 +115,13 @@ egodata(egos, alters, egoWt=1, ..., egoIDcol="egoID")
   }
 }
 
-\references{
-%% ~put references to the literature/web site here ~
-}
 \author{
   Pavel N. Krivitsky
 }
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
 \seealso{
   \code{\link{ergm.ego}} for examples,
   \code{\link{as.network.egodata}}, \code{\link{as.egodata.network}},
   \code{\link{subset.egodata}}, \code{\link{[.egodata}}
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{ manip }
+\keyword{ methods }

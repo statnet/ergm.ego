@@ -28,31 +28,18 @@
     to \code{"vertex.names"}.
 }
 }
-\details{
-%%  ~~ If necessary, more details than the description above ~~
-}
 \value{
   An \code{\link{egodata}} object.
 }
-\references{
-%% ~put references to the literature/web site here ~
-}
 \author{
-%%  ~~who you are~~
+  Pavel N. Krivitsky
 }
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
 \seealso{
   \code{\link{as.network.egodata}}, which performs the inverse operation
   (though drops the ties).
 }
 \examples{
+# See example(ergm.ego) and example(as.network.egodata).
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{ datagen }
+\keyword{ manip }

@@ -40,7 +40,7 @@
 \section{Currently implemented egocentric statistics}{
   For each of these, please see their respective package's
   \code{ergm-terms} help for meaning and parameters. The simplest way to
-  do this is usually via \code{? \emph{TERM}}.
+  do this is usually via \code{? TERM}.
   
   \describe{
     \item{Special-purpose terms:}{
@@ -54,7 +54,7 @@
       }
     }
       
-    \item{\code{\link[=ergm:ergm-terms]{ergm}}:}{
+    \item{\code{\link[ergm:ergm-terms]{ergm}}:}{
       \itemize{
 	\item \code{edges}
 	\item \code{nodecov}
@@ -70,7 +70,7 @@
       }
     }
     
-    \item{\code{\link[=tergm:ergm-terms]{tergm}}:}{
+    \item{\code{\link[tergm:ergm-terms]{tergm}}:}{
       \itemize{
 	\item \code{mean.age}
       }
@@ -78,5 +78,5 @@
   }
 }
 
-%\seealso{\code{\link[ergm]{ergm-terms}}}
+\seealso{\code{\link[ergm]{ergm-terms}}}
 \keyword{models}
