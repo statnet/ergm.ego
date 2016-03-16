@@ -1,5 +1,5 @@
 Package: ergm.ego
-Version: 0.2-14310-14314.1-2016.03.16-17.31.09
+Version: 0.4-14310-14314.1-2016.03.16-17.31.09
 Date: 2016-03-16
 Title:  Fit, Simulate and Diagnose Exponential-Family Random Graph Models to Egocentrically Sampled Network Data
 Authors@R:c(
@@ -10,6 +10,6 @@ Authors@R:c(
 	    person("Emily N.", "Beylerian", role=c("ctb"), email="ebey@uw.edu"))
 Depends: ergm (>= 3.5), network
 Imports: statnet.common, coda, RColorBrewer
-Description: A wrapper around the ergm package to process egocentrically sampled data.
+Description: Utilities for managing egocentrically sampled network data and a wrapper around the 'ergm' package to facilitate ERGM inference and simulation from such data.
 License: GPL-3 + file LICENSE
 URL: http://www.statnet.org

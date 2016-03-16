@@ -75,11 +75,11 @@ egodata(egos, alters, egoWt=1, ..., egoIDcol="egoID")
 }
 
 \section{Miscellaneous Methods}{
-  The following "standard" methods have also been implemented for
+  The following \dQuote{standard} methods have also been implemented for
   \code{\link{egodata}}:
   \describe{
     \item{\code{\link{dim.egodata}}}{A vector with three elements containing
-      the "dimensions" of the \code{\link{egodata}} object: number of
+      the \dQuote{dimensions} of the \code{\link{egodata}} object: number of
       egos, number of columns in the \code{egos} table, and number of
       columns in the \code{alters} table, inclsive of the ego
       identifier column. As a corollary, \code{\link{nrow}} returns the
@@ -87,7 +87,7 @@ egodata(egos, alters, egoWt=1, ..., egoIDcol="egoID")
     }
 
     \item{\code{\link{dimnames.egodata}}}{A list with three elements containing
-      the "dimension names" of the \code{\link{egodata}} object: ego
+      the \dQuote{dimension names} of the \code{\link{egodata}} object: ego
       IDs, column names of the \code{egos} table, and column names of the \code{alters} table, inclsive of the ego
       identifier column.
     }
@@ -109,7 +109,7 @@ egodata(egos, alters, egoWt=1, ..., egoIDcol="egoID")
       \code{\link{egodata}} dataset, with egos with \code{NA} in their
       rows or in their alters' rows. An optional argument
       \code{relevant}, defaulting to all columns, can be used to select (by index or name) based on
-      which columns an ego may be dropped. (I.e., \code{NA}s in those not "relevant"
+      which columns an ego may be dropped. (I.e., \code{NA}s in those not \dQuote{relevant}
       are ignored.)
     }
   }
