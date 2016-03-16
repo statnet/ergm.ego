@@ -69,12 +69,6 @@
 	\item \code{degreepopularity}
       }
     }
-    
-    \item{\code{\link[tergm:ergm-terms]{tergm}}:}{
-      \itemize{
-	\item \code{mean.age}
-      }
-    }
   }
 }
 
