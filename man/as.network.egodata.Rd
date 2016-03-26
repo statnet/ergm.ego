@@ -1,12 +1,4 @@
-%  File man/as.network.egodata.Rd in package ergm.ego, part of the Statnet suite
-%  of packages for network analysis, http://statnet.org .
-%
-%  This software is distributed under the GPL-3 license.  It is free,
-%  open source, and has the attribution requirements (GPL Section 7) at
-%  http://statnet.org/attribution
-%
-%  Copyright 2015-2016 Statnet Commons
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\name{as.network.egodata}
 \alias{as.network.egodata}
 \title{
   Construct an Empty ``Template'' Network Consistent with an Egocentric Sample

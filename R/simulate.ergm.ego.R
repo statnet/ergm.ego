@@ -1,12 +1,5 @@
-#  File R/simulate.ergm.ego.R in package ergm.ego, part of the Statnet suite
-#  of packages for network analysis, http://statnet.org .
-#
-#  This software is distributed under the GPL-3 license.  It is free,
-#  open source, and has the attribution requirements (GPL Section 7) at
-#  http://statnet.org/attribution
-#
-#  Copyright 2015-2016 Statnet Commons
-#######################################################################
+simulate.ergm.ego <- function(object, nsim = 1, seed = NULL, popsize=if(object$popsize==1) object$ppopsize else object$popsize, control=control.simulate.ergm.ego(), ..., verbose=FALSE){
+  check.control.class()
   
   egodata <- object$egodata
   popnw <- if(popsize == object$ppopsize) object$newnetwork else as.network(egodata, popsize, scaling=control$ppop.wt)

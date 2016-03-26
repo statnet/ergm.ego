@@ -1,12 +1,5 @@
-#  File R/egodata.R in package ergm.ego, part of the Statnet suite
-#  of packages for network analysis, http://statnet.org .
-#
-#  This software is distributed under the GPL-3 license.  It is free,
-#  open source, and has the attribution requirements (GPL Section 7) at
-#  http://statnet.org/attribution
-#
-#  Copyright 2015-2016 Statnet Commons
-#######################################################################
+egodata <- function(egos, alters, egoWt=1, ..., egoIDcol="egoID"){
+  egoWt <- rep(egoWt, length.out=nrow(egos))
   out <- list(egos=egos, alters=.prune.alters(egos, alters, egoIDcol), egoWt = egoWt, egoIDcol=egoIDcol)  
   class(out) <- "egodata"
   out
