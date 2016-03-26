@@ -112,7 +112,8 @@ summary(egofit)
 
 # Note that we recover the ergm() parameters:
 coef(ergm(faux.mesa.high~edges+degree(0:3)+nodefactor("Race")+nodematch("Race")
-                         +nodefactor("Sex")+nodematch("Sex")+absdiff("Grade")))
+                         +nodefactor("Sex")+nodematch("Sex")+absdiff("Grade"),
+          eval.loglik=FALSE))
 
 mcmc.diagnostics(egofit)
 }
