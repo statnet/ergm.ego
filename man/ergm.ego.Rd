@@ -114,14 +114,6 @@ coef(ergm(faux.mesa.high~edges+degree(0:3)+nodefactor("Race")+nodematch("Race")
                          +nodefactor("Sex")+nodematch("Sex")+absdiff("Grade")))
 
 mcmc.diagnostics(egofit)
-
-# Check whether the model "converged":
-(modelgof <- gof(egofit, GOF="model"))
-plot(modelgof)
-
-# Check whether the model reconstructs the degree distribution:
-(deggof <- gof(egofit, GOF="degree"))
-plot(deggof)
 }
 
 \keyword{ models }
