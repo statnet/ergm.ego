@@ -156,7 +156,7 @@ EgoStat.absdiff <- function(egodata, attrname, pow=1){
 }
 
 EgoStat.degree <- function(egodata, d, by=NULL, homophily=FALSE){
-  if(any(d==0)) warning("degree(0) (isolate) count statistic depends strongly on the specified population network size.")
+  ## if(any(d==0)) warning("degree(0) (isolate) count statistic depends strongly on the specified population network size.")
   
   egos <- egodata$egos
   alters <- egodata$alters
@@ -194,7 +194,7 @@ EgoStat.degree <- function(egodata, d, by=NULL, homophily=FALSE){
 }
 
 EgoStat.degrange <- function(egodata, from=NULL, to=Inf, byarg=NULL, homophily=FALSE){
-  if(any(from==0)) warning("degrange(0,...) (isolate) count depends strongly on the specified population network size.")
+  ## if(any(from==0)) warning("degrange(0,...) (isolate) count depends strongly on the specified population network size.")
   
   egos <- egodata$egos
   alters <- egodata$alters
