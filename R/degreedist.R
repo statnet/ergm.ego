@@ -135,7 +135,6 @@ mixingmatrix.egodata <- function(egodata, attrname, rowprob = FALSE){
                           alter = levs)
   if(rowprob){
     mxmat <- mxmat/rowSums(mxmat)
-    mxmat <- round(mxmat, digits = 3)
   }
   mxmat
 }
