@@ -123,7 +123,7 @@ mixingmatrix.egodata <- function(egodata, attrname, rowprob = FALSE){
   
   ties <- merge(egos[c(egoIDcol,attrname)], alters[c(egoIDcol,attrname)], 
                 by = egoIDcol, suffixes = c(".ego",".alter"))
-  ties$wt <- egodata$egoWt[match(ties$vertex.names,egos[[egoIDcol]])]
+  ties$wt <- egodata$egoWt[match(ties[[egoIDcol]],egos[[egoIDcol]])]
   mxmat <- matrix(0, nrow = length(levs), ncol = length(levs))
   
   for(i in 1:length(levs)){
