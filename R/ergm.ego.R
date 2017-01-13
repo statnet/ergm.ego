@@ -54,16 +54,16 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.
     m <- wmean(w,stats)
     
     if(stats.est=="bootstrap"){
-      m.b <- t(replicate(control$boot.R,{
+      m.b <- t(rbind(replicate(control$boot.R,{
                            i <- sample.int(length(w),replace=TRUE)
                            wmean(w[i],stats[i,,drop=FALSE])
-                         }))
+                         })))
       m <- m - (colMeans(m.b)-m)
       
     }else if(stats.est=="jackknife"){
-      m.j <- t(sapply(seq_len(n), function(i){
+      m.j <- t(rbind(sapply(seq_len(n), function(i){
                         wmean(w[-i],stats[-i,,drop=FALSE])
-                      }))
+                      })))
       m <- n*m - (n-1)*colMeans(m.j)
     }
     
