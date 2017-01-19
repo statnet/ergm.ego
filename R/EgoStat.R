@@ -38,16 +38,18 @@ EgoStat.nodecov <- function(egodata, attrname){
   egos <- egodata$egos
   alters <- egodata$alters
   egoIDcol <- egodata$egoIDcol
-   
-  ties<-merge(egos[c(egoIDcol,attrname)],alters[c(egoIDcol,attrname)],by=egoIDcol,suffixes=c(".ego",".alter"))
-  names(ties) <- c(egoIDcol,".e",".a")
-  isolates <- egos[[egoIDcol]][!(egos[[egoIDcol]]%in%ties[[egoIDcol]])] 
-  ties <- data.frame(egoID=c(ties[[egoIDcol]],ties[[egoIDcol]],isolates),x=c(ties$.e,ties$.a,rep(0,length(isolates))),stringsAsFactors=FALSE)
+
+  alt <- !is.null(alters[[attrname]])
   
-  h <- cbind(sapply(tapply(ties$x,list(egoID=ties$egoID),FUN=sum),identity))
+  ties<-merge(egos[c(egoIDcol,attrname)],alters[c(egoIDcol,if(alt) attrname)],by=egoIDcol,suffixes=c(".ego",".alter"))
+  names(ties) <- c(egoIDcol,".e",if(alt) ".a")
+  isolates <- egos[[egoIDcol]][!(egos[[egoIDcol]]%in%ties[[egoIDcol]])] 
+  ties <- data.frame(egoID=c(ties[[egoIDcol]],if(alt) ties[[egoIDcol]],isolates),x=c(ties$.e,if(alt) ties$.a,rep(0,length(isolates))),stringsAsFactors=FALSE)
+  
+  h <- cbind(sapply(tapply(ties$x,list(egoID=ties$egoID),FUN=sum),identity)) / if(alt) 2 else 1
   colnames(h) <- paste("nodecov",attrname,sep=".")
   
-  h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]/2
+  h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]
 }
 
 
@@ -58,17 +60,20 @@ EgoStat.nodefactor <- function(egodata, attrname, base=1){
   
   levs <- sort(unique(c(egos[[attrname]],alters[[attrname]])))
   egos[[attrname]] <- match(egos[[attrname]], levs, 0)
-  alters[[attrname]] <- match(alters[[attrname]], levs, 0)
-  ties<-merge(egos[c(egoIDcol,attrname)],alters[c(egoIDcol,attrname)],by=egoIDcol,suffixes=c(".ego",".alter"))
-  names(ties) <- c(egoIDcol,".e",".a")
-  isolates <- egos[[egoIDcol]][!(egos[[egoIDcol]]%in%ties[[egoIDcol]])] 
-  ties <- data.frame(egoID=c(ties[[egoIDcol]],ties[[egoIDcol]],isolates),x=c(ties$.e,ties$.a,rep(0,length(isolates))),stringsAsFactors=FALSE)
+
+  alt <- !is.null(alters[[attrname]])
   
-  h <- t(sapply(tapply(ties$x, list(egoID=ties$egoID), FUN=tabulate, nbins=length(levs)),identity))
+  if(alt) alters[[attrname]] <- match(alters[[attrname]], levs, 0)
+  ties<-merge(egos[c(egoIDcol,attrname)],alters[c(egoIDcol,if(alt) attrname)],by=egoIDcol,suffixes=c(".ego",".alter"))
+  names(ties) <- c(egoIDcol,".e",if(alt) ".a")
+  isolates <- egos[[egoIDcol]][!(egos[[egoIDcol]]%in%ties[[egoIDcol]])] 
+  ties <- data.frame(egoID=c(ties[[egoIDcol]],if(alt) ties[[egoIDcol]],isolates),x=c(ties$.e,if(alt) ties$.a,rep(0,length(isolates))),stringsAsFactors=FALSE)
+
+  h <- t(sapply(tapply(ties$x, list(egoID=ties$egoID), FUN=tabulate, nbins=length(levs)),identity)) / if(alt) 2 else 1
   colnames(h) <- paste("nodefactor",attrname,levs,sep=".")  
 
-  if(length(base)==0 || base==0) h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]/2
-  else h[match(egodata$egos[[egoIDcol]],rownames(h)),-base,drop=FALSE]/2
+  if(length(base)==0 || base==0) h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]
+  else h[match(egodata$egos[[egoIDcol]],rownames(h)),-base,drop=FALSE]
 }
 
 EgoStat.nodematch <- function(egodata, attrname, diff=FALSE, keep=NULL){
@@ -161,14 +166,17 @@ EgoStat.degree <- function(egodata, d, by=NULL, homophily=FALSE){
   egos <- egodata$egos
   alters <- egodata$alters
   egoIDcol <- egodata$egoIDcol
+
+  alt <- !is.null(by) && !is.null(alters[[by]])
+  if(homophily && !alt) stop("Attribute ", sQuote(by), " must be observed on alters if homophily=TRUE.")
   
   if(!is.null(by)){
-    levs <- sort(unique(c(egos[[by]],alters[[by]])))
+    levs <- sort(unique(c(egos[[by]],if(alt) alters[[by]])))
   }
   
-  ties<-merge(egos[c(egoIDcol,by)],alters[c(egoIDcol,by)],by=egoIDcol,suffixes=c(".ego",".alter"))
+  ties<-merge(egos[c(egoIDcol,by)],alters[c(egoIDcol,if(alt) by)],by=egoIDcol,suffixes=c(".ego",".alter"))
 
-  if(!is.null(by)) names(ties) <- c(egoIDcol,".e",".a")
+  if(!is.null(by)) names(ties) <- c(egoIDcol,".e", if(alt) ".a")
   if(!is.null(by) && homophily) ties <- ties[ties$.e==ties$.a,]
   ties$.a <- NULL
 
@@ -207,13 +215,16 @@ EgoStat.degrange <- function(egodata, from=NULL, to=Inf, byarg=NULL, homophily=F
   else if(length(from)!=length(to)) stop("The arguments of term degrange must have arguments either of the same length, or one of them must have length 1.")
   else if(any(from>=to)) stop("Term degrange must have from<to.")
 
+  alt <- !is.null(byarg) && !is.null(alters[[byarg]])
+  if(homophily && !alt) stop("Attribute ", sQuote(byarg), " must be observed on alters if homophily=TRUE.")
+  
   if(!is.null(byarg)){
-    levs <- sort(unique(c(egos[[byarg]],alters[[byarg]])))
+    levs <- sort(unique(c(egos[[byarg]],if(alt) alters[[byarg]])))
   }
 
-  ties<-merge(egos[c(egoIDcol,byarg)],alters[c(egoIDcol,byarg)],by=egoIDcol,suffixes=c(".ego",".alter"))
+  ties<-merge(egos[c(egoIDcol,byarg)],alters[c(egoIDcol,if(alt) byarg)],by=egoIDcol,suffixes=c(".ego",".alter"))
 
-  if(!is.null(byarg)) names(ties) <- c(egoIDcol,".e",".a")
+  if(!is.null(byarg)) names(ties) <- c(egoIDcol,".e",if(alt) ".a")
   if(!is.null(byarg) && homophily) ties <- ties[ties$.e==ties$.a,]
   ties$.a <- NULL
 
@@ -256,13 +267,15 @@ EgoStat.concurrent <- function(egodata, by=NULL){
   alters <- egodata$alters
   egoIDcol <- egodata$egoIDcol
 
+  alt <- !is.null(by) && !is.null(alters[[by]])
+   
   if(!is.null(by)){
-    levs <- sort(unique(c(egos[[by]],alters[[by]])))
+    levs <- sort(unique(c(egos[[by]],if(alt) alters[[by]])))
   }
 
-  ties<-merge(egos[c(egoIDcol,by)],alters[c(egoIDcol,by)],by=egoIDcol,suffixes=c(".ego",".alter"))
+  ties<-merge(egos[c(egoIDcol,by)],alters[c(egoIDcol,if(alt) by)],by=egoIDcol,suffixes=c(".ego",".alter"))
 
-  if(!is.null(by)) names(ties) <- c(egoIDcol,".e",".a")
+  if(!is.null(by)) names(ties) <- c(egoIDcol,".e",if(alt) ".a")
   ties$.a <- NULL
 
   alterct <- as.data.frame(table(ties[[egoIDcol]]),stringsAsFactors=FALSE)
@@ -291,13 +304,15 @@ EgoStat.concurrentties <- function(egodata, by=NULL){
   alters <- egodata$alters
   egoIDcol <- egodata$egoIDcol
 
+  alt <- !is.null(by) && !is.null(alters[[by]])
+  
   if(!is.null(by)){
-    levs <- sort(unique(c(egos[[by]],alters[[by]])))
+    levs <- sort(unique(c(egos[[by]],if(alt) alters[[by]])))
   }
 
-  ties<-merge(egos[c(egoIDcol,by)],alters[c(egoIDcol,by)],by=egoIDcol,suffixes=c(".ego",".alter"))
+  ties<-merge(egos[c(egoIDcol,by)],alters[c(egoIDcol,if(alt) by)],by=egoIDcol,suffixes=c(".ego",".alter"))
 
-  if(!is.null(by)) names(ties) <- c(egoIDcol,".e",".a")
+  if(!is.null(by)) names(ties) <- c(egoIDcol,".e",if(alt) ".a")
   ties$.a <- NULL
 
   alterct <- as.data.frame(table(ties[[egoIDcol]]),stringsAsFactors=FALSE)
