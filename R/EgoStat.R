@@ -193,7 +193,7 @@ EgoStat.degree <- function(egodata, d, by=NULL, homophily=FALSE){
   h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]
 }
 
-EgoStat.degrange <- function(egodata, from=NULL, to=Inf, byarg=NULL, homophily=FALSE){
+EgoStat.degrange <- function(egodata, from=NULL, to=Inf, by=NULL, homophily=FALSE){
   ## if(any(from==0)) warning("degrange(0,...) (isolate) count depends strongly on the specified population network size.")
   
   egos <- egodata$egos
@@ -207,39 +207,39 @@ EgoStat.degrange <- function(egodata, from=NULL, to=Inf, byarg=NULL, homophily=F
   else if(length(from)!=length(to)) stop("The arguments of term degrange must have arguments either of the same length, or one of them must have length 1.")
   else if(any(from>=to)) stop("Term degrange must have from<to.")
 
-  if(!is.null(byarg)){
-    levs <- sort(unique(c(egos[[byarg]],alters[[byarg]])))
+  if(!is.null(by)){
+    levs <- sort(unique(c(egos[[by]],alters[[by]])))
   }
 
-  ties<-merge(egos[c(egoIDcol,byarg)],alters[c(egoIDcol,byarg)],by=egoIDcol,suffixes=c(".ego",".alter"))
+  ties<-merge(egos[c(egoIDcol,by)],alters[c(egoIDcol,by)],by=egoIDcol,suffixes=c(".ego",".alter"))
 
-  if(!is.null(byarg)) names(ties) <- c(egoIDcol,".e",".a")
-  if(!is.null(byarg) && homophily) ties <- ties[ties$.e==ties$.a,]
+  if(!is.null(by)) names(ties) <- c(egoIDcol,".e",".a")
+  if(!is.null(by) && homophily) ties <- ties[ties$.e==ties$.a,]
   ties$.a <- NULL
 
   alterct <- as.data.frame(table(ties[[egoIDcol]]),stringsAsFactors=FALSE)
   colnames(alterct)<-c(egoIDcol,".degree")
 
-  egos <- merge(egos[c(egoIDcol,byarg)],alterct,by=egoIDcol,all=TRUE)
+  egos <- merge(egos[c(egoIDcol,by)],alterct,by=egoIDcol,all=TRUE)
   egos$.degree[is.na(egos$.degree)]<-0
 
-  if(!is.null(byarg) && !homophily){
+  if(!is.null(by) && !homophily){
     bys <- rep(levs,each=length(from))
     froms <- rep(from,length(levs))
     tos <- rep(to,length(levs))
     
-    h <- sapply(seq_along(bys), function(i) egos$.degree>=froms[i] & egos$.degree<tos[i] & egos[[byarg]]==bys[i])
+    h <- sapply(seq_along(bys), function(i) egos$.degree>=froms[i] & egos$.degree<tos[i] & egos[[by]]==bys[i])
     colnames(h) <-  ifelse(tos>=.Machine$integer.max,
-                           paste("deg", from, "+.",          byarg, bys, sep=""),
-                           paste("deg", from, "to", to, ".", byarg, bys, sep=""))
+                           paste("deg", from, "+.",          by, bys, sep=""),
+                           paste("deg", from, "to", to, ".", by, bys, sep=""))
 
   }else{
     h <- sapply(seq_along(from), function(i) egos$.degree>=from[i] & egos$.degree<to[i])
     colnames(h) <-
       if(homophily)
         ifelse(to>=.Machine$integer.max,
-               paste("deg", from,  "+",     ".homophily.", byarg, sep=""),
-               paste("deg", from, "to", to, ".homophily.", byarg, sep=""))
+               paste("deg", from,  "+",     ".homophily.", by, sep=""),
+               paste("deg", from, "to", to, ".homophily.", by, sep=""))
       else
         ifelse(to>=.Machine$integer.max,
                paste("deg", from,  "+", sep=""),
