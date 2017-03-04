@@ -8,6 +8,10 @@
 #  Copyright 2015-2016 Statnet Commons
 #######################################################################
 egodata <- function(egos, alters, egoWt=1, ..., egoIDcol="egoID"){
+  if(is.character(egoWt)){
+    egoWt <- egos[[egoWt]]
+    egos[[egoWt]] <- NULL
+  }
   egoWt <- rep(egoWt, length.out=nrow(egos))
   out <- list(egos=egos, alters=.prune.alters(egos, alters, egoIDcol), egoWt = egoWt, egoIDcol=egoIDcol)  
   class(out) <- "egodata"
@@ -18,8 +22,54 @@ as.egodata <- function(object, ..., egoIDcol="egoID"){
   UseMethod("as.egodata")
 }
 
-as.egodata.data.frame <- function(object, alters, egoWt = 1, ..., egoIDcol="egoID"){
-  egodata(egos=object, alters=alters, egoWt=egoWt, ..., egoIDcol=egoIDcol)
+as.egodata.data.frame <- function(object, alters, egoWt = 1, ..., egoIDcol="egoID", alterIcol="alterInd", alterIDcol="alterID"){
+  if(!is.data.frame(alters)){
+    cols <- alters$columns
+    ct <- alters$count
+    name.sep <- NVL(alters$name.sep,".")
+    
+    if(is.logical(cols)) cols <- which(cols)
+    if(is.numeric(cols)) cols <- names(object)[cols]
+    
+    # alters is now a character vector of variable names corresponding to alter information
+    alters.w <-  object[c(egoIDcol, ct,  cols)]
+    
+    alterpat <- if(name.sep=="") "^(?<var>[a-zA-Z]+)(?<ind>[0-9]+)$" else paste0("^(?<var>[^",name.sep,"]+)",name.sep,"(?<ind>[0-9]+?)$")
+
+    nm <- names(alters.w)[-(1:2)]
+
+    m <- regexpr(alterpat, nm, perl=TRUE)
+    cs <- attr(m, "capture.start")
+    cl <- attr(m, "capture.length")
+    varying <- list()
+    for(i in seq_along(nm)){
+      if(cs[i,1]==-1 || cs[i,2]==-1) next
+      var <- substr(nm[i], cs[i,1], cs[i,1]+cl[i,1]-1)
+      ind <- substr(nm[i], cs[i,2], cs[i,2]+cl[i,2]-1)
+      varying[[var]] <- c(varying[[var]], nm[i])
+    }
+
+    varylen <- sapply(varying, length)
+    for(name in names(varylen)){
+      if(varylen[name]!=max(varylen)){
+        warning("Variable ",sQuote(name)," has fewer IDs than others. It has been dropped.")
+        varying[[name]]<-NULL
+      }
+    }
+    alters <- reshape(alters.w, varying=varying, v.names=names(varying), timevar=alterIcol, idvar=c(egoIDcol,ct), direction="long", sep=name.sep)
+    alters[[alterIDcol]] <- paste(alters.l[[egoIDcol]], alters.l[[alterIcol]], sep=".")
+    
+    alters <- subset(alters, alters[[alterIcol]]<=pmax(alters[[ct]], 0))
+    egos <- object[!(names(object)%in%cols)]
+    
+    alters[[ct]] <- NULL
+    egos[[ct]] <- NULL
+
+    egos <- egos[order(egos[[egoIDcol]]),]
+    alters <- alters[order(alters[[egoIDcol]], alters[[alterIcol]], alters[[alterIDcol]]),]
+  }else egos <- object
+
+  egodata(egos=egos, alters=alters, egoWt=egoWt, ..., egoIDcol=egoIDcol)
 }
 
 # Conduct an egocentric census from the undirected network y=,
