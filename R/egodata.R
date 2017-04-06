@@ -57,7 +57,7 @@ as.egodata.data.frame <- function(object, alters, egoWt = 1, ..., egoIDcol="egoI
       }
     }
     alters <- reshape(alters.w, varying=varying, v.names=names(varying), timevar=alterIcol, idvar=c(egoIDcol,ct), direction="long", sep=name.sep)
-    alters[[alterIDcol]] <- paste(alters.l[[egoIDcol]], alters.l[[alterIcol]], sep=".")
+    alters[[alterIDcol]] <- paste(alters[[egoIDcol]], alters[[alterIcol]], sep=".")
     
     alters <- subset(alters, alters[[alterIcol]]<=pmax(alters[[ct]], 0))
     egos <- object[!(names(object)%in%cols)]
