@@ -1,6 +1,6 @@
 import(network,ergm,statnet.common)
 importFrom(stats, na.omit, simulate, aggregate, as.formula, cov, na.fail,
-             quantile, sd, setNames, var)
+             quantile, sd, setNames, var, reshape)
 importFrom(coda,nchain)
 importFrom(RColorBrewer, brewer.pal)
 importFrom(utils, head, modifyList)
