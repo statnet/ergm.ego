@@ -7,8 +7,8 @@
 #
 #  Copyright 2015-2016 Statnet Commons
 #######################################################################
-summary.statistics.egodata <- function(object,..., basis=NULL, individual=FALSE, scaleto=NULL){
-  egodata <-
+summary.statistics.egor <- function(object,..., basis=NULL, individual=FALSE, scaleto=NULL){
+  egor <-
     if(!is.null(basis)) basis
     else get(as.character(object[[2]]), envir=environment(object))
 
@@ -20,10 +20,10 @@ summary.statistics.egodata <- function(object,..., basis=NULL, individual=FALSE,
   
   for(trm in term.list.formula(object[[length(object)]])){
     if(is.call(trm)){
-      init.call <- list(as.name(paste("EgoStat.", trm[[1]],sep="")),egodata=egodata)
+      init.call <- list(as.name(paste("EgoStat.", trm[[1]],sep="")),egor=egor)
       init.call <- c(init.call,as.list(trm[-1]))
     }else{
-      init.call <- list(as.name(paste("EgoStat.", trm,sep="")),egodata=egodata)
+      init.call <- list(as.name(paste("EgoStat.", trm,sep="")),egor=egor)
     }
     stat<-eval(as.call(init.call), environment(object))
     if(isTRUE(attr(stat, "nonscaling"))){
@@ -38,8 +38,8 @@ summary.statistics.egodata <- function(object,..., basis=NULL, individual=FALSE,
   
   if(!individual){
     if(length(scaling.stats)){
-      scaleto <- if(is.null(scaleto)) nrow(egodata$egos) else scaleto
-      scaling.stats <- colSums(scaling.stats*egodata$egoWt)/sum(rep(egodata$egoWt,length.out=nrow(scaling.stats)))
+      scaleto <- if(is.null(scaleto)) nrow(egor) else scaleto
+      scaling.stats <- svymean(scaling.stats, attr(egor, "ego.design"))
       scaling.stats <- scaling.stats*scaleto
     }
       
@@ -55,7 +55,6 @@ summary.statistics.egodata <- function(object,..., basis=NULL, individual=FALSE,
     
     stats
   }else{
-    rownames(scaling.stats) <- egodata$egos[[egodata$egoIDcol]]
     scaling.stats
   }
 }
