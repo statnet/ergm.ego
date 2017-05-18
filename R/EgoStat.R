@@ -7,206 +7,148 @@
 #
 #  Copyright 2015-2016 Statnet Commons
 #######################################################################
-# An EgoStat.* function takes the data frame of egos, a data frame of
-# alters, and the arguments passed to the corresponding ERGM terms,
-# and returns a matrix of h(e[i]) values, with egos in rows and
-# elements of h(e[i]) in columns.
+# An EgoStat.* function takes an egor object and returns a matrix of
+# h(e[i]) values, with egos in rows and elements of h(e[i]) in
+# columns.
 
-EgoStat.edges <- function(egodata){
-  egos <- egodata$egos
-  alters <- egodata$alters
-  egoIDcol <- egodata$egoIDcol
-   
+.allAlters <- function(egor){
+  do.call(rbind, egor$alters)
+}
 
-  ties<-merge(egos[egoIDcol],alters[egoIDcol],by=egoIDcol,suffixes=c(".ego",".alter"))
+.attrErr <- function(term, attrname, req = c("one","both")){
+  req <- match.arg(req)
+  if(req=="one") stop("In EgoStat ",sQuote(term)," attribute ", sQuote(attrname), " is observed for neither egos nor alters.", call.=FALSE)
+  else stop("In EgoStat ",sQuote(term)," attribute ", sQuote(attrname), " must be observed for both egos and alters.", call.=FALSE)
+}
 
-  alterct <- as.data.frame(table(ties[[egoIDcol]]), stringsAsFactors=FALSE)
-  colnames(alterct)<-c(egoIDcol,".degree")
+#' Generate the ego contribution matrix from an [egor()] object.
+#'
+#' @param egor an [egor()] object containing the egocentric dataset.
+#' @param h a function taking a row of a [tibble()] and outputting a
+#'   numeric vector of dyadwise contributions.
+#' @param cn a vector of column names for the output.
+#'
+#' @return A numeric matrix with `nrow(egor)` rows.
+.eval.h <- function(egor, h, cn){
+  h <- apply(egor, 1, h)
+  if(is.matrix(h)) h <- t(h) # apply() builds a matrix with egos in columns
+  else h <- cbind(h)
+  colnames(h) <- cn
+  h
+}
 
-  egos <- merge(egos[egoIDcol],alterct,by=egoIDcol,all=TRUE)
-  egos$.degree[is.na(egos$.degree)]<-0
+EgoStat.edges <- function(egor){
+  h <- function(e) nrow(e$alters)/2
+  .eval.h(egor, h, "edges")
+}
 
-  h <- cbind(egos$.degree)
-  colnames(h) <- "edges"
-  rownames(h) <- egos[[egoIDcol]]
+EgoStat.nodecov <- function(egor, attrname){
+  nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$alters[[1]]))
 
-  h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]/2
+  if(nattr==0) .attrErr("nodecov", attrname, "one")
+  
+  h <- function(e) (sum(e[[attrname]])*nrow(e$alters) + sum(e$alters[[attrname]]))/nattr
+  .eval.h(egor, h, paste("nodecov",attrname,sep="."))
+}
+
+EgoStat.nodefactor <- function(egor, attrname, base=1){
+  nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$alters[[1]]))
+  if(nattr==0) .attrErr("nodefactor", attrname, "one")
+
+  l <- sort(unique(c(egor[[attrname]],.allAlters(egor)[[attrname]])))
+  # Note that all "base" levels will be matched to 0 and therefore
+  # excluded from the tabulation below.
+  if(length(base)!=0 && !identical(as.integer(base),as.integer(0))) l <- l[-base]
+  nl <- length(l)
+
+  h <- function(e)
+  (tabulate(match(e[[attrname]],l,0), nbins=nl)*nrow(e$alters)
+    + tabulate(match(e$alters[[attrname]],l,0), nbins=nl))/nattr
+  
+  .eval.h(egor, h, paste("nodefactor",attrname,l,sep="."))
+}
+
+EgoStat.nodematch <- function(egor, attrname, diff=FALSE, keep=NULL){
+  nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$alters[[1]]))
+  if(nattr==0) .attrErr("nodematch", attrname, "both")
+  
+  l <- sort(unique(c(egor[[attrname]],.allAlters(egor)[[attrname]])))
+  # Note that all "non-keep" levels will be matched to 0 and therefore
+  # excluded from the tabulation below.
+  l <- l[NVL(keep,TRUE)]
+  nl <- length(l)
+
+  h <- function(e)
+    tabulate(match(e[[attrname]],l,0), nbins=nl)*sum(e[[attrname]]==e$alters[[attrname]])/2
+
+  .eval.h(egor, h,
+          if(diff) paste("nodematch",attrname,levs,sep=".")
+          else paste("nodematch",attrname,sep="."))
 }
 
 
-EgoStat.nodecov <- function(egodata, attrname){
-  egos <- egodata$egos
-  alters <- egodata$alters
-  egoIDcol <- egodata$egoIDcol
+EgoStat.nodemix <- function(egor, attrname, base=NULL){
+  nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$alters[[1]]))
+  if(nattr==0) .attrErr("nodemix", attrname, "both")
 
-  alt <- !is.null(alters[[attrname]])
+  l <- sort(unique(c(egor[[attrname]],.allAlters(egor)[[attrname]])))
+  # Note that all "base" levels will be matched to 0 and therefore
+  # excluded from the tabulation below.
+  l <- outer(l,l,paste,sep=".")
+  l <- nv[upper.tri(nv,diag=TRUE)]
+  if (length(base) && !identical(as.integer(base),as.integer(0))) l <- l[-base]
   
-  ties<-merge(egos[c(egoIDcol,attrname)],alters[c(egoIDcol,if(alt) attrname)],by=egoIDcol,suffixes=c(".ego",".alter"))
-  names(ties) <- c(egoIDcol,".e",if(alt) ".a")
-  isolates <- egos[[egoIDcol]][!(egos[[egoIDcol]]%in%ties[[egoIDcol]])] 
-  ties <- data.frame(egoID=c(ties[[egoIDcol]],if(alt) ties[[egoIDcol]],isolates),x=c(ties$.e,if(alt) ties$.a,rep(0,length(isolates))),stringsAsFactors=FALSE)
-  
-  h <- cbind(sapply(tapply(ties$x,list(egoID=ties$egoID),FUN=sum),identity)) / if(alt) 2 else 1
-  colnames(h) <- paste("nodecov",attrname,sep=".")
-  
-  h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]
+  h <- function(e)
+    tabulate(match(paste(pmin(e[[attrname]],e$alters[[attrname]]),
+                         pmax(e[[attrname]],e$alters[[attrname]]),
+                         sep="."),l,0), nbins=nl)
+  .eval.h(egor, h,
+               paste("mix",attrname,namevec,sep="."))
 }
 
-
-EgoStat.nodefactor <- function(egodata, attrname, base=1){
-  egos <- egodata$egos
-  alters <- egodata$alters
-  egoIDcol <- egodata$egoIDcol
+EgoStat.absdiff <- function(egor, attrname, pow=1){
+  nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$alters[[1]]))
+  if(nattr==0) .attrErr("absdiff", attrname, "both")
   
-  levs <- sort(unique(c(egos[[attrname]],alters[[attrname]])))
-  egos[[attrname]] <- match(egos[[attrname]], levs, 0)
+  h <- function(e)
+    sum(abs(e[[attrname]]-e$alters[[attrname]])^pow)/2
 
-  alt <- !is.null(alters[[attrname]])
-  
-  if(alt) alters[[attrname]] <- match(alters[[attrname]], levs, 0)
-  ties<-merge(egos[c(egoIDcol,attrname)],alters[c(egoIDcol,if(alt) attrname)],by=egoIDcol,suffixes=c(".ego",".alter"))
-  names(ties) <- c(egoIDcol,".e",if(alt) ".a")
-  isolates <- egos[[egoIDcol]][!(egos[[egoIDcol]]%in%ties[[egoIDcol]])] 
-  ties <- data.frame(egoID=c(ties[[egoIDcol]],if(alt) ties[[egoIDcol]],isolates),x=c(ties$.e,if(alt) ties$.a,rep(0,length(isolates))),stringsAsFactors=FALSE)
-
-  h <- t(sapply(tapply(ties$x, list(egoID=ties$egoID), FUN=tabulate, nbins=length(levs)),identity)) / if(alt) 2 else 1
-  colnames(h) <- paste("nodefactor",attrname,levs,sep=".")  
-
-  if(length(base)==0 || base==0) h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]
-  else h[match(egodata$egos[[egoIDcol]],rownames(h)),-base,drop=FALSE]
+  .eval.h(egor, h,
+          if(pow==1) paste("absdiff",attrname,sep=".")
+          else paste("absdiff",pow,".",attrname,sep=""))
 }
 
-EgoStat.nodematch <- function(egodata, attrname, diff=FALSE, keep=NULL){
-  egos <- egodata$egos
-  alters <- egodata$alters
-  egoIDcol <- egodata$egoIDcol
-  
-  levs <- sort(unique(c(egos[[attrname]],alters[[attrname]])))
-  egos[[attrname]] <- match(egos[[attrname]], levs, 0)
-  alters[[attrname]] <- match(alters[[attrname]], levs, 0)
-  
-  ties<-merge(egos[c(egoIDcol,attrname)],alters[c(egoIDcol,attrname)],by=egoIDcol,suffixes=c(".ego",".alter"))
-  names(ties) <- c(egoIDcol,".e",".a")
-  ties$match <- ifelse(ties$.e==ties$.a, as.integer(ties$.e), 0)
-  if(!is.null(keep)) ties$match[!(ties$match%in%keep)] <- 0
-  if(!diff) ties$match[ties$match!=0] <- 1
-  
-  isolates <- egos[[egoIDcol]][!(egos[[egoIDcol]]%in%ties[[egoIDcol]])] 
-
-  ties <- data.frame(egoID=c(ties[[egoIDcol]],isolates), match=c(ties$match,rep(0,length(isolates))),stringsAsFactors=FALSE)
-
-  h <- t(rbind(sapply(tapply(ties$match, list(egoID=ties$egoID), FUN=tabulate, nbins=if(diff) length(levs) else 1),identity)))
-
-  colnames(h) <- if(diff) paste("nodematch",attrname,levs,sep=".") else paste("nodematch",attrname,sep=".")
-  
-  h[match(egodata$egos[[egoIDcol]],rownames(h)),if(!is.null(keep) && diff) keep else TRUE,drop=FALSE]/2
-}
-
-
-EgoStat.nodemix <- function(egodata, attrname, base=NULL){
-  egos <- egodata$egos
-  alters <- egodata$alters
-  egoIDcol <- egodata$egoIDcol
-  
-  levs <- sort(unique(c(egos[[attrname]],alters[[attrname]])))
-  egos[[attrname]] <- match(egos[[attrname]], levs, 0)
-  alters[[attrname]] <- match(alters[[attrname]], levs, 0)
-  
-  ties<-merge(egos[c(egoIDcol,attrname)],alters[c(egoIDcol,attrname)],by=egoIDcol,suffixes=c(".ego",".alter"))
-  names(ties) <- c(egoIDcol,".e",".a")
-  
-  isolates <- egos[[egoIDcol]][!(egos[[egoIDcol]]%in%ties[[egoIDcol]])] 
-  
-  
-  namevec <- outer(levs,levs,paste,sep=".")
-  namevec <- namevec[upper.tri(namevec,diag=TRUE)]
-  
-  if (!is.null(base) && !identical(base,0)) {
-    namevec <- namevec[-base]
-  }
-  
-  mat <- t(apply(cbind(ties[,2:3]),1,sort))
-  h <- table(ties[,1],paste(levs[mat[,1]],levs[mat[,2]],sep="."))
-  
-  h<- t(apply(h,1,function(x)x[namevec,drop=FALSE]))
-  
-  if(length(isolates)){
-    isolates.mat <- matrix(0,nrow=length(isolates),ncol=length(namevec))
-    rownames(isolates.mat) <- isolates	
-    h <- rbind(h,isolates.mat)
-  }
-  
-  h <- h[order(as.numeric(rownames(h))),]
-  h[is.na(h)] <- 0
-  colnames(h) <- paste("mix",attrname,namevec,sep=".")
-  h[match(egodata$egos[[egoIDcol]],rownames(h)),]/2
-}
-
-EgoStat.absdiff <- function(egodata, attrname, pow=1){
-  egos <- egodata$egos
-  alters <- egodata$alters
-  egoIDcol <- egodata$egoIDcol
-  
-  ties<-merge(egos[c(egoIDcol,attrname)],alters[c(egoIDcol,attrname)],by=egoIDcol,suffixes=c(".ego",".alter"))
-  names(ties)<-c(egoIDcol,".e",".a")
-  isolates <- egos[[egoIDcol]][!(egos[[egoIDcol]]%in%ties[[egoIDcol]])] 
-  ties$.absdiff <- abs(ties$.e-ties$.a)^pow 
-  
-  ties <- data.frame(egoID=c(ties[[egoIDcol]],isolates), absdiff=c(ties$.absdiff,rep(0,length(isolates))),stringsAsFactors=FALSE)
-  
-  h <- cbind(sapply(tapply(ties$absdiff,list(egoID=ties$egoID),FUN=sum),identity))         
-  colnames(h) <- if(pow==1) paste("absdiff",attrname,sep=".") else paste("absdiff",pow,".",attrname,sep="")
-  
-  h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]/2
-}
-
-EgoStat.degree <- function(egodata, d, by=NULL, homophily=FALSE){
+EgoStat.degree <- function(egor, d, by=NULL, homophily=FALSE){
   ## if(any(d==0)) warning("degree(0) (isolate) count statistic depends strongly on the specified population network size.")
-  
-  egos <- egodata$egos
-  alters <- egodata$alters
-  egoIDcol <- egodata$egoIDcol
 
-  alt <- !is.null(by) && !is.null(alters[[by]])
-  if(homophily && !alt) stop("Attribute ", sQuote(by), " must be observed on alters if homophily=TRUE.")
+  if(!by %in% names(egor)) stop("For term ",sQuote("degree")," attribute ", sQuote(by), " must be observed on egos.", call.=FALSE)
+  
+  alt <- !is.null(by) && !is.null(.allAltrs(egor)[[by]])
+  if(homophily && !alt) stop("For term ",sQuote("degree")," attribute ", sQuote(by), " must be observed on both egos and alters if homophily=TRUE.", call.=FALSE)
   
   if(!is.null(by)){
-    levs <- sort(unique(c(egos[[by]],if(alt) alters[[by]])))
+    l <- sort(unique(c(egor[[by]],.allAlters(egor)[[by]])))
   }
-  
-  ties<-merge(egos[c(egoIDcol,by)],alters[c(egoIDcol,if(alt) by)],by=egoIDcol,suffixes=c(".ego",".alter"))
-
-  if(!is.null(by)) names(ties) <- c(egoIDcol,".e", if(alt) ".a")
-  if(!is.null(by) && homophily) ties <- ties[ties$.e==ties$.a,]
-  ties$.a <- NULL
-
-  alterct <- as.data.frame(table(ties[[egoIDcol]]),stringsAsFactors=FALSE)
-  colnames(alterct)<-c(egoIDcol,".degree")
-
-  egos <- merge(egos[c(egoIDcol,by)],alterct,by=egoIDcol,all=TRUE)
-  egos$.degree[is.na(egos$.degree)]<-0
+  nl <- length(l)
 
   if(!is.null(by) && !homophily){
-    bys <- rep(levs,each=length(d))
-    degs <- rep(d,length(levs))
-    
-    h <- sapply(seq_along(bys), function(i) egos$.degree==degs[i] & egos[[by]]==bys[i])
-    colnames(h) <- paste("deg",degs,".",by,bys,sep="")
+    bys <- rep(l,each=length(d))
+    degs <- rep(d,nl)
+    cn <- paste0("deg",degs,".",by,bys)
+    h <- function(e) as.numeric(nrow(e$alters)==degs & e[[by]]==bys)
+  }else if(homophily){
+    cn <-  paste0("deg",d,".homophily.",by)
+    h <- function(e) as.numeric(sum(e[[by]]==e$alters[[by]])==d)
   }else{
-    h <- sapply(d, function(i) egos$.degree==i)
-    colnames(h) <- if(homophily) paste("deg",d,".homophily.",by,sep="") else paste("degree",d,sep="")
+    cn <-  paste0("degree",d)
+    h <- function(e) as.numeric(nrow(e$alters)==d)
   }
-  rownames(h) <- egos[[egoIDcol]]
-  
-  h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]
+
+  .eval.h(egor, h, cn)
 }
 
-EgoStat.degrange <- function(egodata, from=NULL, to=Inf, by=NULL, homophily=FALSE){
+EgoStat.degrange <- function(egor, from=NULL, to=Inf, by=NULL, homophily=FALSE){
   ## if(any(from==0)) warning("degrange(0,...) (isolate) count depends strongly on the specified population network size.")
-  
-  egos <- egodata$egos
-  alters <- egodata$alters
-  egoIDcol <- egodata$egoIDcol
   
   to <- ifelse(to==Inf, .Machine$integer.max, to)
 
@@ -215,144 +157,85 @@ EgoStat.degrange <- function(egodata, from=NULL, to=Inf, by=NULL, homophily=FALS
   else if(length(from)!=length(to)) stop("The arguments of term degrange must have arguments either of the same length, or one of them must have length 1.")
   else if(any(from>=to)) stop("Term degrange must have from<to.")
 
-  alt <- !is.null(by) && !is.null(alters[[by]])
-  if(homophily && !alt) stop("Attribute ", sQuote(by), " must be observed on alters if homophily=TRUE.")
+  if(!by %in% names(egor)) stop("For term ",sQuote("degree")," attribute ", sQuote(by), " must be observed on egos.", call.=FALSE)
+  
+  alt <- !is.null(by) && !is.null(.allAltrs(egor)[[by]])
+  if(homophily && !alt) stop("For term ",sQuote("degree")," attribute ", sQuote(by), " must be observed on both egos and alters if homophily=TRUE.", call.=FALSE)
   
   if(!is.null(by)){
-    levs <- sort(unique(c(egos[[by]],if(alt) alters[[by]])))
+    l <- sort(unique(c(egor[[by]],.allAlters(egor)[[by]])))
   }
-
-  ties<-merge(egos[c(egoIDcol,by)],alters[c(egoIDcol,if(alt) by)],by=egoIDcol,suffixes=c(".ego",".alter"))
-
-  if(!is.null(by)) names(ties) <- c(egoIDcol,".e",if(alt) ".a")
-  if(!is.null(by) && homophily) ties <- ties[ties$.e==ties$.a,]
-  ties$.a <- NULL
-
-  alterct <- as.data.frame(table(ties[[egoIDcol]]),stringsAsFactors=FALSE)
-  colnames(alterct)<-c(egoIDcol,".degree")
-
-  egos <- merge(egos[c(egoIDcol,by)],alterct,by=egoIDcol,all=TRUE)
-  egos$.degree[is.na(egos$.degree)]<-0
+  nl <- length(l)
 
   if(!is.null(by) && !homophily){
-    bys <- rep(levs,each=length(from))
-    froms <- rep(from,length(levs))
-    tos <- rep(to,length(levs))
-    
-    h <- sapply(seq_along(bys), function(i) egos$.degree>=froms[i] & egos$.degree<tos[i] & egos[[by]]==bys[i])
-    colnames(h) <-  ifelse(tos>=.Machine$integer.max,
-                           paste("deg", from, "+.",          by, bys, sep=""),
-                           paste("deg", from, "to", to, ".", by, bys, sep=""))
+    bys <- rep(l,each=length(from))
+    froms <- rep(from,nl)
+    tos <- rep(to,nl)
 
+    cn <- ifelse(tos>=.Machine$integer.max,
+                 paste0("deg", from, "+.",          by, bys),
+                 paste0("deg", from, "to", to, ".", by, bys))
+    h <- function(e) as.numeric(nrow(e$alters)>=froms & nrow(e$alters)<tos & e[[by]]==bys)
+  }else if(homophily){
+    cn <- ifelse(to>=.Machine$integer.max,
+                 paste0("deg", from,  "+",     ".homophily.", by),
+                 paste0("deg", from, "to", to, ".homophily.", by))
+    h <- function(e) as.numeric(sum(e[[by]]==e$alters[[by]])>=from & sum(e[[by]]==e$alters[[by]])<to)
   }else{
-    h <- sapply(seq_along(from), function(i) egos$.degree>=from[i] & egos$.degree<to[i])
-    colnames(h) <-
-      if(homophily)
-        ifelse(to>=.Machine$integer.max,
-               paste("deg", from,  "+",     ".homophily.", by, sep=""),
-               paste("deg", from, "to", to, ".homophily.", by, sep=""))
-      else
-        ifelse(to>=.Machine$integer.max,
-               paste("deg", from,  "+", sep=""),
-               paste("deg", from, "to", to, sep=""))
-
+    cn <- ifelse(to>=.Machine$integer.max,
+                 paste0("deg", from,  "+"),
+                 paste0("deg", from, "to", to))
+    h <- function(e) as.numeric(nrow(e$alters)>=from & nrow(e$alters)<to)
   }
-  rownames(h) <- egos[[egoIDcol]]
-  
-  h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]
+
+  .eval.h(egor, h, cn)
 }
 
-EgoStat.concurrent <- function(egodata, by=NULL){
-  egos <- egodata$egos
-  alters <- egodata$alters
-  egoIDcol <- egodata$egoIDcol
+EgoStat.concurrent <- function(egor, by=NULL){
 
-  alt <- !is.null(by) && !is.null(alters[[by]])
-   
-  if(!is.null(by)){
-    levs <- sort(unique(c(egos[[by]],if(alt) alters[[by]])))
-  }
-
-  ties<-merge(egos[c(egoIDcol,by)],alters[c(egoIDcol,if(alt) by)],by=egoIDcol,suffixes=c(".ego",".alter"))
-
-  if(!is.null(by)) names(ties) <- c(egoIDcol,".e",if(alt) ".a")
-  ties$.a <- NULL
-
-  alterct <- as.data.frame(table(ties[[egoIDcol]]),stringsAsFactors=FALSE)
-  colnames(alterct)<-c(egoIDcol,".degree")
-
-  egos <- merge(egos[c(egoIDcol,by)],alterct,by=egoIDcol,all=TRUE)
-  egos$.degree[is.na(egos$.degree)]<-0
-
-  if(!is.null(by)){
-    bys <- levs
-    
-    h <- sapply(seq_along(bys), function(i) egos$.degree>=2 & egos[[by]]==bys[i])
-    colnames(h) <- paste("concurrent.", by, bys, sep="")
-
-  }else{
-    h <- cbind(egos$.degree>=2)
-    colnames(h) <- "concurrent"
-  }
-  rownames(h) <- egos[[egoIDcol]]
+  if(!by %in% names(egor)) stop("For term ",sQuote("concurrent")," attribute ", sQuote(by), " must be observed on egos.", call.=FALSE)
   
-  h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]
+  if(!is.null(by)){
+    l <- sort(unique(c(egor[[by]],.allAlters(egor)[[by]])))
+  }  
+  nl <- length(l)
+
+  if(!is.null(by)){
+    bys <- rep(l,each=length(d))
+    cn <- paste0("concurrent.", by, bys)
+    h <- function(e) as.numeric(nrow(e$alters)>=2 & e[[by]]==bys)
+  }else{
+    cn <-  "concurrent"
+    h <- function(e) nrow(e$alters)>=2
+  }
+
+  .eval.h(egor, h, cn)
 }
 
-EgoStat.concurrentties <- function(egodata, by=NULL){
-  egos <- egodata$egos
-  alters <- egodata$alters
-  egoIDcol <- egodata$egoIDcol
-
-  alt <- !is.null(by) && !is.null(alters[[by]])
+EgoStat.concurrentties <- function(egor, by=NULL){
+  if(!by %in% names(egor)) stop("For term ",sQuote("concurrent")," attribute ", sQuote(by), " must be observed on egos.", call.=FALSE)
   
   if(!is.null(by)){
-    levs <- sort(unique(c(egos[[by]],if(alt) alters[[by]])))
-  }
-
-  ties<-merge(egos[c(egoIDcol,by)],alters[c(egoIDcol,if(alt) by)],by=egoIDcol,suffixes=c(".ego",".alter"))
-
-  if(!is.null(by)) names(ties) <- c(egoIDcol,".e",if(alt) ".a")
-  ties$.a <- NULL
-
-  alterct <- as.data.frame(table(ties[[egoIDcol]]),stringsAsFactors=FALSE)
-  colnames(alterct)<-c(egoIDcol,".degree")
-
-  egos <- merge(egos[c(egoIDcol,by)],alterct,by=egoIDcol,all=TRUE)
-  egos$.degree[is.na(egos$.degree)]<-0
+    l <- sort(unique(c(egor[[by]],.allAlters(egor)[[by]])))
+  }  
+  nl <- length(l)
 
   if(!is.null(by)){
-    bys <- levs
-    
-    h <- sapply(seq_along(bys), function(i) cbind(ifelse(egos[[by]]==bys[i], pmax(egos$.degree-1,0), 0)))
-    colnames(h) <- paste("concurrentties.", by, bys, sep="")
-
+    bys <- rep(l,each=length(d))
+    cn <- paste0("concurrentties.", by, bys)
+    h <- function(e) max(nrow(e$alters)-1,0)*as.numeric(e[[by]]==bys)
   }else{
-    h <- cbind(pmax(egos$.degree-1,0))
-    colnames(h) <- "concurrentties"    
+    cn <-  "concurrentties"
+    h <- function(e) max(nrow(e$alters)-1,0)
   }
-  rownames(h) <- egos[[egoIDcol]]
-  
-  h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]
+
+  .eval.h(egor, h, cn)
 }
 
 
-EgoStat.degreepopularity <- function(egodata){
-  egos <- egodata$egos
-  alters <- egodata$alters
-  egoIDcol <- egodata$egoIDcol
-    
-  ties<-merge(egos[egoIDcol],alters[egoIDcol],by=egoIDcol,suffixes=c(".ego",".alter"))
+EgoStat.degreepopularity <- function(egor){
 
-  alterct <- as.data.frame(table(ties[[egoIDcol]]),stringsAsFactors=FALSE)
-  colnames(alterct)<-c(egoIDcol,".degree")
+  h <- function(e) nrow(e$alters)^(3/2)
 
-  egos <- merge(egos[c(egoIDcol)],alterct,by=egoIDcol,all=TRUE)
-  egos$.degree[is.na(egos$.degree)]<-0
-
-  h <- cbind(egos$.degree^(3/2))
-  colnames(h) <- "degreepopularity"
-  rownames(h) <- egos[[egoIDcol]]
-  
-  h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]
+  .eval.h(egor, h, "degreepopularity")
 }
