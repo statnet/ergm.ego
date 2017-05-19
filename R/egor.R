@@ -9,188 +9,22 @@
 #######################################################################
 
 
-#' Convert to or Construct \code{\link{egodata}} Objects
+#' Convert \code{\link{egodata}} Objects to \code{\link{egor}} Objects
 #' 
-#' \code{\link{as.egodata}} is a generic function to construct
-#' \code{\link{egodata}} objects from a variety of sources.
-#' \code{\link{egodata}} function is the standard constructor, taking two data
-#' frames. For other methods for this class, see the Miscellaneous Methods
-#' section.
-#' 
-#' 
-#' @aliases as.egodata as.egodata.data.frame egodata.object egodata
-#' na.omit.egodata dim.egodata dimnames.egodata sample.egodata head.egodata
-#' sample sample.default
-#' @param object,egos The object from which the egocentric data should be
-#' constructed. For the \code{\link{data.frame}} methods and
-#' \code{\link{egodata}} itself, a data frame containing at least the column
-#' named in \code{egoIDcol}, whose values must all be unique. Other columns
-#' contain information about the egos.
+#' @param object a \code{\link{egodata}} object
 #'
-#' For the \code{\link{data.frame}} method, it may also contain the
-#' information about the alters in a \sQuote{wide} format, in the form
-#' of additional columns with names like \code{ATTRNAME1},
-#' \code{ATTRNAME2}, etc. for attribute \code{ATTRNAME} of alter 1, 2,
-#' etc., as well as a column containing the number of alters nominated
-#' by that ego.
-#'
-#' @param alters     The \code{\link{data.frame}} containing at least the column
-#'    named in \code{egoIDcol}, whose values do not have to be unique, and
-#'    not every ego has to be represented. Other columns contain information
-#'    about the alters.
-#'
-#'    For the \code{\link{data.frame}} method in which the \code{object}
-#'    argument also contains alter information in \sQuote{wide} format, a
-#'    \code{\link{list}} with the following information:
-#'    \describe{
-#'      \item{\code{columns}}{A character, integer, or logical vector
-#'	identifying which columns contain the alters' information.}
-#'      \item{\code{count}}{The name of the column containing the number
-#'	of alters nominated by that ego.}
-#'      \item{\code{name.sep}}{A one-character string or an empty string
-#'	(defaulting to \code{"."}) specifying the character, if any,
-#'	used to separate alter attribute name from alter's index within
-#'	the ego. If an empty string (\code{""}), attribute name is
-#'	assumed to be made of letters, with any numbers being the alter
-#'	index.}
-#'      
-#'    }
-#'    
-#' \code{egoIDcol}, whose values do not have to be unique, and not every ego
-#' must be represented. Other columns contain information about the alters.
-#' @param egoWt A vector of the same length as number of rows in \code{egos} or
-#' \code{object}, containing the relative sampling weight of each ego.
-#' @param \dots Additional arguments; currently unused.
-#' @param egoIDcol Name of the column in the ego table containing the unique
-#' ego identifier.
-#' @param alterIcol Column name to use for the within-ego index of the alter.
-#' @param alterIDcol Column name to use for the unique ID of each alter,
-#'    constructed by concatenating the ID of the ego that nominated them
-#'    and their index within that ego.
-#'
-#' @return An \code{\link{egodata}} object. The object is a list containing the
-#' following elements:
+#' @return An \code{\link{egor}} object.
 #' 
-#' \item{egos}{ A data frame with one row for each ego, containing at least the
-#' column named in \code{egoIDcol}, and other columns containing attributes of
-#' the egos.  }
-#' 
-#' \item{alters}{ A data frame containing at least the column named in
-#' \code{egoIDcol}, and other columns containing attributes of the alters.  }
-#' 
-#' \item{egoWt}{A vector of the same length as the number of egos, containing
-#' the relative sampling weight of each ego.}
-#' 
-#' \item{egoIDcol}{ Name of the column in the ego table containing the unique
-#' ego identifier.  }
 #' @section Miscellaneous Methods: The following \dQuote{standard} methods have
-#' also been implemented for \code{\link{egodata}}: \describe{
-#' \item{"dim.egodata"}{A vector with three elements containing the
-#' \dQuote{dimensions} of the \code{\link{egodata}} object: number of egos,
-#' number of columns in the \code{egos} table, and number of columns in the
-#' \code{alters} table, inclsive of the ego identifier column. As a corollary,
-#' \code{\link{nrow}} returns the number of egos in the dataset.  }
-#' 
-#' \item{"dimnames.egodata"}{A list with three elements containing
-#' the \dQuote{dimension names} of the \code{\link{egodata}} object: ego IDs,
-#' column names of the \code{egos} table, and column names of the \code{alters}
-#' table, inclsive of the ego identifier column.  }
-#' 
-#' \item{"sample.egodata"}{ As \code{\link{sample}}, but takes and
-#' returns a simulated \code{\link{egodata}} dataset by resampling egos,
-#' adjusting ego weights as necessary, if weighted sampling was used.  }
-#' 
-#' \item{"head.egodata"}{ As \code{\link{head}}, but returns the
-#' first \code{n} rows of egos, alters, and weights.  }
-#' 
-#' \item{"na.omit.egodata"}{ As \code{\link{na.omit.data.frame}},
-#' but takes and returns an \code{\link{egodata}} dataset, with egos with
-#' \code{NA} in their rows or in their alters' rows. An optional argument
-#' \code{relevant}, defaulting to all columns, can be used to select (by index
-#' or name) based on which columns an ego may be dropped. (I.e., \code{NA}s in
-#' those not \dQuote{relevant} are ignored.)  } }
 #' @author Pavel N. Krivitsky
-#' @seealso \code{\link{ergm.ego}} for examples,
-#' \code{\link{as.network.egodata}}, \code{\link{as.egodata.network}},
-#' \code{\link{subset.egodata}}, \code{\link{[.egodata}}
 #' @keywords manip methods
 #' @export
-egodata <- function(egos, alters, egoWt=1, ..., egoIDcol="egoID"){
-  if(is.character(egoWt)){
-    egoWt <- egos[[egoWt]]
-    egos[[egoWt]] <- NULL
-  }
-  egoWt <- rep(egoWt, length.out=nrow(egos))
-  out <- list(egos=egos, alters=.prune.alters(egos, alters, egoIDcol), egoWt = egoWt, egoIDcol=egoIDcol)  
-  class(out) <- "egodata"
-  out
+as.egor.egodata <- function(object, ...){
+  ego.design <- list(~1, weights = rep(object$egoWt, length.out=nrow(object$egos)))
+  egor(egos.df=object$egos, alters.df=object$alters, egoID = object$egoIDcol, ego.design=ego.design)
 }
 
-#' @rdname egodata
-#' @export
-as.egodata <- function(object, ..., egoIDcol="egoID"){
-  UseMethod("as.egodata")
-}
-
-#' @rdname egodata
-#' @export
-as.egodata.data.frame <- function(object, alters, egoWt = 1, ..., egoIDcol="egoID", alterIcol="alterInd", alterIDcol="alterID"){
-  if(!is.data.frame(alters)){
-    cols <- alters$columns
-    ct <- alters$count
-    name.sep <- NVL(alters$name.sep,".")
-    
-    if(is.logical(cols)) cols <- which(cols)
-    if(is.numeric(cols)) cols <- names(object)[cols]
-    
-    # alters is now a character vector of variable names corresponding to alter information
-    alters.w <-  object[c(egoIDcol, ct,  cols)]
-    
-    alterpat <- if(name.sep=="") "^(?<var>[a-zA-Z]+)(?<ind>[0-9]+)$" else paste0("^(?<var>[^",name.sep,"]+)",name.sep,"(?<ind>[0-9]+?)$")
-
-    nm <- names(alters.w)[-(1:2)]
-
-    m <- regexpr(alterpat, nm, perl=TRUE)
-    cs <- attr(m, "capture.start")
-    cl <- attr(m, "capture.length")
-    varying <- list()
-    for(i in seq_along(nm)){
-      if(cs[i,1]==-1 || cs[i,2]==-1) next
-      var <- substr(nm[i], cs[i,1], cs[i,1]+cl[i,1]-1)
-      ind <- substr(nm[i], cs[i,2], cs[i,2]+cl[i,2]-1)
-      varying[[var]] <- c(varying[[var]], nm[i])
-    }
-
-    varylen <- sapply(varying, length)
-    for(name in names(varylen)){
-      if(varylen[name]!=max(varylen)){
-        warning("Variable ",sQuote(name)," has fewer IDs than others. It has been dropped.")
-        varying[[name]]<-NULL
-      }
-    }
-    alters <- reshape(alters.w, varying=varying, v.names=names(varying), timevar=alterIcol, idvar=c(egoIDcol,ct), direction="long", sep=name.sep)
-    alters[[alterIDcol]] <- paste(alters[[egoIDcol]], alters[[alterIcol]], sep=".")
-    
-    alters <- subset(alters, alters[[alterIcol]]<=pmax(alters[[ct]], 0))
-    egos <- object[!(names(object)%in%cols)]
-    
-    alters[[ct]] <- NULL
-    egos[[ct]] <- NULL
-
-    egos <- egos[order(egos[[egoIDcol]]),]
-    alters <- alters[order(alters[[egoIDcol]], alters[[alterIcol]], alters[[alterIDcol]]),]
-  }else egos <- object
-
-  egodata(egos=egos, alters=alters, egoWt=egoWt, ..., egoIDcol=egoIDcol)
-}
-
-# Conduct an egocentric census from the undirected network y=,
-# returning an egodata object. The corresponding vertex attributes of
-# y= are copied into columns in these data frames, excluding
-# attributes listed in special.cols=.
-
-
-#' Construct an Egocentric View of a Network
+#' Construct an Egocentric View of a \code{\link{network}} Object
 #' 
 #' Given a \code{\link[network]{network}} object, construct an
 #' \code{\link{egodata}} object representing a census of all the actors in the
@@ -202,71 +36,49 @@ as.egodata.data.frame <- function(object, alters, egoWt = 1, ..., egoIDcol="egoI
 #' \code{egos} and \code{alters} tables. Defaults to attributes special to the
 #' \code{\link[network]{network}} objects.
 #' @param \dots Additional arguments, currently unused.
-#' @param egoIDcol The name of the vertex attribute containg unique ego IDs.
-#' Defaults to \code{"vertex.names"}.
-#' @return An \code{\link{egodata}} object.
+#' @return An \code{\link{egor}} object.
 #' @author Pavel N. Krivitsky
-#' @seealso \code{\link{as.network.egodata}}, which performs the inverse
+#' @seealso \code{\link{as.network.egor}}, which performs the inverse
 #' operation (though drops the ties).
 #' @keywords datagen manip
 #' @examples
 #' 
-#' # See example(ergm.ego) and example(as.network.egodata).
-#' 
+#' # See example(ergm.ego) and example(as.network.egor).
+#' @importFrom tibble tibble as_tibble
 #' @export
-as.egodata.network<-function(object,special.cols=c("na","vertex.names"),...,egoIDcol="vertex.names"){
+as.egor.network<-function(object,special.cols=c("na")){
   N<-network.size(object)
 
-  egoIDs<-object%v%egoIDcol
-  if(any(duplicated(egoIDs))){
-    warning("Non-unique ego IDs; using 1..N.")
-    egoIDs <- seq_along(egoIDs)
-  }
-  
   egos<-list()
-  egos[[egoIDcol]]<-egoIDs
   
   for(a in list.vertex.attributes(object))
     if(!(a %in% special.cols)) egos[[a]]<-get.vertex.attribute(object,attrname=a)
 
+  egos <- tibble::as_tibble(egos)
+
   el<-as.edgelist(object)
   el<-rbind(el,el[,2:1])
-  alterS<-unlist(tapply(el[,2],INDEX=el[,1],FUN=c,simplify=FALSE))
-  alter.eID<-egoIDs[unlist(tapply(el[,1],INDEX=el[,1],FUN=c,simplify=FALSE))]
-  
-  alters<-list()
+  alterS<-tapply(el[,2],INDEX=el[,1],FUN=c,simplify=FALSE)
 
-  alters[[egoIDcol]]<-alter.eID
-    
-  for(a in list.vertex.attributes(object))
-    if(!(a %in% special.cols)) alters[[a]]<-get.vertex.attribute(object,attrname=a)[alterS]
+  alters <- lapply(seq_len(N), get.neighborhood, x=object) # so v gets the index variable
 
-  egodata(egos=as.data.frame(egos,stringsAsFactors=FALSE),alters=as.data.frame(alters,stringsAsFactors=FALSE), egoIDcol=egoIDcol)
+  alters <- lapply(alters, `[.tbl_df`, x=alters, j=TRUE)
+
+  egor(egos.df=egos,alters.df=alters)
 }
-
-.prune.alters <- function(egos, alters, egoIDcol){
-  eis <- egos[[egoIDcol]]
-  aeis <- alters[[egoIDcol]]
-
-  todel <- !(aeis %in% eis)
-
-  if(any(todel)) alters[!todel,,drop=FALSE]
-  else alters
-}
-
 
 
 #' Construct an Empty ``Template'' Network Consistent with an Egocentric Sample
 #' 
-#' Taking a \code{\link{egodata}} object, constructs a
+#' Taking a \code{\link{egor}} object, constructs a
 #' \code{\link[network]{network}} object with no edges whose vertices have the
 #' attributes of the egos in the dataset, replicating the egos as needed, and
 #' taking into accounts their sampling weights.
 #' 
 #' 
-#' @param x A \code{\link{egodata}} object.
+#' @param x A \code{\link{egor}} object.
 #' @param N The target number of vertices the output network should have.
-#' @param scaling If \code{\link{egodata}} contains weights or \code{N} is not
+#' @param scaling If \code{\link{egor}} contains weights or \code{N} is not
 #' a multiple of number of egos in the sample, it may not be possible, for a
 #' finite \code{N} to represent each ego exactly according to its relative
 #' weight, and \code{scaling} controls how the fractional egos are allocated:
@@ -278,7 +90,7 @@ as.egodata.network<-function(object,special.cols=c("na","vertex.names"),...,egoI
 #' @param \dots Additional arguments, currently unused.
 #' @return A \code{\link[network]{network}} object.
 #' @author Pavel N. Krivitsky
-#' @seealso \code{\link{as.egodata.network}}, which performs the inverse
+#' @seealso \code{\link{as.egor.network}}, which performs the inverse
 #' operation.
 #' @keywords manip
 #' @examples
@@ -287,7 +99,7 @@ as.egodata.network<-function(object,special.cols=c("na","vertex.names"),...,egoI
 #' data(faux.mesa.high)
 #' summary(faux.mesa.high, print.adj = FALSE)
 #' 
-#' fmh.ego <- as.egodata(faux.mesa.high)
+#' fmh.ego <- as.egor(faux.mesa.high)
 #' 
 #' # Same actor attributes
 #' fmh.template <- as.network(fmh.ego, N=network.size(faux.mesa.high))
@@ -299,26 +111,26 @@ as.egodata.network<-function(object,special.cols=c("na","vertex.names"),...,egoI
 #'
 #' @import network
 #' @export
-as.network.egodata<-function(x, N, scaling=c("round","sample"), ...){
+as.network.egor<-function(x, N, scaling=c("round","sample"), ...){
   scaling <- match.arg(scaling)
+  w <- weights(attr(x, "design"))
   egoinds <- switch(scaling,
                     greedy={
-                      .greedy.scaling(N,x$egoWt)
+                      .greedy.scaling(N,w)
                     },
                     round={
-                      .round.scaling(N,x$egoWt)
+                      .round.scaling(N,w)
                     },
                     sample={
-                      sample(length(x$egoWt),N,TRUE,x$egoWt)
+                      sample.int(length(w),N,TRUE,w)
                     })
 
   N <- length(egoinds) # round scaling may modify N.
   y0<-network.initialize(N,directed=FALSE)
-  egos <- x$egos
+
+  egor <- egor[egoinds,]
   
-  egos <- egos[egoinds,]
-  
-  for(ego.col in names(egos))
+  for(ego.col in setdiff(names(egos),c(".alters",".alter_ties")))
     if(is.factor(egos[[ego.col]]))
       y0 <- set.vertex.attribute(y0,ego.col,as.character(egos[[ego.col]]))
     else
@@ -344,18 +156,6 @@ as.network.egodata<-function(x, N, scaling=c("round","sample"), ...){
   n<-round(ideal)
   rep(seq_along(w),n)
 }
-
-
-# Note: The following functions use parts of na.omit.data.frame() and
-# subset.data.frame() from the R's stats package under the terms of
-# the GNU GPL v3.
-
-#' @rdname subset.egodata
-#' @export
-`[.egodata` <- function(x, i, j, ..., dup.action=c("make.unique", "fail", "number")){
-  subset(x, i, j, ..., dup.action=dup.action)
-}
-
 
 
 #' Subsetting \code{\link{egodata}} Objects
