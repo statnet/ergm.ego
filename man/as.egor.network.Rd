@@ -4,7 +4,7 @@
 \alias{as.egor.network}
 \title{Construct an Egocentric View of a \code{\link{network}} Object}
 \usage{
-as.egor.network(object, special.cols = c("na"))
+\method{as.egor}{network}(object, special.cols = c("na"))
 }
 \arguments{
 \item{object}{A \code{\link[network]{network}} object.}

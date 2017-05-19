@@ -44,7 +44,7 @@ as.egor.egodata <- function(object, ...){
 #' @examples
 #' 
 #' # See example(ergm.ego) and example(as.network.egor).
-#' @importFrom tibble tibble as_tibble
+#' @import tibble
 #' @export
 as.egor.network<-function(object,special.cols=c("na")){
   N<-network.size(object)
@@ -62,7 +62,7 @@ as.egor.network<-function(object,special.cols=c("na")){
 
   alters <- lapply(seq_len(N), get.neighborhood, x=object) # so v gets the index variable
 
-  alters <- lapply(alters, `[.tbl_df`, x=alters, j=TRUE)
+  alters <- lapply(alters, function(js) egos[js,,drop=FALSE])
 
   egor(egos.df=egos,alters.df=alters)
 }

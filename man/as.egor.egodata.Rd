@@ -4,7 +4,7 @@
 \alias{as.egor.egodata}
 \title{Convert \code{\link{egodata}} Objects to \code{\link{egor}} Objects}
 \usage{
-as.egor.egodata(object, ...)
+\method{as.egor}{egodata}(object, ...)
 }
 \arguments{
 \item{object}{a \code{\link{egodata}} object}
