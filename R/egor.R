@@ -157,92 +157,6 @@ as.network.egor<-function(x, N, scaling=c("round","sample"), ...){
   rep(seq_along(w),n)
 }
 
-
-#' Subsetting \code{\link{egodata}} Objects
-#' 
-#' Returns subsets of \code{\link{egodata}} objects that meet conditions.
-#' 
-#' 
-#' @aliases subset.egodata [.egodata
-#' @param x An \code{\link{egodata}} object.
-#' @param subset,i An expression (evaluated in the context of the \code{egos}
-#' table of \code{x} producing a logical, integer, or character vector
-#' indicating which egos to select (and, for the latter two, how many times).
-#' @param select,j A numeric or character vector specifying the columns of
-#' \code{egos} and \code{alters} to select.
-#' @param \dots Additional arguments, currently unused.
-#' @param dup.action What to do when an ego is referenced multiple times:
-#' \describe{ \item{"make.unique"}{Construct new unique ego IDs using
-#' the \code{\link[base]{make.unique}} function } \item{"fail"}{Exit
-#' with an error.} \item{"number"}{Number the egos consecutively in
-#' the order they were selected } }
-#' @return An \code{\link{egodata}} object.
-#' @author Pavel N. Krivitsky
-#' @seealso \code{\link{sample.egodata}}
-#' @keywords manip
-#' @export
-subset.egodata <- function(x, subset, select, ..., dup.action=c("make.unique", "fail", "number")){
-  if(missing(subset)) subset <- TRUE
-  
-  if (missing(select)) 
-    egovars <- altervars <- TRUE
-  else {
-    if((is.numeric(select) || is.logical(select) || is.integer(select))
-       && !isTRUE(all.equal(names(x$egos),names(x$alters)))){
-      stop("Logical or numeric column subsets cannot be used if column orderings for egos and alters are not identical. Use column names instead.")
-    }
-    
-    nl <- as.list(seq_along(x$egos))
-    names(nl) <- names(x$egos)
-    vars <- eval(substitute(select), nl, parent.frame())
-    eIDi <- switch(mode(vars),
-                   numeric = which(names(x$egos)==x$egoIDcol),
-                   character = x$egoIDcol)                   
-    egovars <- union(eIDi,vars)
-
-    nl <- as.list(seq_along(x$alters))
-    names(nl) <- names(x$alters)
-    vars <- eval(substitute(select), nl, parent.frame())
-    eIDi <- switch(mode(vars),
-                   numeric = which(names(x$alters)==x$egoIDcol),
-                   character = x$egoIDcol)
-    altervars <- union(eIDi,vars)
-  }
-
-  egoIDs <- switch(mode(subset),
-                   numeric =,
-                   logical =,
-                   integer = x$egos[[x$egoIDcol]][subset],
-                   character = x$egos[[x$egoIDcol]][match(subset, x$egos[[x$egoIDcol]])])
-
-  dup.action <- match.arg(dup.action)
-  unique.egoIDs <- switch(dup.action,
-                          fail=stop("Selected subset calls for duplicating egos."),
-                          numeric=seq_along(egoIDs),
-                          make.unique=make.unique(as.character(egoIDs)))
-  
-  egos <- cbind(x$egos[match(egoIDs,x$egos[[x$egoIDcol]]),if(is.character(egovars)) intersect(egovars,names(x$egos)) else egovars,drop=FALSE], .unique.egoIDs = unique.egoIDs, stringsAsFactors=FALSE)
-  alters <- merge(egos[c(x$egoIDcol,".unique.egoIDs")], x$alters[if(is.character(altervars)) intersect(altervars,names(x$alters)) else altervars], by=x$egoIDcol)
-  egoWt <- x$egoWt[match(egoIDs,x$egos[[x$egoIDcol]])]
-
-  # If we have duplicated egoIDs, we have to handle it per dup.action.
-  
-  if(any(duplicated(egoIDs))){
-    egos[[x$egoIDcol]] <- egos[[".unique.egoIDs"]]
-    alters[[x$egoIDcol]] <- alters[[".unique.egoIDs"]]
-  }
-  egos[[".unique.egoIDs"]] <- NULL
-  alters[[".unique.egoIDs"]] <- NULL
-
-  out <- x
-  out$egos <- egos
-  out$alters <- alters
-  out$egoWt <- egoWt
-  
-  class(out) <- "egodata"
-  out
-}
-
 # TODO: A more efficient implementation of this.
 #' @importFrom stats na.omit
 #' @export
@@ -284,16 +198,6 @@ na.omit.egodata <- function(object, relevant=TRUE, ...){
   subset(object, -match(union(ego.omit,alter.omit),object$egos[[object$egoIDcol]]))  
 }
 
-#' @export
-dimnames.egodata <- function(x){
-  list(x$egos[[x$egoIDcol]], names(x$egos), names(x$alters))
-}
-
-#' @export
-dim.egodata <- function(x){
-  c(nrow(x$egos), ncol(x$egos), ncol(x$alters))
-}
-
 # Not really a generic function, but perhaps should be.
 
 #' @export
@@ -302,19 +206,11 @@ sample <- function(x, size, replace=FALSE, prob=NULL, ...) UseMethod("sample")
 sample.default <- function(x, ...) base::sample(x, ...)
 
 #' @export
-sample.egodata <- function(x, size, replace=FALSE, prob=NULL, ...){
+sample.egor <- function(x, size, replace=FALSE, prob=NULL, ...){
   if(missing(size)) size <- nrow(x)
   
   is <- sample.int(nrow(x), size, replace, prob)
 
-  out <- subset(x, is)
-
-  if(is.null(prob)) prob <- rep(1, nrow(x))
-  
-  out$egoWt <- x$egoWt[is]/prob[is]
-  out
+  x[is, ,aspect="egos"]
 }
 
-#' @importFrom utils head
-#' @export
-head.egodata <- function(x, n=6L, ...) lapply(x, head, n=n, ...)
