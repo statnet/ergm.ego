@@ -79,11 +79,55 @@
 #
 ###############################################################################
 
+
+
+#' Conduct Goodness-of-Fit Diagnostics on a Exponential Family Random Graph
+#' Model fit to Egocentrically Sampled Data
+#' 
+#' \code{\link{gof.ergm.ego}} implements the \code{\link[ergm]{gof}} method for
+#' \code{\link{ergm.ego}} fit objects.
+#' 
+#' 
+#' @param object An \code{\link{ergm.ego}} fit.
+#' @param \dots Additional arguments, currently unused.
+#' @param GOF A string specifying the statistics whose goodness of fit is to be
+#' evaluated. Currently, only \dQuote{degree} and \dQuote{model} are
+#' implemented; see \code{\link[ergm]{gof}} documentation for details.
+#' @param control A list to control parameters, constructed using
+#' \code{\link{control.gof.formula}} or \code{\link{control.gof.ergm}} (which
+#' have different defaults).
+#' @param verbose Provide verbose information on the progress of the
+#' simulation.
+#' @return An object of class \code{\link[ergm:gof]{gofobject}}.
+#' @author Pavel N. Krivitsky
+#' @seealso For examples, see \code{\link{ergm.ego}}.
+#' @keywords models
+#' @examples
+#' 
+#' data(faux.mesa.high)
+#' fmh.ego <- as.egodata(faux.mesa.high)
+#' 
+#' head(fmh.ego)
+#' 
+#' egofit <- ergm.ego(fmh.ego~edges+degree(0:3)+nodefactor("Race")+nodematch("Race")
+#'                          +nodefactor("Sex")+nodematch("Sex")+absdiff("Grade"), 
+#'                           popsize=network.size(faux.mesa.high))
+#' 
+#' # Check whether the model "converged":
+#' (modelgof <- gof(egofit, GOF="model"))
+#' plot(modelgof)
+#' 
+#' # Check whether the model reconstructs the degree distribution:
+#' (deggof <- gof(egofit, GOF="degree"))
+#' plot(deggof)
+#'
+#' @import ergm stats
+#' @export
 gof.ergm.ego <- function (object, ..., 
                           GOF=c("model","degree"), 
                           control=control.gof.ergm(),
                           verbose=FALSE) {
-  check.control.class(c("gof.ergm","gof.formula"))
+  statnet.common::check.control.class(c("gof.ergm","gof.formula"))
   
   #Set up the defaults, if called with GOF==NULL
   if(is.null(GOF)){

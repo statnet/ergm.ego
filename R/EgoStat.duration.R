@@ -7,6 +7,7 @@
 #
 #  Copyright 2015-2016 Statnet Commons
 #######################################################################
+#' @export
 EgoStat.mean.age <- function(egodata, emptyval=0){
   startcol <- egodata$startcol
   if(is.null(startcol)) stop("Egocentric dataset does not appear to contain durational information.")

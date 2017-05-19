@@ -8,7 +8,9 @@
 #  Copyright 2015-2016 Statnet Commons
 #######################################################################
 ## A thin wrapper around summary.ergm to get rid of a spurious error message.
-.summary.ergm.ego <- function (object, ..., 
+#' @method summary ergm.ego
+#' @export
+summary.ergm.ego <- function (object, ..., 
                           digits = max(3, getOption("digits") - 3),
                           correlation=FALSE, covariance=FALSE,
                           total.variation=TRUE){
@@ -18,7 +20,9 @@
   summ
 }
 
-.print.summary.ergm.ego <- function (x, ...){
+#' @method print summary.ergm.ego
+#' @export
+print.summary.ergm.ego <- function (x, ...){
   print.summary.ergm(x, ..., print.deviances=FALSE)
 }
 

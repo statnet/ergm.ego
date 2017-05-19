@@ -7,6 +7,34 @@
 #
 #  Copyright 2015-2016 Statnet Commons
 #######################################################################
+
+
+#' Plotting the degree distribution of an egocentric dataset
+#' 
+#' A function to plot a histogram of the degree distribution of actors in the
+#' egocentric dataset, optionally broken down by group and/or compared with a
+#' Bernoulli graph.
+#' 
+#' 
+#' @param egodata A \code{\link{egodata}} object.
+#' @param freq,prob Whether to plot the raw frequencies or the conditional
+#' proportions of the degree values. Defaults to the latter.
+#' @param by A character vector giving the name of a vertex attribute; if
+#' given, plots the frequences broken down by that attribute.
+#' @param brgmod Plot the range of predicted frequencies/probabilities
+#' according to a Bernoulli graph having the same expected density as the
+#' observed.
+#' @seealso \code{\link{degreedist}},
+#' \code{\link[ergm:summary.formula]{summary}}
+#' @examples
+#' 
+#' data(faux.mesa.high)
+#' fmh.ego <- as.egodata(faux.mesa.high)
+#' 
+#' degreedist.egodata(fmh.ego,by="Grade",brgmod=TRUE)
+#'
+#' @importFrom graphics arrows barplot legend points
+#' @export
 degreedist.egodata <- function(egodata, freq = FALSE, prob = !freq, 
                                by = NULL, brgmod = FALSE){
   if (class(egodata) != "egodata"){
@@ -39,7 +67,7 @@ degreedist.egodata <- function(egodata, freq = FALSE, prob = !freq,
     } else if(ncolors < 10){
       color <- RColorBrewer::brewer.pal(ncolors,"Blues")
     } else if(ncolors >= 10){
-      color <- colorRampPalette(RColorBrewer::brewer.pal(9,"Blues"))(ncolors)
+      color <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(9,"Blues"))(ncolors)
     }
     
     ltext <- levs
@@ -112,6 +140,39 @@ degreedist.egodata <- function(egodata, freq = FALSE, prob = !freq,
 }
 
 
+
+
+#' Summarizing the mixing among groups in an egocentric dataset
+#' 
+#' A function to return counts of how often a ego of each group nominates an
+#' alter of each group.
+#' 
+#' 
+#' @param egodata A \code{\link{egodata}} object.
+#' @param attrname A character vector containing the name of the network
+#' attribute whose mixing matrix is wanted.
+#' @param rowprob Whether the counts should be normalized by row sums. That is,
+#' whether they should be proportions conditional on the ego's group.
+#' @return A matrix with a row and a column for each level of \code{attrname}.
+#' 
+#' Note that, unlike \code{\link[network]{mixingmatrix}}, what is counted are
+#' \emph{nominations}, not ties. This means that under an egocentric census,
+#' the diagonal of \code{mixingmatrix.egodata} will be twice that returned by
+#' \code{\link[network]{mixingmatrix}} for the original undirected network.
+#' @seealso \code{\link[network]{mixingmatrix}}, \code{\link[ergm]{nodemix}},
+#' \code{\link[ergm.ego]{summary}} method for egocentric data
+#' @examples
+#' 
+#' data(faux.mesa.high)
+#' fmh.ego <- as.egodata(faux.mesa.high)
+#' 
+#' (mm <- mixingmatrix(faux.mesa.high,"Grade"))
+#' (mm.ego <- mixingmatrix.egodata(fmh.ego,"Grade"))
+#' 
+#' stopifnot(isTRUE(all.equal({tmp<-unclass(mm$matrix); diag(tmp) <- diag(tmp)*2;
+#' tmp}, mm.ego, check.attributes=FALSE)))
+#' 
+#' @export
 mixingmatrix.egodata <- function(egodata, attrname, rowprob = FALSE){
   egos <- egodata$egos
   alters <- egodata$alters

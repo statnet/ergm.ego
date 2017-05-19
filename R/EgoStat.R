@@ -12,6 +12,51 @@
 # and returns a matrix of h(e[i]) values, with egos in rows and
 # elements of h(e[i]) in columns.
 
+#' \code{\link[ergm]{ergm}} Terms Implemented for
+#' \code{\link[=egodata.object]{egodata}}
+#' 
+#' This page describes the \code{\link[ergm]{ergm}} terms (and hence network
+#' statistics) for which inference based on egocentrically sampled data is
+#' implemented in \code{ergm.ego} package. Other packages may add their own
+#' terms.
+#' 
+#' The current recommendation for any package implementing additional
+#' egocentric calculator terms is to create a help file with a name or alias
+#' \code{ergm.egodata-terms}, so that \code{help("ergm.egodata-terms")} will
+#' list egocentric ERGM terms available from all loaded packages.
+#' 
+#' 
+#' @name ergm.ego-terms
+#' @aliases ergm.ego-terms terms-ergm.ego ergm.ego.terms terms.ergm.ego
+#' ergm-terms ergm.terms terms-ergm terms.ergm EgoStat EgoStat.edges
+#' EgoStat.nodecov EgoStat.nodefactor EgoStat.nodematch EgoStat.nodemix
+#' EgoStat.absdiff EgoStat.degree EgoStat.degrange EgoStat.concurrent
+#' EgoStat.concurrentties EgoStat.degreepopularity EgoStat.mean.age netsize.adj
+#' InitErgmTerm.netsize.adj
+#' @docType methods
+#' @section Currently implemented egocentric statistics: For each of these,
+#' please see their respective package's \code{ergm-terms} help for meaning and
+#' parameters. The simplest way to do this is usually via \code{? TERM}.
+#' 
+#' \describe{ \item{Special-purpose terms:}{ \describe{
+#' \item{netsize.adj}{A special-purpose term equivalent to
+#' \code{\link[ergm]{edges}}, to house the network-size adjustment offset. This
+#' term is added to the model automatically and should not be used in the model
+#' formula directly.  } } }
+#' 
+#' \item{ergm:}{ \itemize{ \item \code{edges} \item \code{nodecov}
+#' \item \code{nodefactor} \item \code{nodematch} \item \code{nodemix} \item
+#' \code{absdiff} \item \code{degree} \item \code{degrange} \item
+#' \code{concurrent} \item \code{concurrentties} \item \code{degreepopularity}
+#' } }
+#' 
+#' \item{tergm:}{ \itemize{ \item \code{mean.age} } } }
+#' @seealso \code{\link[ergm]{ergm-terms}}
+#' @keywords models
+NULL
+
+
+#' @export
 EgoStat.edges <- function(egodata){
   egos <- egodata$egos
   alters <- egodata$alters
@@ -34,6 +79,7 @@ EgoStat.edges <- function(egodata){
 }
 
 
+#' @export
 EgoStat.nodecov <- function(egodata, attrname){
   egos <- egodata$egos
   alters <- egodata$alters
@@ -53,6 +99,7 @@ EgoStat.nodecov <- function(egodata, attrname){
 }
 
 
+#' @export
 EgoStat.nodefactor <- function(egodata, attrname, base=1){
   egos <- egodata$egos
   alters <- egodata$alters
@@ -76,6 +123,7 @@ EgoStat.nodefactor <- function(egodata, attrname, base=1){
   else h[match(egodata$egos[[egoIDcol]],rownames(h)),-base,drop=FALSE]
 }
 
+#' @export
 EgoStat.nodematch <- function(egodata, attrname, diff=FALSE, keep=NULL){
   egos <- egodata$egos
   alters <- egodata$alters
@@ -103,6 +151,7 @@ EgoStat.nodematch <- function(egodata, attrname, diff=FALSE, keep=NULL){
 }
 
 
+#' @export
 EgoStat.nodemix <- function(egodata, attrname, base=NULL){
   egos <- egodata$egos
   alters <- egodata$alters
@@ -142,6 +191,7 @@ EgoStat.nodemix <- function(egodata, attrname, base=NULL){
   h[match(egodata$egos[[egoIDcol]],rownames(h)),]/2
 }
 
+#' @export
 EgoStat.absdiff <- function(egodata, attrname, pow=1){
   egos <- egodata$egos
   alters <- egodata$alters
@@ -160,6 +210,7 @@ EgoStat.absdiff <- function(egodata, attrname, pow=1){
   h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]/2
 }
 
+#' @export
 EgoStat.degree <- function(egodata, d, by=NULL, homophily=FALSE){
   ## if(any(d==0)) warning("degree(0) (isolate) count statistic depends strongly on the specified population network size.")
   
@@ -201,6 +252,7 @@ EgoStat.degree <- function(egodata, d, by=NULL, homophily=FALSE){
   h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]
 }
 
+#' @export
 EgoStat.degrange <- function(egodata, from=NULL, to=Inf, by=NULL, homophily=FALSE){
   ## if(any(from==0)) warning("degrange(0,...) (isolate) count depends strongly on the specified population network size.")
   
@@ -262,6 +314,7 @@ EgoStat.degrange <- function(egodata, from=NULL, to=Inf, by=NULL, homophily=FALS
   h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]
 }
 
+#' @export
 EgoStat.concurrent <- function(egodata, by=NULL){
   egos <- egodata$egos
   alters <- egodata$alters
@@ -299,6 +352,7 @@ EgoStat.concurrent <- function(egodata, by=NULL){
   h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]
 }
 
+#' @export
 EgoStat.concurrentties <- function(egodata, by=NULL){
   egos <- egodata$egos
   alters <- egodata$alters
@@ -337,6 +391,7 @@ EgoStat.concurrentties <- function(egodata, by=NULL){
 }
 
 
+#' @export
 EgoStat.degreepopularity <- function(egodata){
   egos <- egodata$egos
   alters <- egodata$alters
