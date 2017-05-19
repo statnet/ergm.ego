@@ -7,8 +7,62 @@
 #
 #  Copyright 2015-2016 Statnet Commons
 #######################################################################
+
+
+#' Simulate from a \code{\link{ergm.ego}} fit.
+#' 
+#' A wrapper around \code{\link[ergm]{simulate.formula}} to simulate networks
+#' from an ERGM fit using \code{\link{ergm.ego}}.
+#' 
+#' 
+#' @param object An \code{\link{ergm.ego}} fit.
+#' @param nsim Number of realizations to simulate.
+#' @param seed Random seed.
+#' @param popsize Network size to which to scale the model for simulation.
+#' @param control A \code{\link{control.simulate.ergm.ego}} control list.
+#' @param \dots Additional arguments passed to \code{\link[ergm]{san}} and
+#' \code{\link[ergm]{simulate.formula}}.
+#' @param verbose Verbosity of output.
+#' @return The ouput has the same format (with the same options) as
+#' \code{\link[ergm]{simulate.formula}}. If \code{statsonly=TRUE} is passed, an
+#' additional attribute, \code{"ppopsize"} is set, giving the actual size of
+#' the network reconstructed, when the \code{pop.wt} control parameter is set
+#' to \code{"round"} and \code{"popsize"} is not a multiple of the egocentric
+#' sample size or the sampling weights.
+#' @author Pavel N. Krivitsky
+#' @seealso \code{\link[ergm]{simulate.formula}},
+#' \code{\link[ergm]{simulate.ergm}}
+#' @references Pavel N. Krivitsky and Martina Morris. Inference for Social
+#' Network Models from Egocentrically-Sampled Data, with Application to
+#' Understanding Persistent Racial Disparities in HIV Prevalence in the US.
+#' Thechnical Report. National Institute for Applied Statistics Research
+#' Australia, University of Wollongong, 2015(05-15).
+#' \url{http://niasra.uow.edu.au/publications/UOW190187.html}
+#' 
+#' Pavel N. Krivitsky, Mark S. Handcock, and Martina Morris. Adjusting for
+#' Network Size and Composition Effects in Exponential-Family Random Graph
+#' Models. \emph{Statistical Methodology}, 2011, 8(4), 319-339.
+#' c("\\Sexpr[results=rd,stage=build]{tools:::Rd_expr_doi(\"#1\")}",
+#' "10.1016/j.stamet.2011.01.005")\Sexpr{tools:::Rd_expr_doi("10.1016/j.stamet.2011.01.005")}
+#' @keywords models
+#' @examples
+#' 
+#' data(faux.mesa.high)
+#' fmh.ego <- as.egodata(faux.mesa.high)
+#' egofit <- ergm.ego(fmh.ego~edges+degree(0:3)+nodefactor("Race")+nodematch("Race")
+#'                          +nodefactor("Sex")+nodematch("Sex")+absdiff("Grade"), 
+#'                           popsize=network.size(faux.mesa.high))
+#' colMeans(egosim <- simulate(egofit, popsize=500,nsim=200,
+#' statsonly=TRUE, control=control.simulate.ergm.ego(
+#'                     simulate.control=control.simulate.formula(MCMC.burnin=2e6))))
+#' colMeans(egosim)/attr(egosim,"ppopsize")*network.size(faux.mesa.high)
+#' summary(faux.mesa.high~edges+degree(0:3)+nodefactor("Race")+nodematch("Race")
+#'                          +nodefactor("Sex")+nodematch("Sex")+absdiff("Grade"))
+#'
+#' @importFrom stats simulate
+#' @export
 simulate.ergm.ego <- function(object, nsim = 1, seed = NULL, popsize=if(object$popsize==1) object$ppopsize else object$popsize, control=control.simulate.ergm.ego(), ..., verbose=FALSE){
-  check.control.class()
+  statnet.common::check.control.class()
   
   egodata <- object$egodata
   popnw <- if(popsize == object$ppopsize) object$newnetwork else as.network(egodata, popsize, scaling=control$ppop.wt)

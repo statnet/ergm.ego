@@ -7,8 +7,91 @@
 #
 #  Copyright 2015-2016 Statnet Commons
 #######################################################################
+
+
+#' Inference for Exponential-Family Random Graph Models based on Egocentrically
+#' Sampled Data
+#' 
+#' A wrapper around the \code{\link[ergm]{ergm}} to fit an ERGM to an
+#' \code{\link{egodata}}.
+#' 
+#' 
+#' @param formula An \code{\link{formula}} object, of the form \code{e ~ <model
+#' terms>}, where \code{e} is a \code{\link{egodata}} object. See
+#' \code{\link[ergm]{ergm}} for details and examples.
+#' 
+#' For a list of currently implemented egocentric terms for the RHS, see
+#' \code{\link{ergm.ego-terms}}.
+#' @param popsize The size \eqn{|N|} of the finite population network from
+#' which the egocentric sample was taken; only affects the shift in the
+#' coefficients of the terms modeling the overall propensity to have ties.
+#' Setting it to 1 (the default) essentially uses the \eqn{-\log |N'|} offset
+#' on the edges term.
+#' @param offset.coef A vector of coefficients for the offset terms.
+#' @param na.action How to handle missing actor attributes in egos or alters,
+#' when the terms need them.
+#' @param \dots Additional arguments passed to \code{\link[ergm]{ergm}}.
+#' @param control A \code{\link{control.ergm.ego}} control list.
+#' @param do.fit Whether to actually call \code{\link[ergm]{ergm}}
+#' @return An object of class \code{ergm.ego} inheriting from
+#' \code{\link[ergm]{ergm}}, with the following additional or overridden
+#' elements: \item{"v"}{Variance-covariance matrix of the estimate of the
+#' sufficient statistics} \item{"m"}{Estimate of the sufficient
+#' statistics} \item{"egodata"}{The egodata object passed}
+#' \item{"popsize"}{Population network size and pseudopopulation size
+#' used, respectively}\item{, }{Population network size and pseudopopulation
+#' size used, respectively}\item{"ppopsize"}{Population network size and
+#' pseudopopulation size used, respectively} \item{"coef"}{The
+#' coefficients, along with the network size adjustment \code{netsize.adj}
+#' coefficient.} \item{"covar"}{Pseudo-MLE estimate of the
+#' variance-covariance matrix of the parameter estimates under repeated
+#' egocentric sampling} \item{"ergm.covar"}{ The variance-covariance matrix of
+#' parameter estimates under the ERGM superpopulation process (without
+#' incorporating sampling).  }
+#' \item{"DtDe"}{Estimated Jacobian of the expectation of the sufficient
+#' statistics with respect to the model parameters}
+#' @author Pavel N. Krivitsky
+#' @references
+#' 
+#' Pavel N. Krivitsky and Martina Morris. Inference for Social Network Models
+#' from Egocentrically-Sampled Data, with Application to Understanding
+#' Persistent Racial Disparities in HIV Prevalence in the US. Thechnical
+#' Report. National Institute for Applied Statistics Research Australia,
+#' University of Wollongong, 2015(05-15).
+#' \url{http://niasra.uow.edu.au/publications/UOW190187.html}
+#' @keywords models
+#' @examples
+#' 
+#' data(faux.mesa.high)
+#' fmh.ego <- as.egodata(faux.mesa.high)
+#' 
+#' head(fmh.ego)
+#' 
+#' egofit <- ergm.ego(fmh.ego~edges+degree(0:3)+nodefactor("Race")+nodematch("Race")
+#'                          +nodefactor("Sex")+nodematch("Sex")+absdiff("Grade"), 
+#'                           popsize=network.size(faux.mesa.high))
+#' 
+#' # Run convergence diagnostics
+#' mcmc.diagnostics(egofit)
+#' 
+#' # Estimates and standard errors
+#' summary(egofit)
+#' 
+#' # Note that we recover the ergm() parameters
+#' \dontrun{
+#' coef(ergm(faux.mesa.high~edges+degree(0:3)+nodefactor("Race")+nodematch("Race")
+#'                          +nodefactor("Sex")+nodematch("Sex")+absdiff("Grade"),
+#'           eval.loglik=FALSE))
+#' }
+#' rbind(c(0, -0.8407, 2.3393, 1.4686, 0.6323, 0.5287, -1.3603, -1.0454,
+#'         -2.4998, -0.7207, 0.833, -0.1823, 0.6357, -1.3513),
+#'       coef(egofit))
+#'
+#' @import ergm stats
+#' @importFrom utils modifyList
+#' @export
 ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.ergm.ego(), na.action=na.fail, do.fit=TRUE){
-  check.control.class()
+  statnet.common::check.control.class()
   
   stats.est <- control$stats.est
   stats.wt <- control$stats.wt
@@ -116,7 +199,7 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.
 
     ## Workaround to keep mcmc.diagnostics from failing. Should be removed after fix is released.
     if(inherits(ergm.fit$sample,"mcmc.list")){
-      for(thread in 1:nchain(ergm.fit$sample))
+      for(thread in 1:coda::nchain(ergm.fit$sample))
         ergm.fit$sample[[thread]][,1] <- 0
     } else ergm.fit$sample[,1] <- 0
     ergm.fit$drop[1] <- 0

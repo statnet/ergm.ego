@@ -7,6 +7,7 @@
 #
 #  Copyright 2015-2016 Statnet Commons
 #######################################################################
+#' @import statnet.common
 .onAttach <- function(lib, pkg){
   sm <- statnetStartupMessage("ergm.ego", c("statnet"), TRUE)
   if(!is.null(sm)){

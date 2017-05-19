@@ -11,6 +11,7 @@
 # h(e[i]) values, with egos in rows and elements of h(e[i]) in
 # columns.
 
+
 .allAlters <- function(egor){
   do.call(rbind, egor$.alters)
 }
@@ -37,11 +38,56 @@
   h
 }
 
+#' \code{\link[ergm]{ergm}} Terms Implemented for
+#' \code{\link[=egodata.object]{egodata}}
+#' 
+#' This page describes the \code{\link[ergm]{ergm}} terms (and hence network
+#' statistics) for which inference based on egocentrically sampled data is
+#' implemented in \code{ergm.ego} package. Other packages may add their own
+#' terms.
+#' 
+#' The current recommendation for any package implementing additional
+#' egocentric calculator terms is to create a help file with a name or alias
+#' \code{ergm.egodata-terms}, so that \code{help("ergm.egodata-terms")} will
+#' list egocentric ERGM terms available from all loaded packages.
+#' 
+#' 
+#' @name ergm.ego-terms
+#' @aliases ergm.ego-terms terms-ergm.ego ergm.ego.terms terms.ergm.ego
+#' ergm-terms ergm.terms terms-ergm terms.ergm EgoStat EgoStat.edges
+#' EgoStat.nodecov EgoStat.nodefactor EgoStat.nodematch EgoStat.nodemix
+#' EgoStat.absdiff EgoStat.degree EgoStat.degrange EgoStat.concurrent
+#' EgoStat.concurrentties EgoStat.degreepopularity EgoStat.mean.age netsize.adj
+#' InitErgmTerm.netsize.adj
+#' @docType methods
+#' @section Currently implemented egocentric statistics: For each of these,
+#' please see their respective package's \code{ergm-terms} help for meaning and
+#' parameters. The simplest way to do this is usually via \code{? TERM}.
+#' 
+#' \describe{ \item{Special-purpose terms:}{ \describe{
+#' \item{netsize.adj}{A special-purpose term equivalent to
+#' \code{\link[ergm]{edges}}, to house the network-size adjustment offset. This
+#' term is added to the model automatically and should not be used in the model
+#' formula directly.  } } }
+#' 
+#' \item{ergm:}{ \itemize{ \item \code{edges} \item \code{nodecov}
+#' \item \code{nodefactor} \item \code{nodematch} \item \code{nodemix} \item
+#' \code{absdiff} \item \code{degree} \item \code{degrange} \item
+#' \code{concurrent} \item \code{concurrentties} \item \code{degreepopularity}
+#' } }
+#' 
+#' \item{tergm:}{ \itemize{ \item \code{mean.age} } } }
+#' @seealso \code{\link[ergm]{ergm-terms}}
+#' @keywords models
+NULL
+
+#' @export
 EgoStat.edges <- function(egor){
   h <- function(e) nrow(e$.alters)/2
   .eval.h(egor, h, "edges")
 }
 
+#' @export
 EgoStat.nodecov <- function(egor, attrname){
   nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$.alters[[1]]))
 
@@ -51,6 +97,7 @@ EgoStat.nodecov <- function(egor, attrname){
   .eval.h(egor, h, paste("nodecov",attrname,sep="."))
 }
 
+#' @export
 EgoStat.nodefactor <- function(egor, attrname, base=1){
   nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$.alters[[1]]))
   if(nattr==0) .attrErr("nodefactor", attrname, "one")
@@ -68,6 +115,7 @@ EgoStat.nodefactor <- function(egor, attrname, base=1){
   .eval.h(egor, h, paste("nodefactor",attrname,l,sep="."))
 }
 
+#' @export
 EgoStat.nodematch <- function(egor, attrname, diff=FALSE, keep=NULL){
   nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$.alters[[1]]))
   if(nattr==0) .attrErr("nodematch", attrname, "both")
@@ -87,6 +135,7 @@ EgoStat.nodematch <- function(egor, attrname, diff=FALSE, keep=NULL){
 }
 
 
+#' @export
 EgoStat.nodemix <- function(egor, attrname, base=NULL){
   nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$.alters[[1]]))
   if(nattr==0) .attrErr("nodemix", attrname, "both")
@@ -106,6 +155,7 @@ EgoStat.nodemix <- function(egor, attrname, base=NULL){
                paste("mix",attrname,namevec,sep="."))
 }
 
+#' @export
 EgoStat.absdiff <- function(egor, attrname, pow=1){
   nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$.alters[[1]]))
   if(nattr==0) .attrErr("absdiff", attrname, "both")
@@ -118,6 +168,7 @@ EgoStat.absdiff <- function(egor, attrname, pow=1){
           else paste("absdiff",pow,".",attrname,sep=""))
 }
 
+#' @export
 EgoStat.degree <- function(egor, d, by=NULL, homophily=FALSE){
   ## if(any(d==0)) warning("degree(0) (isolate) count statistic depends strongly on the specified population network size.")
 
@@ -147,6 +198,7 @@ EgoStat.degree <- function(egor, d, by=NULL, homophily=FALSE){
   .eval.h(egor, h, cn)
 }
 
+#' @export
 EgoStat.degrange <- function(egor, from=NULL, to=Inf, by=NULL, homophily=FALSE){
   ## if(any(from==0)) warning("degrange(0,...) (isolate) count depends strongly on the specified population network size.")
   
@@ -191,6 +243,7 @@ EgoStat.degrange <- function(egor, from=NULL, to=Inf, by=NULL, homophily=FALSE){
   .eval.h(egor, h, cn)
 }
 
+#' @export
 EgoStat.concurrent <- function(egor, by=NULL){
 
   if(!by %in% names(egor)) stop("For term ",sQuote("concurrent")," attribute ", sQuote(by), " must be observed on egos.", call.=FALSE)
@@ -212,6 +265,7 @@ EgoStat.concurrent <- function(egor, by=NULL){
   .eval.h(egor, h, cn)
 }
 
+#' @export
 EgoStat.concurrentties <- function(egor, by=NULL){
   if(!by %in% names(egor)) stop("For term ",sQuote("concurrent")," attribute ", sQuote(by), " must be observed on egos.", call.=FALSE)
   
@@ -232,7 +286,7 @@ EgoStat.concurrentties <- function(egor, by=NULL){
   .eval.h(egor, h, cn)
 }
 
-
+#' @export
 EgoStat.degreepopularity <- function(egor){
 
   h <- function(e) nrow(e$.alters)^(3/2)
