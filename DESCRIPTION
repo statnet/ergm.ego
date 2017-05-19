@@ -14,3 +14,4 @@ Description: Utilities for managing egocentrically sampled network data and a wr
 License: GPL-3 + file LICENSE
 URL: http://www.statnet.org
 RoxygenNote: 6.0.1
+Roxygen: list(markdown = TRUE)
