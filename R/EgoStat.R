@@ -30,6 +30,7 @@
 #' @param cn a vector of column names for the output.
 #'
 #' @return A numeric matrix with `nrow(egor)` rows.
+#' @noRd
 .eval.h <- function(egor, h, cn){
   h <- apply(egor, 1, h)
   if(is.matrix(h)) h <- t(h) # apply() builds a matrix with egos in columns
