@@ -2,18 +2,23 @@
 % Please edit documentation in R/egor.R
 \name{as.egor.egodata}
 \alias{as.egor.egodata}
-\title{Convert \code{\link{egodata}} Objects to \code{\link{egor}} Objects}
+\alias{egodata}
+\title{Convert (deprecated) \code{\link{egodata}} Objects to
+\code{\link{egor}} Objects}
 \usage{
-\method{as.egor}{egodata}(object, ...)
+\method{as.egor}{egodata}(x, ...)
 }
 \arguments{
-\item{object}{a \code{\link{egodata}} object}
+\item{x}{a \code{\link{egodata}} object}
+
+\item{...}{additional arguments, currently unused.}
 }
 \value{
 An \code{\link{egor}} object.
 }
 \description{
-Convert \code{\link{egodata}} Objects to \code{\link{egor}} Objects
+Convert (deprecated) \code{\link{egodata}} Objects to
+\code{\link{egor}} Objects
 }
 \section{Miscellaneous Methods}{
  The following \dQuote{standard} methods have

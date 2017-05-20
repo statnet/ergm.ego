@@ -26,7 +26,7 @@
 \alias{netsize.adj}
 \alias{InitErgmTerm.netsize.adj}
 \title{\code{\link[ergm]{ergm}} Terms Implemented for
-\code{\link[=egodata.object]{egodata}}}
+\code{\link{egodata}}}
 \description{
 This page describes the \code{\link[ergm]{ergm}} terms (and hence network
 statistics) for which inference based on egocentrically sampled data is

@@ -21,7 +21,7 @@ to the nearest integer. Then, the \code{N} actually used will be the sum of
 these rounded freqencies.} \item{"sample"}{Resample in
 proportion to \eqn{w_i}.} }}
 
-\item{\dots}{Additional arguments, currently unused.}
+\item{...}{Additional arguments, currently unused.}
 }
 \value{
 A \code{\link[network]{network}} object.

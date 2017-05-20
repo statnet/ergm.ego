@@ -4,16 +4,16 @@
 \alias{as.egor.network}
 \title{Construct an Egocentric View of a \code{\link{network}} Object}
 \usage{
-\method{as.egor}{network}(object, special.cols = c("na"))
+\method{as.egor}{network}(x, special.cols = c("na"), ...)
 }
 \arguments{
-\item{object}{A \code{\link[network]{network}} object.}
+\item{x}{A \code{\link[network]{network}} object.}
 
 \item{special.cols}{Vertex attributes that should not be copied to the
 \code{egos} and \code{alters} tables. Defaults to attributes special to the
 \code{\link[network]{network}} objects.}
 
-\item{\dots}{Additional arguments, currently unused.}
+\item{...}{Additional arguments, currently unused.}
 }
 \value{
 An \code{\link{egor}} object.
