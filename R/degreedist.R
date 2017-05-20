@@ -34,6 +34,7 @@
 #' degreedist.egor(fmh.ego,by="Grade",brgmod=TRUE)
 #'
 #' @importFrom graphics arrows barplot legend points
+#' @importFrom methods is
 #' @export
 degreedist.egor <- function(egor, freq = FALSE, prob = !freq, 
                                by = NULL, brgmod = FALSE){
