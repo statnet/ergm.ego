@@ -1,6 +1,6 @@
 library(ergm.ego)
 data(faux.mesa.high)
-fmh.ego <- as.egodata(faux.mesa.high)
+fmh.ego <- as.egor(faux.mesa.high)
 
 head(fmh.ego)
 

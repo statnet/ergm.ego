@@ -18,7 +18,7 @@ y <- network.initialize(n, directed=FALSE)
 y %v% "a" <- sample(1:3+6,n,replace=TRUE)
 y <- san(y~edges+degree(0:3), target.stats=c(e,ds))
 
-y.e <- as.egodata(y)
+y.e <- as.egor(y)
 
 f <- ~ edges +
   nodecov("a") +
