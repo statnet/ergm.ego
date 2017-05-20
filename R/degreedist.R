@@ -16,7 +16,7 @@
 #' Bernoulli graph.
 #' 
 #' 
-#' @param egodata A \code{\link{egodata}} object.
+#' @param egor A \code{\link{egor}} object.
 #' @param freq,prob Whether to plot the raw frequencies or the conditional
 #' proportions of the degree values. Defaults to the latter.
 #' @param by A character vector giving the name of a vertex attribute; if
@@ -29,35 +29,34 @@
 #' @examples
 #' 
 #' data(faux.mesa.high)
-#' fmh.ego <- as.egodata(faux.mesa.high)
+#' fmh.ego <- as.egor(faux.mesa.high)
 #' 
-#' degreedist.egodata(fmh.ego,by="Grade",brgmod=TRUE)
+#' degreedist.egor(fmh.ego,by="Grade",brgmod=TRUE)
 #'
 #' @importFrom graphics arrows barplot legend points
 #' @export
-degreedist.egodata <- function(egodata, freq = FALSE, prob = !freq, 
+degreedist.egor <- function(egor, freq = FALSE, prob = !freq, 
                                by = NULL, brgmod = FALSE){
-  if (class(egodata) != "egodata"){
-    stop("The egodata object passed to degreedist.egodata must be of class egodata.")
+  if (!is(egor, "egor")){
+    stop("The egor object passed to degreedist.egor must be of class egor.")
   }
   color <- "#83B6E1"
   beside <- TRUE
   ylabel <- "Frequency"
-  egoIDcol <- egodata$egoIDcol
-  degtable <- rep(0, nrow(egodata$egos))
-  degtable[as.numeric(names(table(egodata$alters[egoIDcol])))] <- table(egodata$alters[egoIDcol])
-  degtable.wt <- degtable * egodata$egoWt
+  egoIDcol <- egor$egoIDcol
+  degtable <- sapply(egor$.alters, nrow)
+  degtable.wt <- degtable * weights(attr(egor,"ego.design"))
   maxdeg <- max(degtable.wt)
-  deg.ego <- summary(egodata ~ degree(0:maxdeg, by = by))
+  deg.ego <- summary(egor ~ degree(0:maxdeg, by = by))
   names(deg.ego) <- 0:maxdeg
   maxfreq <- max(deg.ego)
   if(!is.null(by)){
-    levs <- sort(unique(c(egodata$egos[[by]], egodata$alters[[by]])))
+    levs <- sort(unique(c(egor[[by]], .allAlters(egor)[[by]])))
     deg.ego <- matrix(0, nrow = length(levs), ncol = maxdeg + 1)
     rownames(deg.ego) <- levs
     colnames(deg.ego) <- 0:maxdeg
     for(i in 1:length(levs)){
-      vals <- table(degtable.wt[egodata$egos[by] == levs[i]])
+      vals <- table(degtable.wt[egor[by] == levs[i]])
       toreplace <- as.numeric(names(vals)) + 1
       deg.ego[i, toreplace] <- vals
     }
@@ -92,7 +91,7 @@ degreedist.egodata <- function(egodata, freq = FALSE, prob = !freq,
 
 
   if(brgmod) {
-    brgdraws <- simulate.ergm.ego(ergm.ego(egodata ~ edges), nsim = 50)
+    brgdraws <- simulate.ergm.ego(ergm.ego(egor ~ edges), nsim = 50)
     deg.brg <- summary(brgdraws ~ degree(0:maxdeg))
     brgmeans <- apply(deg.brg, MARGIN = 2, FUN = mean)
     brgsd <- apply(deg.brg, MARGIN = 2, FUN = sd)
@@ -148,7 +147,7 @@ degreedist.egodata <- function(egodata, freq = FALSE, prob = !freq,
 #' alter of each group.
 #' 
 #' 
-#' @param egodata A \code{\link{egodata}} object.
+#' @param egor A \code{\link{egor}} object.
 #' @param attrname A character vector containing the name of the network
 #' attribute whose mixing matrix is wanted.
 #' @param rowprob Whether the counts should be normalized by row sums. That is,
@@ -157,41 +156,32 @@ degreedist.egodata <- function(egodata, freq = FALSE, prob = !freq,
 #' 
 #' Note that, unlike \code{\link[network]{mixingmatrix}}, what is counted are
 #' \emph{nominations}, not ties. This means that under an egocentric census,
-#' the diagonal of \code{mixingmatrix.egodata} will be twice that returned by
+#' the diagonal of \code{mixingmatrix.egor} will be twice that returned by
 #' \code{\link[network]{mixingmatrix}} for the original undirected network.
 #' @seealso \code{\link[network]{mixingmatrix}}, \code{\link[ergm]{nodemix}},
 #' \code{\link[ergm.ego]{summary}} method for egocentric data
 #' @examples
 #' 
 #' data(faux.mesa.high)
-#' fmh.ego <- as.egodata(faux.mesa.high)
+#' fmh.ego <- as.egor(faux.mesa.high)
 #' 
 #' (mm <- mixingmatrix(faux.mesa.high,"Grade"))
-#' (mm.ego <- mixingmatrix.egodata(fmh.ego,"Grade"))
+#' (mm.ego <- mixingmatrix.egor(fmh.ego,"Grade"))
 #' 
 #' stopifnot(isTRUE(all.equal({tmp<-unclass(mm$matrix); diag(tmp) <- diag(tmp)*2;
 #' tmp}, mm.ego, check.attributes=FALSE)))
 #' 
 #' @export
-mixingmatrix.egodata <- function(egodata, attrname, rowprob = FALSE){
-  egos <- egodata$egos
-  alters <- egodata$alters
-  egoIDcol <- egodata$egoIDcol
+mixingmatrix.egor <- function(egor, attrname, rowprob = FALSE){
+  levs <- sort(unique(c(egor[[attrname]], .allAlters(egor)[[attrname]])))
+
+  egos <- rep(egor[[attrname]], apply(egor$.alters, 1, nrow))
+  alters <- .allAlters(egor)[[attrname]]
   
-  levs <- sort(unique(c(egos[[attrname]], alters[[attrname]])))
-  egos[[attrname]] <- match(egos[[attrname]], levs, 0)
-  alters[[attrname]] <- match(alters[[attrname]], levs, 0)
-  
-  ties <- merge(egos[c(egoIDcol,attrname)], alters[c(egoIDcol,attrname)], 
-                by = egoIDcol, suffixes = c(".ego",".alter"))
-  ties$wt <- egodata$egoWt[match(ties[[egoIDcol]],egos[[egoIDcol]])]
-  mxmat <- matrix(0, nrow = length(levs), ncol = length(levs))
-  
-  for(i in 1:length(levs)){
-    for(j in 1:length(levs)){
-      mxmat[i,j] <- sum(ties$wt[ties[,2]==i & ties[,3]==j])
-    }
-  }
+  w <- weights(attr(egor, "ego.design"))
+
+  mxmat <- outer(levs, levs, function(l1, l2) sum(w[egos==l1,alters==l2]))
+
   dimnames(mxmat) <- list(ego = levs,  
                           alter = levs)
   if(rowprob){
