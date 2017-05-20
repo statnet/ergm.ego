@@ -26,7 +26,7 @@
 #' @export
 as.egor.egodata <- function(x, ...){
   ego.design <- list(~1, weights = rep(x$egoWt, length.out=nrow(x$egos)))
-  egor(egos.df=x$egos, alters.df=x$alters, egoID = x$egoIDcol, design.ego=ego.design)
+  egor(egos.df=x$egos, alters.df=x$alters, egoID = x$egoIDcol, ego.design=ego.design)
 }
 
 #' Construct an Egocentric View of a \code{\link{network}} Object
