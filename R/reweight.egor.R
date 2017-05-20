@@ -1,4 +1,4 @@
-#  File R/reweight.egodata.R in package ergm.ego, part of the Statnet suite
+#  File R/reweight.egor.R in package ergm.ego, part of the Statnet suite
 #  of packages for network analysis, http://statnet.org .
 #
 #  This software is distributed under the GPL-3 license.  It is free,
@@ -7,7 +7,7 @@
 #
 #  Copyright 2015-2016 Statnet Commons
 #######################################################################
-## reweight.egodata <- function(x, g, gw){
+## reweight.egor <- function(x, g, gw){
 ##   gw <- gw[order(gw[,1]),2]
   
 ##   w0 <- x$egoWt
@@ -22,7 +22,7 @@
 ##   x
 ## }
 
-## category.weights.egodata <- function(x, pop, by){
+## category.weights.egor <- function(x, pop, by){
 ##   x.g <- apply(x$egos[by],1,paste,collapse="\n")
 ##   pop.g <- apply(pop$egos[by],1,paste,collapse="\n")
 

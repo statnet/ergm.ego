@@ -105,7 +105,7 @@
 #' @examples
 #' 
 #' data(faux.mesa.high)
-#' fmh.ego <- as.egodata(faux.mesa.high)
+#' fmh.ego <- as.egor(faux.mesa.high)
 #' 
 #' head(fmh.ego)
 #' 
@@ -163,9 +163,9 @@ gof.ergm.ego <- function (object, ...,
   }
 
   if ('degree' %in% GOF) {
-    egodata <- object$egodata
+    egor <- object$egor
     s <- 
-    obs.deg <- summary(as.formula(paste0("egodata~degree(0:",n-1,")")), scaleto=1)
+    obs.deg <- summary(as.formula(paste0("egor~degree(0:",n-1,")")), scaleto=1)
     sim.deg <- simulate(object, nsim=control$nsim, seed=control$seed, popsize=object$ppopsize, control=control.simulate.ergm.ego(simulate.control=set.control.class("control.simulate.formula",control)),...,verbose=verbose, statsonly=TRUE, monitor=as.formula(paste0("~degree(0:",n-1,")")))
     sim.deg <- sim.deg[, ncol(sim.deg)-((n-1):0), drop=FALSE]/n
   }

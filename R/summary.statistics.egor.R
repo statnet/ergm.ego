@@ -1,4 +1,4 @@
-#  File R/summary.statistics.egodata.R in package ergm.ego, part of the Statnet suite
+#  File R/summary.statistics.egor.R in package ergm.ego, part of the Statnet suite
 #  of packages for network analysis, http://statnet.org .
 #
 #  This software is distributed under the GPL-3 license.  It is free,
@@ -7,21 +7,21 @@
 #
 #  Copyright 2015-2016 Statnet Commons
 #######################################################################
-#' Calculation of ERGM-style summary statistics for \code{\link{egodata}}
+#' Calculation of ERGM-style summary statistics for \code{\link{egor}}
 #' objects.
 #' 
 #' Used to calculate the specified network statistics inferred from a
-#' \code{\link{egodata}} object.
+#' \code{\link{egor}} object.
 #' 
 #' 
-#' @aliases summary.statistics.egodata summary summary.formula
+#' @aliases summary.statistics.egor summary summary.formula
 #' @param object An \code{\link[ergm]{ergm}}-style formula with a
-#' \code{\link{egodata}} object as the LHS.
+#' \code{\link{egor}} object as the LHS.
 #' 
 #' For a list of currently implemented egocentric terms for the RHS, see
 #' \code{\link{ergm.ego-terms}}.
 #' @param \dots Not used at this time.
-#' @param basis An optional \code{\link{egodata}} object relative to which the
+#' @param basis An optional \code{\link{egor}} object relative to which the
 #' statistics should be calculated.
 #' @param individual If \code{FALSE} (the default), calculate the estimated
 #' per-capita statistics, weighted according to the ego weights, then scale
@@ -51,7 +51,7 @@
 #' @examples
 #' 
 #' data(faux.mesa.high)
-#' fmh.ego <- as.egodata(faux.mesa.high)
+#' fmh.ego <- as.egor(faux.mesa.high)
 #' (nw.summ <- summary(faux.mesa.high~edges+degree(0:3)+nodematch("Race")+
 #'                     nodematch("Sex")+absdiff("Grade")+nodemix("Grade")))
 #' 

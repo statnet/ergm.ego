@@ -20,7 +20,7 @@ An \code{\link{egor}} object.
 }
 \description{
 Given a \code{\link[network]{network}} object, construct an
-\code{\link{egodata}} object representing a census of all the actors in the
+\code{\link{egor}} object representing a census of all the actors in the
 network. Used mainly for testing.
 }
 \examples{

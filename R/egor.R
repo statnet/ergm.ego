@@ -1,4 +1,4 @@
-#  File R/egodata.R in package ergm.ego, part of the Statnet suite
+#  File R/egor.R in package ergm.ego, part of the Statnet suite
 #  of packages for network analysis, http://statnet.org .
 #
 #  This software is distributed under the GPL-3 license.  It is free,
@@ -32,7 +32,7 @@ as.egor.egodata <- function(x, ...){
 #' Construct an Egocentric View of a \code{\link{network}} Object
 #' 
 #' Given a \code{\link[network]{network}} object, construct an
-#' \code{\link{egodata}} object representing a census of all the actors in the
+#' \code{\link{egor}} object representing a census of all the actors in the
 #' network. Used mainly for testing.
 #' 
 #' 
@@ -165,42 +165,14 @@ as.network.egor<-function(x, N, scaling=c("round","sample"), ...){
 # TODO: A more efficient implementation of this.
 #' @importFrom stats na.omit
 #' @export
-na.omit.egodata <- function(object, relevant=TRUE, ...){
+na.omit.egor <- function(object, relevant=TRUE, ...){
   # Create a subdataset containing only the relevant variables.
-  obj <- subset(object,select=relevant)
-  
-  n <- length(obj$egos)
-  omit <- FALSE
-  vars <- seq_len(n)
-  for (j in vars) {
-    x <- obj$egos[[j]]
-    if (!is.atomic(x)) 
-      next
-    x <- is.na(x)
-    d <- dim(x)
-    if (is.null(d) || length(d) != 2L) 
-      omit <- omit | x
-    else for (ii in 1L:d[2L]) omit <- omit | x[, ii]
-  }
-  ego.omit <- obj$egos[[obj$egoIDcol]][omit]
+  obj <- object[,relevant,aspect="egos"][,relevant,aspect="alters"]
 
-  n <- length(obj$alters)
-  omit <- FALSE
-  vars <- seq_len(n)
-  for (j in vars) {
-    x <- obj$alters[[j]]
-    if (!is.atomic(x)) 
-      next
-    x <- is.na(x)
-    d <- dim(x)
-    if (is.null(d) || length(d) != 2L) 
-      omit <- omit | x
-    else for (ii in 1L:d[2L]) omit <- omit | x[, ii]
-  }
-  
-  alter.omit <- obj$alters[[obj$egoIDcol]][omit]
-
-  subset(object, -match(union(ego.omit,alter.omit),object$egos[[object$egoIDcol]]))  
+  # What this deos: for each row, for each column, sees if any element
+  # (including in the alters table) is an NA.
+  na.egos <- apply(obj, 1, function(r) any(sapply(lapply(r, is.na),any)))
+  object[!na.egos,]
 }
 
 # Not really a generic function, but perhaps should be.

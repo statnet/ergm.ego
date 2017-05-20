@@ -47,7 +47,7 @@
 #' @examples
 #' 
 #' data(faux.mesa.high)
-#' fmh.ego <- as.egodata(faux.mesa.high)
+#' fmh.ego <- as.egor(faux.mesa.high)
 #' egofit <- ergm.ego(fmh.ego~edges+degree(0:3)+nodefactor("Race")+nodematch("Race")
 #'                          +nodefactor("Sex")+nodematch("Sex")+absdiff("Grade"), 
 #'                           popsize=network.size(faux.mesa.high))
@@ -63,8 +63,8 @@
 simulate.ergm.ego <- function(object, nsim = 1, seed = NULL, popsize=if(object$popsize==1) object$ppopsize else object$popsize, control=control.simulate.ergm.ego(), ..., verbose=FALSE){
   statnet.common::check.control.class()
   
-  egodata <- object$egodata
-  popnw <- if(popsize == object$ppopsize) object$newnetwork else as.network(egodata, popsize, scaling=control$ppop.wt)
+  egor <- object$egor
+  popnw <- if(popsize == object$ppopsize) object$newnetwork else as.network(egor, popsize, scaling=control$ppop.wt)
 
   ppopsize <- if(network.size(popnw)!=popsize){
       message("Note: Constructed network has size ", network.size(popnw), " different from requested ", popsize,". Simulated statistics may need to be rescaled.")

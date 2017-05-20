@@ -13,11 +13,11 @@
 #' Sampled Data
 #' 
 #' A wrapper around the \code{\link[ergm]{ergm}} to fit an ERGM to an
-#' \code{\link{egodata}}.
+#' \code{\link{egor}}.
 #' 
 #' 
 #' @param formula An \code{\link{formula}} object, of the form \code{e ~ <model
-#' terms>}, where \code{e} is a \code{\link{egodata}} object. See
+#' terms>}, where \code{e} is a \code{\link{egor}} object. See
 #' \code{\link[ergm]{ergm}} for details and examples.
 #' 
 #' For a list of currently implemented egocentric terms for the RHS, see
@@ -37,7 +37,7 @@
 #' \code{\link[ergm]{ergm}}, with the following additional or overridden
 #' elements: \item{"v"}{Variance-covariance matrix of the estimate of the
 #' sufficient statistics} \item{"m"}{Estimate of the sufficient
-#' statistics} \item{"egodata"}{The egodata object passed}
+#' statistics} \item{"egor"}{The egor object passed}
 #' \item{"popsize"}{Population network size and pseudopopulation size
 #' used, respectively}\item{, }{Population network size and pseudopopulation
 #' size used, respectively}\item{"ppopsize"}{Population network size and
@@ -63,7 +63,7 @@
 #' @examples
 #' 
 #' data(faux.mesa.high)
-#' fmh.ego <- as.egodata(faux.mesa.high)
+#' fmh.ego <- as.egor(faux.mesa.high)
 #' 
 #' head(fmh.ego)
 #' 
@@ -95,9 +95,9 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.
   
   stats.est <- control$stats.est
   stats.wt <- control$stats.wt
-  egodata <- get(as.character(formula[[2]]), envir=environment(formula))
+  egor <- get(as.character(formula[[2]]), envir=environment(formula))
 
-  sampsize <- dim(egodata)[1]
+  sampsize <- nrow(egor)
   ppopsize <-
     if(is.numeric(control$ppopsize)) control$ppopsize
     else switch(control$ppopsize,
@@ -106,19 +106,19 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.
                 pop = popsize*control$ppopsize.mul)
   
   if(ppopsize < sampsize) stop("Using a smaller pseudopopulation size than sample size does not make sense.")
-  else if(ppopsize == sampsize && !is.null(egodata$egoWt) && var(egodata$egoWt)>sqrt(.Machine$double.eps))
+  else if(ppopsize == sampsize && var(weights(egor))>sqrt(.Machine$double.eps))
     warning("Using pseudopoulation size equal to sample size under weighted sampling: results may be highly biased. Recommend increasing popsize.mul control parameter.")
   
   message("Constructing pseudopopulation network.")
-  popnw <- as.network(egodata, ppopsize, scaling=control$ppop.wt)
+  popnw <- as.network(egor, ppopsize, scaling=control$ppop.wt)
   if(network.size(popnw)!=ppopsize){
     message("Note: Constructed network has size ", network.size(popnw), ", different from requested ", ppopsize,". Estimation should not be meaningfully affected.")
     ppopsize <- network.size(popnw)
   }
 
   w <- switch(stats.wt,
-              data=egodata$egoWt,
-              ppop=tabulate(popnw %v% "ego.ind", nbins=nrow(egodata))
+              data=weights(egor),
+              ppop=tabulate(popnw %v% "ego.ind", nbins=nrow(egor))
               )
   
   # Get the sample h values.
@@ -163,20 +163,20 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.
     if(do.fit && popsize!=ppopsize)
       warning("Non-scaling statistic detected when trying to fit a model: network-size invariant parametrization probably does not exist so pseudopopulation size should equal the population size.")
 
-    n <- nrow(egodata)
-    m <- summary(remove.offset.formula(formula), basis=egodata, individual=FALSE, scaleto=ppopsize)
+    n <- nrow(egor)
+    m <- summary(remove.offset.formula(formula), basis=egor, individual=FALSE, scaleto=ppopsize)
       
     if(stats.est=="bootstrap"){
       m.b <- t(replicate(control$boot.R,{
                            i <- sample.int(length(w),replace=TRUE)
-                           e <- egodata[i,]
+                           e <- egor[i,]
                            summary(remove.offset.formula(formula), basis=e, individual=FALSE, scaleto=ppopsize)
                          }))
       m <- m - (colMeans(m.b)-m)
       
     }else if(stats.est=="jackknife"){
       m.j <- t(sapply(seq_len(n), function(i){
-                        e <- egodata[-i,]
+                        e <- egor[-i,]
                         summary(remove.offset.formula(formula), basis=e, individual=FALSE, scaleto=ppopsize)
                       }))
       m <- n*m - (n-1)*colMeans(m.j)
@@ -191,7 +191,7 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.
   
   ergm.formula <- ergm.update.formula(formula,popnw~offset(netsize.adj)+.,from.new="popnw")
   ergm.offset.coef <- c(-log(ppopsize/popsize),offset.coef)
-  out <- list(v=v, m=m, formula=formula, ergm.formula=ergm.formula, offset.coef=offset.coef, ergm.offset.coef=ergm.offset.coef, egodata=egodata, ppopsize=ppopsize, popsize=popsize)
+  out <- list(v=v, m=m, formula=formula, ergm.formula=ergm.formula, offset.coef=offset.coef, ergm.offset.coef=ergm.offset.coef, egor=egor, ppopsize=ppopsize, popsize=popsize)
   
   if(do.fit){
 

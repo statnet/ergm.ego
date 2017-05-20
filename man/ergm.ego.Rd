@@ -10,7 +10,7 @@ ergm.ego(formula, popsize = 1, offset.coef = NULL, ...,
 }
 \arguments{
 \item{formula}{An \code{\link{formula}} object, of the form \code{e ~ <model
-terms>}, where \code{e} is a \code{\link{egodata}} object. See
+terms>}, where \code{e} is a \code{\link{egor}} object. See
 \code{\link[ergm]{ergm}} for details and examples.
 
 For a list of currently implemented egocentric terms for the RHS, see
@@ -38,7 +38,7 @@ An object of class \code{ergm.ego} inheriting from
 \code{\link[ergm]{ergm}}, with the following additional or overridden
 elements: \item{"v"}{Variance-covariance matrix of the estimate of the
 sufficient statistics} \item{"m"}{Estimate of the sufficient
-statistics} \item{"egodata"}{The egodata object passed}
+statistics} \item{"egor"}{The egor object passed}
 \item{"popsize"}{Population network size and pseudopopulation size
 used, respectively}\item{, }{Population network size and pseudopopulation
 size used, respectively}\item{"ppopsize"}{Population network size and
@@ -54,12 +54,12 @@ statistics with respect to the model parameters}
 }
 \description{
 A wrapper around the \code{\link[ergm]{ergm}} to fit an ERGM to an
-\code{\link{egodata}}.
+\code{\link{egor}}.
 }
 \examples{
 
 data(faux.mesa.high)
-fmh.ego <- as.egodata(faux.mesa.high)
+fmh.ego <- as.egor(faux.mesa.high)
 
 head(fmh.ego)
 

@@ -39,7 +39,7 @@ from an ERGM fit using \code{\link{ergm.ego}}.
 \examples{
 
 data(faux.mesa.high)
-fmh.ego <- as.egodata(faux.mesa.high)
+fmh.ego <- as.egor(faux.mesa.high)
 egofit <- ergm.ego(fmh.ego~edges+degree(0:3)+nodefactor("Race")+nodematch("Race")
                          +nodefactor("Sex")+nodematch("Sex")+absdiff("Grade"), 
                           popsize=network.size(faux.mesa.high))

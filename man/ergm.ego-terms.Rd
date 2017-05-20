@@ -26,7 +26,7 @@
 \alias{netsize.adj}
 \alias{InitErgmTerm.netsize.adj}
 \title{\code{\link[ergm]{ergm}} Terms Implemented for
-\code{\link{egodata}}}
+\code{\link{egor}}}
 \description{
 This page describes the \code{\link[ergm]{ergm}} terms (and hence network
 statistics) for which inference based on egocentrically sampled data is
@@ -36,7 +36,7 @@ terms.
 \details{
 The current recommendation for any package implementing additional
 egocentric calculator terms is to create a help file with a name or alias
-\code{ergm.egodata-terms}, so that \code{help("ergm.egodata-terms")} will
+\code{ergm.ego-terms}, so that \code{help("ergm.ego-terms")} will
 list egocentric ERGM terms available from all loaded packages.
 }
 \section{Currently implemented egocentric statistics}{

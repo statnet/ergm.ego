@@ -2,10 +2,9 @@
 % Please edit documentation in R/summary.statistics.egor.R
 \name{summary.statistics.egor}
 \alias{summary.statistics.egor}
-\alias{summary.statistics.egodata}
 \alias{summary}
 \alias{summary.formula}
-\title{Calculation of ERGM-style summary statistics for \code{\link{egodata}}
+\title{Calculation of ERGM-style summary statistics for \code{\link{egor}}
 objects.}
 \usage{
 \method{summary.statistics}{egor}(object, ..., basis = NULL,
@@ -13,14 +12,14 @@ objects.}
 }
 \arguments{
 \item{object}{An \code{\link[ergm]{ergm}}-style formula with a
-\code{\link{egodata}} object as the LHS.
+\code{\link{egor}} object as the LHS.
 
 For a list of currently implemented egocentric terms for the RHS, see
 \code{\link{ergm.ego-terms}}.}
 
 \item{\dots}{Not used at this time.}
 
-\item{basis}{An optional \code{\link{egodata}} object relative to which the
+\item{basis}{An optional \code{\link{egor}} object relative to which the
 statistics should be calculated.}
 
 \item{individual}{If \code{FALSE} (the default), calculate the estimated
@@ -40,12 +39,12 @@ contribution to the network statistic.
 }
 \description{
 Used to calculate the specified network statistics inferred from a
-\code{\link{egodata}} object.
+\code{\link{egor}} object.
 }
 \examples{
 
 data(faux.mesa.high)
-fmh.ego <- as.egodata(faux.mesa.high)
+fmh.ego <- as.egor(faux.mesa.high)
 (nw.summ <- summary(faux.mesa.high~edges+degree(0:3)+nodematch("Race")+
                     nodematch("Sex")+absdiff("Grade")+nodemix("Grade")))
 
