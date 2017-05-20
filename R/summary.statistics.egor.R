@@ -60,7 +60,8 @@
 #'                      scaleto=network.size(faux.mesa.high)))
 #' 
 #' stopifnot(isTRUE(all.equal(nw.summ,ego.summ)))
-#' 
+#'
+#' @importFrom survey svymean
 #' @method summary.statistics egor
 #' @export
 summary.statistics.egor <- function(object,..., basis=NULL, individual=FALSE, scaleto=NULL){
