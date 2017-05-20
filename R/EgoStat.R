@@ -39,7 +39,7 @@
 }
 
 #' \code{\link[ergm]{ergm}} Terms Implemented for
-#' \code{\link[=egodata.object]{egodata}}
+#' \code{\link{egodata}}
 #' 
 #' This page describes the \code{\link[ergm]{ergm}} terms (and hence network
 #' statistics) for which inference based on egocentrically sampled data is
@@ -130,7 +130,7 @@ EgoStat.nodematch <- function(egor, attrname, diff=FALSE, keep=NULL){
     tabulate(match(e[[attrname]],l,0), nbins=nl)*sum(e[[attrname]]==e$.alters[[attrname]])/2
 
   .eval.h(egor, h,
-          if(diff) paste("nodematch",attrname,levs,sep=".")
+          if(diff) paste("nodematch",attrname,l,sep=".")
           else paste("nodematch",attrname,sep="."))
 }
 
@@ -144,15 +144,15 @@ EgoStat.nodemix <- function(egor, attrname, base=NULL){
   # Note that all "base" levels will be matched to 0 and therefore
   # excluded from the tabulation below.
   l <- outer(l,l,paste,sep=".")
-  l <- nv[upper.tri(nv,diag=TRUE)]
+  l <- l[upper.tri(l,diag=TRUE)]
   if (length(base) && !identical(as.integer(base),as.integer(0))) l <- l[-base]
-  
+  nl <- length(l)
   h <- function(e)
     tabulate(match(paste(pmin(e[[attrname]],e$.alters[[attrname]]),
                          pmax(e[[attrname]],e$.alters[[attrname]]),
                          sep="."),l,0), nbins=nl)
   .eval.h(egor, h,
-               paste("mix",attrname,namevec,sep="."))
+          paste("mix",attrname,l,sep="."))
 }
 
 #' @export
@@ -174,7 +174,7 @@ EgoStat.degree <- function(egor, d, by=NULL, homophily=FALSE){
 
   if(!by %in% names(egor)) stop("For term ",sQuote("degree")," attribute ", sQuote(by), " must be observed on egos.", call.=FALSE)
   
-  alt <- !is.null(by) && !is.null(.allAltrs(egor)[[by]])
+  alt <- !is.null(by) && !is.null(.allAlters(egor)[[by]])
   if(homophily && !alt) stop("For term ",sQuote("degree")," attribute ", sQuote(by), " must be observed on both egos and alters if homophily=TRUE.", call.=FALSE)
   
   if(!is.null(by)){
@@ -211,7 +211,7 @@ EgoStat.degrange <- function(egor, from=NULL, to=Inf, by=NULL, homophily=FALSE){
 
   if(!by %in% names(egor)) stop("For term ",sQuote("degree")," attribute ", sQuote(by), " must be observed on egos.", call.=FALSE)
   
-  alt <- !is.null(by) && !is.null(.allAltrs(egor)[[by]])
+  alt <- !is.null(by) && !is.null(.allAlters(egor)[[by]])
   if(homophily && !alt) stop("For term ",sQuote("degree")," attribute ", sQuote(by), " must be observed on both egos and alters if homophily=TRUE.", call.=FALSE)
   
   if(!is.null(by)){
@@ -254,7 +254,7 @@ EgoStat.concurrent <- function(egor, by=NULL){
   nl <- length(l)
 
   if(!is.null(by)){
-    bys <- rep(l,each=length(d))
+    bys <- l
     cn <- paste0("concurrent.", by, bys)
     h <- function(e) as.numeric(nrow(e$.alters)>=2 & e[[by]]==bys)
   }else{
@@ -275,7 +275,7 @@ EgoStat.concurrentties <- function(egor, by=NULL){
   nl <- length(l)
 
   if(!is.null(by)){
-    bys <- rep(l,each=length(d))
+    bys <- l
     cn <- paste0("concurrentties.", by, bys)
     h <- function(e) max(nrow(e$.alters)-1,0)*as.numeric(e[[by]]==bys)
   }else{

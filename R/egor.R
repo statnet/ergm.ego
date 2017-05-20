@@ -9,19 +9,24 @@
 #######################################################################
 
 
-#' Convert \code{\link{egodata}} Objects to \code{\link{egor}} Objects
+#' Convert (deprecated) \code{\link{egodata}} Objects to
+#' \code{\link{egor}} Objects
+#'
+#' @aliases egodata
 #' 
-#' @param object a \code{\link{egodata}} object
+#' @param x a \code{\link{egodata}} object
+#' @param ... additional arguments, currently unused.
 #'
 #' @return An \code{\link{egor}} object.
 #' 
 #' @section Miscellaneous Methods: The following \dQuote{standard} methods have
 #' @author Pavel N. Krivitsky
 #' @keywords manip methods
+#' @import egor
 #' @export
-as.egor.egodata <- function(object, ...){
-  ego.design <- list(~1, weights = rep(object$egoWt, length.out=nrow(object$egos)))
-  egor(egos.df=object$egos, alters.df=object$alters, egoID = object$egoIDcol, ego.design=ego.design)
+as.egor.egodata <- function(x, ...){
+  ego.design <- list(~1, weights = rep(x$egoWt, length.out=nrow(x$egos)))
+  egor(egos.df=x$egos, alters.df=x$alters, egoID = x$egoIDcol, design.ego=ego.design)
 }
 
 #' Construct an Egocentric View of a \code{\link{network}} Object
@@ -31,11 +36,11 @@ as.egor.egodata <- function(object, ...){
 #' network. Used mainly for testing.
 #' 
 #' 
-#' @param object A \code{\link[network]{network}} object.
+#' @param x A \code{\link[network]{network}} object.
 #' @param special.cols Vertex attributes that should not be copied to the
 #' \code{egos} and \code{alters} tables. Defaults to attributes special to the
 #' \code{\link[network]{network}} objects.
-#' @param \dots Additional arguments, currently unused.
+#' @param ... Additional arguments, currently unused.
 #' @return An \code{\link{egor}} object.
 #' @author Pavel N. Krivitsky
 #' @seealso \code{\link{as.network.egor}}, which performs the inverse
@@ -46,21 +51,21 @@ as.egor.egodata <- function(object, ...){
 #' # See example(ergm.ego) and example(as.network.egor).
 #' @import tibble
 #' @export
-as.egor.network<-function(object,special.cols=c("na")){
-  N<-network.size(object)
+as.egor.network<-function(x,special.cols=c("na"),...){
+  N<-network.size(x)
 
   egos<-list()
   
-  for(a in list.vertex.attributes(object))
-    if(!(a %in% special.cols)) egos[[a]]<-get.vertex.attribute(object,attrname=a)
+  for(a in list.vertex.attributes(x))
+    if(!(a %in% special.cols)) egos[[a]]<-get.vertex.attribute(x,attrname=a)
 
   egos <- tibble::as_tibble(egos)
 
-  el<-as.edgelist(object)
+  el<-as.edgelist(x)
   el<-rbind(el,el[,2:1])
   alterS<-tapply(el[,2],INDEX=el[,1],FUN=c,simplify=FALSE)
 
-  alters <- lapply(seq_len(N), get.neighborhood, x=object) # so v gets the index variable
+  alters <- lapply(seq_len(N), get.neighborhood, x=x) # so v gets the index variable
 
   alters <- lapply(alters, function(js) egos[js,,drop=FALSE])
 
@@ -87,7 +92,7 @@ as.egor.network<-function(object,special.cols=c("na")){
 #' to the nearest integer. Then, the \code{N} actually used will be the sum of
 #' these rounded freqencies.} \item{"sample"}{Resample in
 #' proportion to \eqn{w_i}.} }
-#' @param \dots Additional arguments, currently unused.
+#' @param ... Additional arguments, currently unused.
 #' @return A \code{\link[network]{network}} object.
 #' @author Pavel N. Krivitsky
 #' @seealso \code{\link{as.egor.network}}, which performs the inverse
@@ -200,11 +205,24 @@ na.omit.egodata <- function(object, relevant=TRUE, ...){
 
 # Not really a generic function, but perhaps should be.
 
+#' Draw random egocentric subsamples
+#'
+#' Implementations of the [base::sample()] function for [egor::egor()] data.
+#'
+#' @param x,size,replace,prob see [base::sample()].
+#' @param ... extra arguments, currently unused.
+#'
+#' @note A reimplementation of sample as a generic was necessary
+#'   because [base::sample()] is not a generic and cannot take
+#'   data-frame-alikes as arguments.
 #' @export
 sample <- function(x, size, replace=FALSE, prob=NULL, ...) UseMethod("sample")
+#' @rdname sample
 #' @export
 sample.default <- function(x, ...) base::sample(x, ...)
 
+## FIXME: Adjust the sampling weights in the survey.design object.
+#' @rdname sample
 #' @export
 sample.egor <- function(x, size, replace=FALSE, prob=NULL, ...){
   if(missing(size)) size <- nrow(x)
