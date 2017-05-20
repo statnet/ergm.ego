@@ -59,6 +59,10 @@
 #' \item{"jackknife"}{Jackknife with bias correction.}
 #' \item{"naive"}{"Naive" estimator, assuming that weights are
 #' fixed.} }
+#' 
+#' @param ignore.max.alters if `TRUE`, ignores any constraints on the
+#'   number of nominations.
+#' 
 #' @param ergm.control Control parameters for the \code{\link[ergm]{ergm}} call
 #' to fit the model, constructed by \code{\link[ergm]{control.ergm}}.
 #' @param \dots Not used at this time.
@@ -82,6 +86,7 @@ control.ergm.ego <- function(
   stats.wt = c("data","ppop"),
   stats.est = c("asymptotic", "bootstrap", "jackknife", "naive"),
   boot.R = 10000,
+  ignore.max.alters = FALSE,
   ergm.control = control.ergm(),
   ...){
   match.arg.pars <- c("stats.est", "ppop.wt", "stats.wt", if(!is.numeric(ppopsize)) "ppopsize")

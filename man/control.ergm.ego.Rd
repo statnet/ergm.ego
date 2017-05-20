@@ -7,7 +7,8 @@
 control.ergm.ego(ppopsize = c("auto", "samp", "pop"), ppopsize.mul = 1,
   ppop.wt = c("round", "sample"), stats.wt = c("data", "ppop"),
   stats.est = c("asymptotic", "bootstrap", "jackknife", "naive"),
-  boot.R = 10000, ergm.control = control.ergm(), ...)
+  boot.R = 10000, ignore.max.alters = FALSE,
+  ergm.control = control.ergm(), ...)
 }
 \arguments{
 \item{ppopsize, ppopsize.mul}{Parameters to determine the size \eqn{|N'|} of
@@ -56,6 +57,9 @@ resampling egos, using \code{R} replications.}
 \item{"jackknife"}{Jackknife with bias correction.}
 \item{"naive"}{"Naive" estimator, assuming that weights are
 fixed.} }}
+
+\item{ignore.max.alters}{if \code{TRUE}, ignores any constraints on the
+number of nominations.}
 
 \item{ergm.control}{Control parameters for the \code{\link[ergm]{ergm}} call
 to fit the model, constructed by \code{\link[ergm]{control.ergm}}.}

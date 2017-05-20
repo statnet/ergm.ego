@@ -5,13 +5,13 @@
 \title{Inference for Exponential-Family Random Graph Models based on Egocentrically
 Sampled Data}
 \usage{
-ergm.ego(formula, popsize = 1, offset.coef = NULL, ...,
+ergm.ego(formula, popsize = 1, offset.coef = NULL, constraints = ~., ...,
   control = control.ergm.ego(), na.action = na.fail, do.fit = TRUE)
 }
 \arguments{
-\item{formula}{An \code{\link{formula}} object, of the form \code{e ~ <model
-terms>}, where \code{e} is a \code{\link{egor}} object. See
-\code{\link[ergm]{ergm}} for details and examples.
+\item{formula}{An \code{\link{formula}} object, of the form \code{e
+  ~ <model terms>}, where \code{e} is a \code{\link{egor}}
+object. See \code{\link[ergm]{ergm}} for details and examples.
 
 For a list of currently implemented egocentric terms for the RHS, see
 \code{\link{ergm.ego-terms}}.}
@@ -23,6 +23,10 @@ Setting it to 1 (the default) essentially uses the \eqn{-\log |N'|} offset
 on the edges term.}
 
 \item{offset.coef}{A vector of coefficients for the offset terms.}
+
+\item{constraints}{A one-sided formula \code{\link{formula}} giving
+the sample space constraints. See \code{\link[ergm]{ergm}} for
+details and examples.}
 
 \item{\dots}{Additional arguments passed to \code{\link[ergm]{ergm}}.}
 

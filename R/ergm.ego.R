@@ -16,12 +16,15 @@
 #' \code{\link{egor}}.
 #' 
 #' 
-#' @param formula An \code{\link{formula}} object, of the form \code{e ~ <model
-#' terms>}, where \code{e} is a \code{\link{egor}} object. See
-#' \code{\link[ergm]{ergm}} for details and examples.
+#' @param formula An \code{\link{formula}} object, of the form \code{e
+#'   ~ <model terms>}, where \code{e} is a \code{\link{egor}}
+#'   object. See \code{\link[ergm]{ergm}} for details and examples.
 #' 
 #' For a list of currently implemented egocentric terms for the RHS, see
 #' \code{\link{ergm.ego-terms}}.
+#' @param constraints A one-sided formula \code{\link{formula}} giving
+#'   the sample space constraints. See \code{\link[ergm]{ergm}} for
+#'   details and examples.
 #' @param popsize The size \eqn{|N|} of the finite population network from
 #' which the egocentric sample was taken; only affects the shift in the
 #' coefficients of the terms modeling the overall propensity to have ties.
@@ -90,7 +93,7 @@
 #' @import ergm stats
 #' @importFrom utils modifyList
 #' @export
-ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.ergm.ego(), na.action=na.fail, do.fit=TRUE){
+ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., control=control.ergm.ego(), na.action=na.fail, do.fit=TRUE){
   statnet.common::check.control.class()
   
   stats.est <- control$stats.est
@@ -191,11 +194,22 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.
   
   ergm.formula <- ergm.update.formula(formula,popnw~offset(netsize.adj)+.,from.new="popnw")
   ergm.offset.coef <- c(-log(ppopsize/popsize),offset.coef)
-  out <- list(v=v, m=m, formula=formula, ergm.formula=ergm.formula, offset.coef=offset.coef, ergm.offset.coef=ergm.offset.coef, egor=egor, ppopsize=ppopsize, popsize=popsize)
+
+
+  # If nominations were limited, represent the cap a degree bound.
+  constraints <- if(!control$ignore.max.alters && alter.design(egor)$max<Inf){
+    newterm <- as.formula(substitute(~bd(maxout=.max), eval(list(.max=alter.design(egor,"max")))))
+    if(constraints==~.)
+      newterm
+    else
+      append.rhs.formula(constraints, term.list.formula(newterm))
+  }else constraints
   
+  out <- list(v=v, m=m, formula=formula, ergm.formula=ergm.formula, offset.coef=offset.coef, ergm.offset.coef=ergm.offset.coef, egor=egor, ppopsize=ppopsize, popsize=popsize, constraints=constraints)
+
   if(do.fit){
 
-    ergm.fit <- ergm(ergm.formula, target.stats=m, offset.coef=ergm.offset.coef,..., eval.loglik=FALSE,control=control$ergm.control)
+    ergm.fit <- ergm(ergm.formula, target.stats=m, offset.coef=ergm.offset.coef, constraints=constraints, ..., eval.loglik=FALSE,control=control$ergm.control)
 
     ## Workaround to keep mcmc.diagnostics from failing. Should be removed after fix is released.
     if(inherits(ergm.fit$sample,"mcmc.list")){
