@@ -126,8 +126,9 @@ EgoStat.nodematch <- function(egor, attrname, diff=FALSE, keep=NULL){
   l <- l[NVL(keep,TRUE)]
   nl <- length(l)
 
+  combine <- if(diff) identity else sum
   h <- function(e)
-    tabulate(match(e[[attrname]],l,0), nbins=nl)*sum(e[[attrname]]==e$.alters[[attrname]])/2
+    combine(tabulate(match(e[[attrname]],l,0), nbins=nl)*sum(e[[attrname]]==e$.alters[[attrname]])/2)
 
   .eval.h(egor, h,
           if(diff) paste("nodematch",attrname,l,sep=".")
@@ -150,7 +151,7 @@ EgoStat.nodemix <- function(egor, attrname, base=NULL){
   h <- function(e)
     tabulate(match(paste(pmin(e[[attrname]],e$.alters[[attrname]]),
                          pmax(e[[attrname]],e$.alters[[attrname]]),
-                         sep="."),l,0), nbins=nl)
+                         sep="."),l,0), nbins=nl)/2
   .eval.h(egor, h,
           paste("mix",attrname,l,sep="."))
 }
@@ -172,15 +173,15 @@ EgoStat.absdiff <- function(egor, attrname, pow=1){
 EgoStat.degree <- function(egor, d, by=NULL, homophily=FALSE){
   ## if(any(d==0)) warning("degree(0) (isolate) count statistic depends strongly on the specified population network size.")
 
-  if(!by %in% names(egor)) stop("For term ",sQuote("degree")," attribute ", sQuote(by), " must be observed on egos.", call.=FALSE)
+  if(!is.null(by) && !by %in% names(egor)) stop("For term ",sQuote("degree")," attribute ", sQuote(by), " must be observed on egos.", call.=FALSE)
   
   alt <- !is.null(by) && !is.null(.allAlters(egor)[[by]])
   if(homophily && !alt) stop("For term ",sQuote("degree")," attribute ", sQuote(by), " must be observed on both egos and alters if homophily=TRUE.", call.=FALSE)
   
   if(!is.null(by)){
     l <- sort(unique(c(egor[[by]],.allAlters(egor)[[by]])))
+    nl <- length(l)
   }
-  nl <- length(l)
 
   if(!is.null(by) && !homophily){
     bys <- rep(l,each=length(d))
@@ -209,15 +210,15 @@ EgoStat.degrange <- function(egor, from=NULL, to=Inf, by=NULL, homophily=FALSE){
   else if(length(from)!=length(to)) stop("The arguments of term degrange must have arguments either of the same length, or one of them must have length 1.")
   else if(any(from>=to)) stop("Term degrange must have from<to.")
 
-  if(!by %in% names(egor)) stop("For term ",sQuote("degree")," attribute ", sQuote(by), " must be observed on egos.", call.=FALSE)
+  if(!is.null(by) && !by %in% names(egor)) stop("For term ",sQuote("degree")," attribute ", sQuote(by), " must be observed on egos.", call.=FALSE)
   
   alt <- !is.null(by) && !is.null(.allAlters(egor)[[by]])
   if(homophily && !alt) stop("For term ",sQuote("degree")," attribute ", sQuote(by), " must be observed on both egos and alters if homophily=TRUE.", call.=FALSE)
   
   if(!is.null(by)){
     l <- sort(unique(c(egor[[by]],.allAlters(egor)[[by]])))
+    nl <- length(l)
   }
-  nl <- length(l)
 
   if(!is.null(by) && !homophily){
     bys <- rep(l,each=length(from))
@@ -246,12 +247,12 @@ EgoStat.degrange <- function(egor, from=NULL, to=Inf, by=NULL, homophily=FALSE){
 #' @export
 EgoStat.concurrent <- function(egor, by=NULL){
 
-  if(!by %in% names(egor)) stop("For term ",sQuote("concurrent")," attribute ", sQuote(by), " must be observed on egos.", call.=FALSE)
+  if(!is.null(by) && !by %in% names(egor)) stop("For term ",sQuote("concurrent")," attribute ", sQuote(by), " must be observed on egos.", call.=FALSE)
   
   if(!is.null(by)){
     l <- sort(unique(c(egor[[by]],.allAlters(egor)[[by]])))
+    nl <- length(l)
   }  
-  nl <- length(l)
 
   if(!is.null(by)){
     bys <- l
@@ -267,12 +268,12 @@ EgoStat.concurrent <- function(egor, by=NULL){
 
 #' @export
 EgoStat.concurrentties <- function(egor, by=NULL){
-  if(!by %in% names(egor)) stop("For term ",sQuote("concurrent")," attribute ", sQuote(by), " must be observed on egos.", call.=FALSE)
+  if(!is.null(by) && !by %in% names(egor)) stop("For term ",sQuote("concurrent")," attribute ", sQuote(by), " must be observed on egos.", call.=FALSE)
   
   if(!is.null(by)){
     l <- sort(unique(c(egor[[by]],.allAlters(egor)[[by]])))
+    nl <- length(l)
   }  
-  nl <- length(l)
 
   if(!is.null(by)){
     bys <- l
