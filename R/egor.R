@@ -113,7 +113,7 @@ as.egor.network<-function(object,special.cols=c("na")){
 #' @export
 as.network.egor<-function(x, N, scaling=c("round","sample"), ...){
   scaling <- match.arg(scaling)
-  w <- weights(attr(x, "design"))
+  w <- weights(x)
   egoinds <- switch(scaling,
                     greedy={
                       .greedy.scaling(N,w)
@@ -128,13 +128,13 @@ as.network.egor<-function(x, N, scaling=c("round","sample"), ...){
   N <- length(egoinds) # round scaling may modify N.
   y0<-network.initialize(N,directed=FALSE)
 
-  egor <- egor[egoinds,]
+  x <- x[egoinds,]
   
-  for(ego.col in setdiff(names(egos),c(".alters",".alter_ties")))
-    if(is.factor(egos[[ego.col]]))
-      y0 <- set.vertex.attribute(y0,ego.col,as.character(egos[[ego.col]]))
+  for(ego.col in setdiff(names(x),c(".alters",".alter_ties")))
+    if(is.factor(x[[ego.col]]))
+      y0 <- set.vertex.attribute(y0,ego.col,as.character(x[[ego.col]]))
     else
-      y0 <- set.vertex.attribute(y0,ego.col,egos[[ego.col]])
+      y0 <- set.vertex.attribute(y0,ego.col,x[[ego.col]])
   y0 %v% ".ego.ind" <- egoinds
   y0
 }
