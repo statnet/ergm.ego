@@ -45,7 +45,7 @@ degreedist.egor <- function(egor, freq = FALSE, prob = !freq,
   ylabel <- "Frequency"
   egoIDcol <- egor$egoIDcol
   degtable <- sapply(egor$.alters, nrow)
-  degtable.wt <- degtable * weights(attr(egor,"ego.design"))
+  degtable.wt <- degtable * weights(egor)
   maxdeg <- max(degtable.wt)
   deg.ego <- summary(egor ~ degree(0:maxdeg, by = by))
   names(deg.ego) <- 0:maxdeg
@@ -178,7 +178,7 @@ mixingmatrix.egor <- function(egor, attrname, rowprob = FALSE){
   egos <- rep(egor[[attrname]], apply(egor$.alters, 1, nrow))
   alters <- .allAlters(egor)[[attrname]]
   
-  w <- weights(attr(egor, "ego.design"))
+  w <- weights(egor)
 
   mxmat <- outer(levs, levs, function(l1, l2) sum(w[egos==l1,alters==l2]))
 
