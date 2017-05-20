@@ -44,7 +44,6 @@ degreedist.egor <- function(egor, freq = FALSE, prob = !freq,
   color <- "#83B6E1"
   beside <- TRUE
   ylabel <- "Frequency"
-  egoIDcol <- egor$egoIDcol
   degtable <- sapply(egor$.alters, nrow)
   degtable.wt <- degtable * weights(egor)
   maxdeg <- max(degtable.wt)
@@ -57,7 +56,7 @@ degreedist.egor <- function(egor, freq = FALSE, prob = !freq,
     rownames(deg.ego) <- levs
     colnames(deg.ego) <- 0:maxdeg
     for(i in 1:length(levs)){
-      vals <- table(degtable.wt[egor[by] == levs[i]])
+      vals <- table(degtable.wt[egor[[by]] == levs[i]])
       toreplace <- as.numeric(names(vals)) + 1
       deg.ego[i, toreplace] <- vals
     }
@@ -176,12 +175,12 @@ degreedist.egor <- function(egor, freq = FALSE, prob = !freq,
 mixingmatrix.egor <- function(egor, attrname, rowprob = FALSE){
   levs <- sort(unique(c(egor[[attrname]], .allAlters(egor)[[attrname]])))
 
-  egos <- rep(egor[[attrname]], apply(egor$.alters, 1, nrow))
+  ds <- sapply(egor$.alters, nrow)
+  egos <- rep(egor[[attrname]], ds)
   alters <- .allAlters(egor)[[attrname]]
-  
-  w <- weights(egor)
+  w <- rep(weights(egor),ds)
 
-  mxmat <- outer(levs, levs, function(l1, l2) sum(w[egos==l1,alters==l2]))
+  mxmat <- outer(levs, levs, Vectorize(function(l1, l2) sum(w[egos==l1&alters==l2])))
 
   dimnames(mxmat) <- list(ego = levs,  
                           alter = levs)
