@@ -15,15 +15,25 @@
 #' \code{\link{ergm.ego}}.
 #' 
 #' 
-#' @param ppopsize,ppopsize.mul Parameters to determine the size \eqn{|N'|} of
-#' the pseudopopulation network. \code{popsize} can be \describe{
+#' @param ppopsize,ppopsize.mul Parameters to determine the size
+#'   \eqn{|N'|} of the pseudopopulation network. \code{popsize} can be
+#'   \describe{
+#' 
 #' \item{"auto"}{If the \code{popsize} (\eqn{|N|}) argument is
-#' specified and is different from 1, as if \code{"pop"}; otherwise, as
-#' \code{"samp"}.} \item{"samp"}{set \eqn{|N'|} based on the sample
-#' size: \eqn{|N'|=|S| \times \code{popsize.mul}}} \item{"pop"}{set
-#' \eqn{|N'|} based on the population size: \eqn{|N'|=|N| \times
-#' \code{popsize.mul}}} \item{a number}{set \eqn{|N'|} directly
-#' (\code{popsize.mul} ignored)} }
+#' specified and is different from 1, as if \code{"pop"}; otherwise,
+#' as \code{"samp"}.}
+#'
+#' \item{"samp"}{set \eqn{|N'|} based on the sample size:
+#' \eqn{|N'|=|S| \times \code{popsize.mul}}}
+#' 
+#' \item{"pop"}{set \eqn{|N'|} based on the population size:
+#' \eqn{|N'|=|N| \times \code{popsize.mul}}}
+#'
+#' \item{a number}{set \eqn{|N'|} directly (\code{popsize.mul}
+#' ignored)}
+#'
+#' \item{a data frame}{use the specified data frame as the
+#' pseudo-population; use at your own risk.}}
 #' 
 #' The default is to use the same pseudopopulation size as the sample size,
 #' but, particularly if there are sampling weights in the data, it should be
@@ -89,7 +99,7 @@ control.ergm.ego <- function(
   ignore.max.alters = FALSE,
   ergm.control = control.ergm(),
   ...){
-  match.arg.pars <- c("stats.est", "ppop.wt", "stats.wt", if(!is.numeric(ppopsize)) "ppopsize")
+  match.arg.pars <- c("stats.est", "ppop.wt", "stats.wt", if(!is.numeric(ppopsize) && !is.data.frame(ppopsize)) "ppopsize")
 
   control<-list()
   formal.args<-formals(sys.function())
