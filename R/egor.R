@@ -19,7 +19,6 @@
 #'
 #' @return An \code{\link{egor}} object.
 #' 
-#' @section Miscellaneous Methods: The following \dQuote{standard} methods have
 #' @author Pavel N. Krivitsky
 #' @keywords manip methods
 #' @import egor

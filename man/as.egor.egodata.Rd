@@ -20,10 +20,6 @@ An \code{\link{egor}} object.
 Convert (deprecated) \code{\link{egodata}} Objects to
 \code{\link{egor}} Objects
 }
-\section{Miscellaneous Methods}{
- The following \dQuote{standard} methods have
-}
-
 \author{
 Pavel N. Krivitsky
 }
