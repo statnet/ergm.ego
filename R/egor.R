@@ -60,10 +60,6 @@ as.egor.network<-function(x,special.cols=c("na"),...){
 
   egos <- tibble::as_tibble(egos)
 
-  el<-as.edgelist(x)
-  el<-rbind(el,el[,2:1])
-  alterS<-tapply(el[,2],INDEX=el[,1],FUN=c,simplify=FALSE)
-
   alters <- lapply(seq_len(N), get.neighborhood, x=x) # so v gets the index variable
 
   alters <- lapply(alters, function(js) egos[js,,drop=FALSE])
