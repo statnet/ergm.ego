@@ -60,11 +60,21 @@ as.egor.network<-function(x,special.cols=c("na"),...){
 
   egos <- tibble::as_tibble(egos)
 
+  # FIXME: Save edge attributes as well.
   alters <- lapply(seq_len(N), get.neighborhood, x=x) # so v gets the index variable
 
-  alters <- lapply(alters, function(js) egos[js,,drop=FALSE])
+  alter_ties <- lapply(alters, lapply, get.neighborhood, x=x) # list of lists of alters' nominations
+  
+  alter_ties <- mapply(function(a, aa){
+    # Only keep alters' ties that are with another alter of this ego.
+    aa <- lapply(aa, function(ks) ks[ks %in% a])
+    # FIXME: Save edge attributes as well.
+    tibble(Source=rep(a, sapply(aa, length)), Target=as.vector(unlist(aa), mode=mode(a)))
+  }, alters, alter_ties, SIMPLIFY=FALSE)
 
-  egor(egos.df=egos,alters.df=alters)
+  alters <- lapply(alters, function(js) cbind(egos[js,,drop=FALSE], alterID=js))
+  
+  egor(egos.df=egos,alters.df=alters,alter_ties.df=alter_ties)
 }
 
 
