@@ -74,7 +74,7 @@ as.egor.network<-function(x,special.cols=c("na"),...){
 
   alters <- lapply(alters, function(js) cbind(egos[js,,drop=FALSE], alterID=js))
   
-  egor(egos.df=egos,alters.df=alters,alter_ties.df=alter_ties)
+  egor(egos.df=egos, alters.df=alters, alter_ties.df=alter_ties, ego.design=list(~1, weights=~1))
 }
 
 
