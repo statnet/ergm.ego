@@ -15,7 +15,10 @@
 
 \item{seed}{Random seed.}
 
-\item{popsize}{Network size to which to scale the model for simulation.}
+\item{popsize}{Either network size to which to scale the model for
+simulation or a \code{\link{data.frame}} with at least those ego attributes
+required to estimate the model, to simulate over a specific set
+of actors.}
 
 \item{control}{A \code{\link{control.simulate.ergm.ego}} control list.}
 

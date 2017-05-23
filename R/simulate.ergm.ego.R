@@ -18,7 +18,10 @@
 #' @param object An \code{\link{ergm.ego}} fit.
 #' @param nsim Number of realizations to simulate.
 #' @param seed Random seed.
-#' @param popsize Network size to which to scale the model for simulation.
+#' @param popsize Either network size to which to scale the model for
+#'   simulation or a [`data.frame`] with at least those ego attributes
+#'   required to estimate the model, to simulate over a specific set
+#'   of actors.
 #' @param control A \code{\link{control.simulate.ergm.ego}} control list.
 #' @param \dots Additional arguments passed to \code{\link[ergm]{san}} and
 #' \code{\link[ergm]{simulate.formula}}.
@@ -64,7 +67,17 @@ simulate.ergm.ego <- function(object, nsim = 1, seed = NULL, popsize=if(object$p
   statnet.common::check.control.class()
   
   egodata <- object$egodata
-  popnw <- if(popsize == object$ppopsize) object$newnetwork else as.network(egodata, popsize, scaling=control$ppop.wt)
+  if(is.data.frame(popsize)){ # If pseudopoluation composition is given in popsize, use that.
+    pegos <- popsize
+    pegos[[".pegoID"]] <- 1:nrow(pegos)
+    pdata <- egodata(pegos, data.frame(.pegoID=c()), egoIDcol = ".pegoID")
+    popsize <- nrow(popsize)
+    popnw <- as.network.egodata(pdata, popsize)
+  }else{
+    popnw <-
+      if(popsize == object$ppopsize) object$newnetwork
+      else as.network(egodata, popsize, scaling=control$ppop.wt)
+  }
 
   ppopsize <- if(network.size(popnw)!=popsize){
       message("Note: Constructed network has size ", network.size(popnw), " different from requested ", popsize,". Simulated statistics may need to be rescaled.")
