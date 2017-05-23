@@ -99,18 +99,28 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.
 
   sampsize <- dim(egodata)[1]
   ppopsize <-
-    if(is.numeric(control$ppopsize)) control$ppopsize
+    if(is.data.frame(control$ppopsize)) nrow(control$ppopsize)
+    else if(is.numeric(control$ppopsize)) control$ppopsize
     else switch(control$ppopsize,
                 auto = if(missing(popsize) || popsize==1) sampsize*control$ppopsize.mul else popsize*control$ppopsize.mul,  
                 samp = sampsize*control$ppopsize.mul,
                 pop = popsize*control$ppopsize.mul)
   
-  if(ppopsize < sampsize) stop("Using a smaller pseudopopulation size than sample size does not make sense.")
+  if(ppopsize < sampsize && !is.data.frame(control$ppopsize)) warning("Using a smaller pseudopopulation size than sample size usually does not make sense.")
   else if(ppopsize == sampsize && !is.null(egodata$egoWt) && var(egodata$egoWt)>sqrt(.Machine$double.eps))
     warning("Using pseudopoulation size equal to sample size under weighted sampling: results may be highly biased. Recommend increasing popsize.mul control parameter.")
   
   message("Constructing pseudopopulation network.")
-  popnw <- as.network(egodata, ppopsize, scaling=control$ppop.wt)
+  popnw <-
+    if(is.data.frame(control$ppopsize)){ # If pseudopoluation composition is given in popsize, use that.
+      pegos <- control$ppopsize
+      pegos[[".pegoID"]] <- 1:nrow(pegos)
+      pdata <- egodata(pegos, data.frame(.pegoID=c()), egoIDcol = ".pegoID")
+      as.network.egodata(pdata, ppopsize)
+    }else{
+      as.network(egodata, ppopsize, scaling=control$ppop.wt)
+    }
+
   if(network.size(popnw)!=ppopsize){
     message("Note: Constructed network has size ", network.size(popnw), ", different from requested ", ppopsize,". Estimation should not be meaningfully affected.")
     ppopsize <- network.size(popnw)
