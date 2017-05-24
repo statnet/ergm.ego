@@ -58,7 +58,7 @@
 #' ergm-terms ergm.terms terms-ergm terms.ergm EgoStat EgoStat.edges
 #' EgoStat.nodecov EgoStat.nodefactor EgoStat.nodematch EgoStat.nodemix
 #' EgoStat.absdiff EgoStat.degree EgoStat.degrange EgoStat.concurrent
-#' EgoStat.concurrentties EgoStat.degreepopularity EgoStat.mean.age netsize.adj
+#' EgoStat.concurrentties EgoStat.degreepopularity EgoStat.cyclicalties EgoStat.transitiveties EgoStat.mean.age netsize.adj
 #' InitErgmTerm.netsize.adj
 #' @docType methods
 #' @section Currently implemented egocentric statistics: For each of these,
@@ -295,3 +295,29 @@ EgoStat.degreepopularity <- function(egor){
 
   .eval.h(egor, h, "degreepopularity")
 }
+
+#' @export
+EgoStat.transitiveties <- function(egor, attrname=NULL){
+  if(!is.null(attrname)){
+    nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$.alters[[1]]))
+    if(nattr!=2) .attrErr("transitiveties and cyclicalties", attrname, "both")
+    # Note: alterID API is subject to change.
+    egor$.matchAttr <- egor[[attrname]]
+    egor <- subset(egor,
+                   .matchAttr==.alters[[attrname]][match(.alter_ties$Source,.alters$alterID)] &
+                   .matchAttr==.alters[[attrname]][match(.alter_ties$Target,.alters$alterID)],
+                   aspect="ties")
+  }
+  h <- function(e)
+    # Implement Krivitsky and Morris (2017, p. 490) This works
+    # because we want to count how many alters have at least one
+    # alter-alter tie, thus forming a transitive tie.
+    length(unique(union(e$.alter_ties$Source, e$.alter_ties$Target)))/2
+
+  .eval.h(egor, h,
+          if(is.null(attrname)) paste("transitiveties",sep=".")
+          else paste("transitiveties",attrname,sep="."))
+}
+
+#' @export
+EgoStat.cyclicalties <- EgoStat.transitiveties

@@ -22,6 +22,8 @@
 \alias{EgoStat.concurrent}
 \alias{EgoStat.concurrentties}
 \alias{EgoStat.degreepopularity}
+\alias{EgoStat.cyclicalties}
+\alias{EgoStat.transitiveties}
 \alias{EgoStat.mean.age}
 \alias{netsize.adj}
 \alias{InitErgmTerm.netsize.adj}
