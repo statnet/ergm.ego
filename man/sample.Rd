@@ -17,6 +17,12 @@ sample(x, size, replace = FALSE, prob = NULL, ...)
 
 \item{...}{extra arguments, currently unused.}
 }
+\value{
+An \code{\link[egor:egor]{egor::egor()}} object whose egos have been resampled in
+accordance with the arguments. Note that its \code{\link[egor:ego.design]{egor::ego.design()}}
+information is overwritten in favor of the selection
+probabilities used in the sampling.
+}
 \description{
 Implementations of the \code{\link[base:sample]{base::sample()}} function for \code{\link[egor:egor]{egor::egor()}} data.
 }
@@ -24,4 +30,28 @@ Implementations of the \code{\link[base:sample]{base::sample()}} function for \c
 A reimplementation of sample as a generic was necessary
 because \code{\link[base:sample]{base::sample()}} is not a generic and cannot take
 data-frame-alikes as arguments.
+}
+\examples{
+
+data(faux.mesa.high)
+fmh.ego <- as.egor(faux.mesa.high)
+
+# Create a tiny weighted sample:
+(s3 <- sample(fmh.ego, 3, replace=TRUE, prob=1:nrow(fmh.ego)))
+# Resampling with prob=weights(egor) creates a self-weighted
+# sample:
+(sample(s3, 3, replace=TRUE, prob=weights(s3)))
+
+# Create a large weighted sample, oversampling 12th-graders:
+p <- ifelse(fmh.ego$Grade==12, 2, 1)
+s2000 <- sample(fmh.ego, 2000, replace=TRUE, prob=p)
+
+# Summary function adjusts for weights:
+(summ.net <- summary(faux.mesa.high~edges+nodematch("Grade")+nodefactor("Race")+transitiveties))
+(summ.ego <- summary(s2000~edges+nodematch("Grade")+nodefactor("Race")+transitiveties, scaleto=network.size(faux.mesa.high)))
+
+\dontshow{
+stopifnot(isTRUE(all.equal(summ.net, summ.ego, tolerance=.05)))
+}
+
 }

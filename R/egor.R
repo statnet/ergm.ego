@@ -194,20 +194,52 @@ na.omit.egor <- function(object, relevant=TRUE, ...){
 #' @note A reimplementation of sample as a generic was necessary
 #'   because [base::sample()] is not a generic and cannot take
 #'   data-frame-alikes as arguments.
+#'
+#' @return An [egor::egor()] object whose egos have been resampled in
+#'   accordance with the arguments. Note that its [egor::ego.design()]
+#'   information is overwritten in favor of the selection
+#'   probabilities used in the sampling.
+#'
+#' @examples
+#'
+#' data(faux.mesa.high)
+#' fmh.ego <- as.egor(faux.mesa.high)
+#'
+#' # Create a tiny weighted sample:
+#' (s3 <- sample(fmh.ego, 3, replace=TRUE, prob=1:nrow(fmh.ego)))
+#' # Resampling with prob=weights(egor) creates a self-weighted
+#' # sample:
+#' (sample(s3, 3, replace=TRUE, prob=weights(s3)))
+#'
+#' # Create a large weighted sample, oversampling 12th-graders:
+#' p <- ifelse(fmh.ego$Grade==12, 2, 1)
+#' s2000 <- sample(fmh.ego, 2000, replace=TRUE, prob=p)
+#'
+#' # Summary function adjusts for weights:
+#' (summ.net <- summary(faux.mesa.high~edges+nodematch("Grade")+nodefactor("Race")+transitiveties))
+#' (summ.ego <- summary(s2000~edges+nodematch("Grade")+nodefactor("Race")+transitiveties, scaleto=network.size(faux.mesa.high)))
+#'
+#' \dontshow{
+#' stopifnot(isTRUE(all.equal(summ.net, summ.ego, tolerance=.05)))
+#' }
+#' 
 #' @export
 sample <- function(x, size, replace=FALSE, prob=NULL, ...) UseMethod("sample")
 #' @rdname sample
 #' @export
 sample.default <- function(x, ...) base::sample(x, ...)
 
-## FIXME: Adjust the sampling weights in the survey.design object.
 #' @rdname sample
 #' @export
 sample.egor <- function(x, size, replace=FALSE, prob=NULL, ...){
   if(missing(size)) size <- nrow(x)
-  
+
+  w <- weights(x)
+  if(is.null(prob)) prob <- rep(size/nrow(x), nrow(x))
   is <- sample.int(nrow(x), size, replace, prob)
 
-  x[is, ,aspect="egos"]
+  x <- x[is, ,aspect="egos"]
+  ego.design(x) <- list(~1, weights=(w/prob)[is])
+  x
 }
 
