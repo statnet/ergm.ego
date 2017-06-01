@@ -63,20 +63,20 @@ as.egor.network<-function(x,special.cols=c("na"),...){
   # FIXME: Save edge attributes as well.
   alters <- lapply(seq_len(N), get.neighborhood, x=x) # so v gets the index variable
 
-  alter_ties <- lapply(alters, lapply, get.neighborhood, x=x) # list of lists of alters' nominations
+  aaties <- lapply(alters, lapply, get.neighborhood, x=x) # list of lists of alters' nominations
 
   # Note: Alter ID API is subject to change.
-  alter_ties <- mapply(function(a, aa){
+  aaties <- mapply(function(a, aa){
     # Only keep alters' ties that are with another alter of this ego.
     aa <- lapply(aa, function(ks) ks[ks %in% a])
     # FIXME: Save edge attributes as well.
     tibble(Source=rep(a, sapply(aa, length)), Target=as.vector(unlist(aa), mode=storage.mode(a)))
-  }, alters, alter_ties, SIMPLIFY=FALSE)
+  }, alters, aaties, SIMPLIFY=FALSE)
 
   # Note: Alter ID API is subject to change.
   alters <- lapply(alters, function(js) cbind(egos[js,,drop=FALSE], alterID=js))
   
-  egor(egos.df=egos, alters.df=alters, alter_ties.df=alter_ties, ego.design=list(~1, weights=~1))
+  egor(egos.df=egos, alters.df=alters, aaties.df=aaties, ego.design=list(~1, weights=~1))
 }
 
 
@@ -142,7 +142,7 @@ as.network.egor<-function(x, N, scaling=c("round","sample"), ...){
 
   x <- x[egoinds,]
   
-  for(ego.col in setdiff(names(x),c(".alters",".alter_ties")))
+  for(ego.col in setdiff(names(x),c(".alters",".aaties")))
     if(is.factor(x[[ego.col]]))
       y0 <- set.vertex.attribute(y0,ego.col,as.character(x[[ego.col]]))
     else

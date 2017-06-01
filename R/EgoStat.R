@@ -307,15 +307,15 @@ EgoStat.transitiveties <- function(egor, attrname=NULL){
     # Note: alterID API is subject to change.
     egor$.matchAttr <- egor[[attrname]]
     egor <- subset(egor,
-                   .matchAttr==.alters[[attrname]][match(.alter_ties$Source,.alters$alterID)] &
-                   .matchAttr==.alters[[attrname]][match(.alter_ties$Target,.alters$alterID)],
+                   .matchAttr==.alters[[attrname]][.aaties$.srcIx] &
+                   .matchAttr==.alters[[attrname]][.aaties$.dstIx],
                    aspect="ties")
   }
   h <- function(e)
     # Implement Krivitsky and Morris (2017, p. 490) This works
     # because we want to count how many alters have at least one
     # alter-alter tie, thus forming a transitive tie.
-    length(unique(union(e$.alter_ties$Source, e$.alter_ties$Target)))/2
+    length(unique(union(e$.aaties$Source, e$.aaties$Target)))/2
 
   .eval.h(egor, h,
           if(is.null(attrname)) paste("transitiveties",sep=".")
