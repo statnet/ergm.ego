@@ -59,6 +59,7 @@ and should not be used in the model formula directly.  } } }
 \item \code{nodefactor} \item \code{nodematch} \item \code{nodemix} \item
 \code{absdiff} \item \code{degree} \item \code{degrange} \item
 \code{concurrent} \item \code{concurrentties} \item \code{degreepopularity}
+\item \code{transitiveties} \item \code{cyclicalties} \item \code{esp} \item \code{gwesp}
 } }
 
 \item{tergm:}{ \itemize{ \item \code{mean.age} } } }

@@ -20,37 +20,40 @@ y <- san(y~edges+degree(0:3), target.stats=c(e,ds))
 
 y.e <- as.egor(y)
 
-f <- ~ edges +
-  nodecov("a") +
+f <- (
+  ~ edges +
+    nodecov("a") +
     
     nodefactor("a", 0) + nodefactor("a", 1) + nodefactor("a", 2) +
-      
-      nodematch("a") + nodematch("a", TRUE) + nodematch("a", TRUE, 2) +
-        
-        absdiff("a") + absdiff("a", 2) +
-          
-          degree(0) + degree(3) + degree(0:6) +
-            degree(0, by="a") + degree(3, by="a") + degree(0:6, by="a") +
-              degree(0, by="a", homophily=TRUE) + degree(3, by="a", homophily=TRUE) + degree(0:6, by="a", homophily=TRUE) +
-                
-                degrange(0) + degrange(3) + degrange(0:6) +
-                  degrange(0) + degrange(3) + degrange(0:6) +
-                    degrange(0, by="a") + degrange(3, by="a") + degrange(0:6, by="a") +
-                      degrange(0, by="a", homophily=TRUE) + degrange(3, by="a", homophily=TRUE) + degrange(0:6, by="a", homophily=TRUE) +
-                        
-                        degrange(0,2) + degrange(3,5) + degrange(0:6,7) +
-                          degrange(0,2) + degrange(3,5) + degrange(0:6,7) +
-                            degrange(0,2, by="a") + degrange(3,5, by="a") + degrange(0:6,7, by="a") +
-                              degrange(0,2, by="a", homophily=TRUE) + degrange(3,5, by="a", homophily=TRUE) + degrange(0:6,7, by="a", homophily=TRUE) +
-                                
-                                concurrent + concurrent("a") +
-                                  
-                                  concurrentties + concurrentties("a") +
-                                    
-                                    degreepopularity +
-
-                                      nodemix("a") + nodemix("a", base=1) + nodemix("a", base=2) + nodemix("a", base=2:3)
-
+    
+    nodematch("a") + nodematch("a", TRUE) + nodematch("a", TRUE, 2) +
+    
+    absdiff("a") + absdiff("a", 2) +
+    
+    degree(0) + degree(3) + degree(0:6) +
+    degree(0, by="a") + degree(3, by="a") + degree(0:6, by="a") +
+    degree(0, by="a", homophily=TRUE) + degree(3, by="a", homophily=TRUE) + degree(0:6, by="a", homophily=TRUE) +
+    
+    degrange(0) + degrange(3) + degrange(0:6) +
+    degrange(0) + degrange(3) + degrange(0:6) +
+    degrange(0, by="a") + degrange(3, by="a") + degrange(0:6, by="a") +
+    degrange(0, by="a", homophily=TRUE) + degrange(3, by="a", homophily=TRUE) + degrange(0:6, by="a", homophily=TRUE) +
+    
+    degrange(0,2) + degrange(3,5) + degrange(0:6,7) +
+    degrange(0,2) + degrange(3,5) + degrange(0:6,7) +
+    degrange(0,2, by="a") + degrange(3,5, by="a") + degrange(0:6,7, by="a") +
+    degrange(0,2, by="a", homophily=TRUE) + degrange(3,5, by="a", homophily=TRUE) + degrange(0:6,7, by="a", homophily=TRUE) +
+    
+    concurrent + concurrent("a") +
+    
+    concurrentties + concurrentties("a") +
+    
+    degreepopularity +
+    
+    nodemix("a") + nodemix("a", base=1) + nodemix("a", base=2) + nodemix("a", base=2:3) +
+    
+    transitiveties + transitiveties("a") + esp(0:6) + gwesp(fix=FALSE) + gwesp(0.5, fix=TRUE)
+)
 
 f.y <- ergm.update.formula(f, y~.)
 environment(f.y) <- globalenv()

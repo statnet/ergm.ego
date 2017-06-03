@@ -78,6 +78,7 @@
 #' \item \code{nodefactor} \item \code{nodematch} \item \code{nodemix} \item
 #' \code{absdiff} \item \code{degree} \item \code{degrange} \item
 #' \code{concurrent} \item \code{concurrentties} \item \code{degreepopularity}
+#' \item \code{transitiveties} \item \code{cyclicalties} \item \code{esp} \item \code{gwesp}
 #' } }
 #' 
 #' \item{tergm:}{ \itemize{ \item \code{mean.age} } } }
@@ -324,3 +325,39 @@ EgoStat.transitiveties <- function(egor, attrname=NULL){
 
 #' @export
 EgoStat.cyclicalties <- EgoStat.transitiveties
+
+#' @export
+EgoStat.esp <- function(egor, d){
+  h <- function(e){
+    aaties <- unique(
+      cbind(pmin(e$.aaties$Source,e$.aaties$Target),
+            pmax(e$.aaties$Source,e$.aaties$Target))
+    )
+    sp <- sapply(e$.alters$alterID, # for each alter
+           function(a) length(unique(c(aaties[aaties[,1]==a,2],aaties[aaties[,2]==a,1]))) # Number of shared partners
+           )
+    sapply(d, function(k) sum(sp==k))/2
+  }
+  
+  .eval.h(egor, h,
+          paste0("esp",d)
+          )
+}
+
+#' @export
+EgoStat.gwesp <- function(egor, decay=NULL, fixed=FALSE, cutoff=30, alpha=NULL){
+  maxesp <- cutoff # Hopefully, network.size > cutoff
+
+  esp <- EgoStat.esp(egor, 1:maxesp)
+
+  if(fixed==FALSE){
+    colnames(esp) <- paste0("esp#", 1:maxesp)
+    return(esp)
+  }
+
+  eta <- exp(decay)*(1-(1-exp(-decay))^(1:maxesp))
+  hv <- esp%*%eta
+  colnames(hv) <- paste0("gwesp.fixed.",decay)
+  hv
+}
+
