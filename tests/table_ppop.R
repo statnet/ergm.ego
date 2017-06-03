@@ -5,7 +5,7 @@ fmh.ego <- as.egor(faux.mesa.high)
 set.seed(0)
 ppop <- rbind(fmh.ego, fmh.ego)
 ppop$.alters <- NULL
-ppop$.alter_ties <- NULL
+ppop$.aaties <- NULL
 ppop <- as.data.frame(ppop)
 egofit <- ergm.ego(fmh.ego~edges+degree(0:3)+nodefactor("Race")+nodematch("Race")
                    +nodefactor("Sex")+nodematch("Sex")+absdiff("Grade"), 
@@ -19,6 +19,6 @@ stopifnot(isTRUE(all.equal(c(## -0.8407,
 
 ppop <- fmh.ego[sample.int(nrow(fmh.ego), nrow(fmh.ego)*1.5, replace=TRUE),]
 ppop$.alters <- NULL
-ppop$.alter_ties <- NULL
+ppop$.aaties <- NULL
 ppop <- as.data.frame(ppop)
 egosim <- simulate(egofit, popsize=ppop)
