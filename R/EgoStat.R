@@ -308,7 +308,7 @@ EgoStat.transitiveties <- function(egor, attrname=NULL){
     egor$.matchAttr <- egor[[attrname]]
     egor <- subset(egor,
                    .matchAttr==.alters[[attrname]][.aaties$.srcIx] &
-                   .matchAttr==.alters[[attrname]][.aaties$.dstIx],
+                   .matchAttr==.alters[[attrname]][.aaties$.tgtIx],
                    aspect="ties")
   }
   h <- function(e)
