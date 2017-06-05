@@ -142,7 +142,7 @@ as.network.egor<-function(x, N, scaling=c("round","sample"), ...){
 
   x <- x[egoinds,]
   
-  for(ego.col in setdiff(names(x),c(".alters",".aaties")))
+  for(ego.col in setdiff(names(x),c(".alts",".aaties")))
     if(is.factor(x[[ego.col]]))
       y0 <- set.vertex.attribute(y0,ego.col,as.character(x[[ego.col]]))
     else

@@ -13,7 +13,7 @@
 
 
 .allAlters <- function(egor){
-  do.call(rbind, egor$.alters)
+  do.call(rbind, egor$.alts)
 }
 
 .attrErr <- function(term, attrname, req = c("one","both")){
@@ -88,23 +88,23 @@ NULL
 
 #' @export
 EgoStat.edges <- function(egor){
-  h <- function(e) nrow(e$.alters)/2
+  h <- function(e) nrow(e$.alts)/2
   .eval.h(egor, h, "edges")
 }
 
 #' @export
 EgoStat.nodecov <- function(egor, attrname){
-  nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$.alters[[1]]))
+  nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$.alts[[1]]))
 
   if(nattr==0) .attrErr("nodecov", attrname, "one")
   
-  h <- function(e) (sum(e[[attrname]])*nrow(e$.alters) + sum(e$.alters[[attrname]]))/nattr
+  h <- function(e) (sum(e[[attrname]])*nrow(e$.alts) + sum(e$.alts[[attrname]]))/nattr
   .eval.h(egor, h, paste("nodecov",attrname,sep="."))
 }
 
 #' @export
 EgoStat.nodefactor <- function(egor, attrname, base=1){
-  nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$.alters[[1]]))
+  nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$.alts[[1]]))
   if(nattr==0) .attrErr("nodefactor", attrname, "one")
 
   l <- sort(unique(c(egor[[attrname]],.allAlters(egor)[[attrname]])))
@@ -114,15 +114,15 @@ EgoStat.nodefactor <- function(egor, attrname, base=1){
   nl <- length(l)
 
   h <- function(e)
-  (tabulate(match(e[[attrname]],l,0), nbins=nl)*nrow(e$.alters)
-    + tabulate(match(e$.alters[[attrname]],l,0), nbins=nl))/nattr
+  (tabulate(match(e[[attrname]],l,0), nbins=nl)*nrow(e$.alts)
+    + tabulate(match(e$.alts[[attrname]],l,0), nbins=nl))/nattr
   
   .eval.h(egor, h, paste("nodefactor",attrname,l,sep="."))
 }
 
 #' @export
 EgoStat.nodematch <- function(egor, attrname, diff=FALSE, keep=NULL){
-  nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$.alters[[1]]))
+  nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$.alts[[1]]))
   if(nattr==0) .attrErr("nodematch", attrname, "both")
   
   l <- sort(unique(c(egor[[attrname]],.allAlters(egor)[[attrname]])))
@@ -133,7 +133,7 @@ EgoStat.nodematch <- function(egor, attrname, diff=FALSE, keep=NULL){
 
   combine <- if(diff) identity else sum
   h <- function(e)
-    combine(tabulate(match(e[[attrname]],l,0), nbins=nl)*sum(e[[attrname]]==e$.alters[[attrname]])/2)
+    combine(tabulate(match(e[[attrname]],l,0), nbins=nl)*sum(e[[attrname]]==e$.alts[[attrname]])/2)
 
   .eval.h(egor, h,
           if(diff) paste("nodematch",attrname,l,sep=".")
@@ -143,7 +143,7 @@ EgoStat.nodematch <- function(egor, attrname, diff=FALSE, keep=NULL){
 
 #' @export
 EgoStat.nodemix <- function(egor, attrname, base=NULL){
-  nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$.alters[[1]]))
+  nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$.alts[[1]]))
   if(nattr==0) .attrErr("nodemix", attrname, "both")
 
   l <- sort(unique(c(egor[[attrname]],.allAlters(egor)[[attrname]])))
@@ -154,8 +154,8 @@ EgoStat.nodemix <- function(egor, attrname, base=NULL){
   if (length(base) && !identical(as.integer(base),as.integer(0))) l <- l[-base]
   nl <- length(l)
   h <- function(e)
-    tabulate(match(paste(pmin(e[[attrname]],e$.alters[[attrname]]),
-                         pmax(e[[attrname]],e$.alters[[attrname]]),
+    tabulate(match(paste(pmin(e[[attrname]],e$.alts[[attrname]]),
+                         pmax(e[[attrname]],e$.alts[[attrname]]),
                          sep="."),l,0), nbins=nl)/2
   .eval.h(egor, h,
           paste("mix",attrname,l,sep="."))
@@ -163,11 +163,11 @@ EgoStat.nodemix <- function(egor, attrname, base=NULL){
 
 #' @export
 EgoStat.absdiff <- function(egor, attrname, pow=1){
-  nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$.alters[[1]]))
+  nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$.alts[[1]]))
   if(nattr==0) .attrErr("absdiff", attrname, "both")
   
   h <- function(e)
-    sum(abs(e[[attrname]]-e$.alters[[attrname]])^pow)/2
+    sum(abs(e[[attrname]]-e$.alts[[attrname]])^pow)/2
 
   .eval.h(egor, h,
           if(pow==1) paste("absdiff",attrname,sep=".")
@@ -192,13 +192,13 @@ EgoStat.degree <- function(egor, d, by=NULL, homophily=FALSE){
     bys <- rep(l,each=length(d))
     degs <- rep(d,nl)
     cn <- paste0("deg",degs,".",by,bys)
-    h <- function(e) as.numeric(nrow(e$.alters)==degs & e[[by]]==bys)
+    h <- function(e) as.numeric(nrow(e$.alts)==degs & e[[by]]==bys)
   }else if(homophily){
     cn <-  paste0("deg",d,".homophily.",by)
-    h <- function(e) as.numeric(sum(e[[by]]==e$.alters[[by]])==d)
+    h <- function(e) as.numeric(sum(e[[by]]==e$.alts[[by]])==d)
   }else{
     cn <-  paste0("degree",d)
-    h <- function(e) as.numeric(nrow(e$.alters)==d)
+    h <- function(e) as.numeric(nrow(e$.alts)==d)
   }
 
   .eval.h(egor, h, cn)
@@ -233,17 +233,17 @@ EgoStat.degrange <- function(egor, from=NULL, to=Inf, by=NULL, homophily=FALSE){
     cn <- ifelse(tos>=.Machine$integer.max,
                  paste0("deg", from, "+.",          by, bys),
                  paste0("deg", from, "to", to, ".", by, bys))
-    h <- function(e) as.numeric(nrow(e$.alters)>=froms & nrow(e$.alters)<tos & e[[by]]==bys)
+    h <- function(e) as.numeric(nrow(e$.alts)>=froms & nrow(e$.alts)<tos & e[[by]]==bys)
   }else if(homophily){
     cn <- ifelse(to>=.Machine$integer.max,
                  paste0("deg", from,  "+",     ".homophily.", by),
                  paste0("deg", from, "to", to, ".homophily.", by))
-    h <- function(e) as.numeric(sum(e[[by]]==e$.alters[[by]])>=from & sum(e[[by]]==e$.alters[[by]])<to)
+    h <- function(e) as.numeric(sum(e[[by]]==e$.alts[[by]])>=from & sum(e[[by]]==e$.alts[[by]])<to)
   }else{
     cn <- ifelse(to>=.Machine$integer.max,
                  paste0("deg", from,  "+"),
                  paste0("deg", from, "to", to))
-    h <- function(e) as.numeric(nrow(e$.alters)>=from & nrow(e$.alters)<to)
+    h <- function(e) as.numeric(nrow(e$.alts)>=from & nrow(e$.alts)<to)
   }
 
   .eval.h(egor, h, cn)
@@ -262,10 +262,10 @@ EgoStat.concurrent <- function(egor, by=NULL){
   if(!is.null(by)){
     bys <- l
     cn <- paste0("concurrent.", by, bys)
-    h <- function(e) as.numeric(nrow(e$.alters)>=2 & e[[by]]==bys)
+    h <- function(e) as.numeric(nrow(e$.alts)>=2 & e[[by]]==bys)
   }else{
     cn <-  "concurrent"
-    h <- function(e) nrow(e$.alters)>=2
+    h <- function(e) nrow(e$.alts)>=2
   }
 
   .eval.h(egor, h, cn)
@@ -283,10 +283,10 @@ EgoStat.concurrentties <- function(egor, by=NULL){
   if(!is.null(by)){
     bys <- l
     cn <- paste0("concurrentties.", by, bys)
-    h <- function(e) max(nrow(e$.alters)-1,0)*as.numeric(e[[by]]==bys)
+    h <- function(e) max(nrow(e$.alts)-1,0)*as.numeric(e[[by]]==bys)
   }else{
     cn <-  "concurrentties"
-    h <- function(e) max(nrow(e$.alters)-1,0)
+    h <- function(e) max(nrow(e$.alts)-1,0)
   }
 
   .eval.h(egor, h, cn)
@@ -295,7 +295,7 @@ EgoStat.concurrentties <- function(egor, by=NULL){
 #' @export
 EgoStat.degreepopularity <- function(egor){
 
-  h <- function(e) nrow(e$.alters)^(3/2)
+  h <- function(e) nrow(e$.alts)^(3/2)
 
   .eval.h(egor, h, "degreepopularity")
 }
@@ -303,13 +303,13 @@ EgoStat.degreepopularity <- function(egor){
 #' @export
 EgoStat.transitiveties <- function(egor, attrname=NULL){
   if(!is.null(attrname)){
-    nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$.alters[[1]]))
+    nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$.alts[[1]]))
     if(nattr!=2) .attrErr("transitiveties and cyclicalties", attrname, "both")
     # Note: alterID API is subject to change.
     egor$.matchAttr <- egor[[attrname]]
     egor <- subset(egor,
-                   .matchAttr==.alters[[attrname]][.aaties$.srcIx] &
-                   .matchAttr==.alters[[attrname]][.aaties$.tgtIx],
+                   .matchAttr==.alts[[attrname]][.aaties$.srcIx] &
+                   .matchAttr==.alts[[attrname]][.aaties$.tgtIx],
                    aspect="ties")
   }
   h <- function(e)
@@ -333,7 +333,7 @@ EgoStat.esp <- function(egor, d){
       cbind(pmin(e$.aaties$Source,e$.aaties$Target),
             pmax(e$.aaties$Source,e$.aaties$Target))
     )
-    sp <- sapply(e$.alters$alterID, # for each alter
+    sp <- sapply(e$.alts$alterID, # for each alter
            function(a) length(unique(c(aaties[aaties[,1]==a,2],aaties[aaties[,2]==a,1]))) # Number of shared partners
            )
     sapply(d, function(k) sum(sp==k))/2

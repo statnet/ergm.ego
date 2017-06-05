@@ -44,7 +44,7 @@ degreedist.egor <- function(egor, freq = FALSE, prob = !freq,
   color <- "#83B6E1"
   beside <- TRUE
   ylabel <- "Frequency"
-  degtable <- sapply(egor$.alters, nrow)
+  degtable <- sapply(egor$.alts, nrow)
   degtable.wt <- degtable * weights(egor)
   maxdeg <- max(degtable.wt)
   deg.ego <- summary(egor ~ degree(0:maxdeg, by = by))
@@ -175,7 +175,7 @@ degreedist.egor <- function(egor, freq = FALSE, prob = !freq,
 mixingmatrix.egor <- function(egor, attrname, rowprob = FALSE){
   levs <- sort(unique(c(egor[[attrname]], .allAlters(egor)[[attrname]])))
 
-  ds <- sapply(egor$.alters, nrow)
+  ds <- sapply(egor$.alts, nrow)
   egos <- rep(egor[[attrname]], ds)
   alters <- .allAlters(egor)[[attrname]]
   w <- rep(weights(egor),ds)
