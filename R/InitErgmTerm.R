@@ -12,7 +12,7 @@
 #' useful for network size adjustment.
 #' 
 #' @useDynLib ergm.ego
-#' @noRd
+#' @rdname ergm.ego-terms
 InitErgmTerm.netsize.adj<-function(nw, arglist, ...) {
   a <- check.ErgmTerm(nw, arglist,
                       varnames = c("edges", "mutual", "transitiveties", "cyclicalties") ,

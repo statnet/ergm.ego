@@ -55,11 +55,7 @@
 #' 
 #' @name ergm.ego-terms
 #' @aliases ergm.ego-terms terms-ergm.ego ergm.ego.terms terms.ergm.ego
-#' ergm-terms ergm.terms terms-ergm terms.ergm EgoStat EgoStat.edges
-#' EgoStat.nodecov EgoStat.nodefactor EgoStat.nodematch EgoStat.nodemix
-#' EgoStat.absdiff EgoStat.degree EgoStat.degrange EgoStat.concurrent
-#' EgoStat.concurrentties EgoStat.degreepopularity EgoStat.cyclicalties EgoStat.transitiveties EgoStat.mean.age netsize.adj
-#' InitErgmTerm.netsize.adj
+#' ergm-terms ergm.terms terms-ergm terms.ergm EgoStat
 #' @docType methods
 #' @section Currently implemented egocentric statistics: For each of these,
 #' please see their respective package's \code{ergm-terms} help for meaning and
@@ -82,17 +78,21 @@
 #' } }
 #' 
 #' \item{tergm:}{ \itemize{ \item \code{mean.age} } } }
+#'
+#' @param egor,attrname,base,diff,keep,pow,d,by,homophily,from,to,decay,fixed,cutoff,alpha,emptyval,nw,arglist,... arguments to terms. See \code{\link[ergm]{ergm-terms}}.
 #' @seealso \code{\link[ergm]{ergm-terms}}
 #' @keywords models
 NULL
 
 #' @export
+#' @rdname ergm.ego-terms
 EgoStat.edges <- function(egor){
   h <- function(e) nrow(e$.alts)/2
   .eval.h(egor, h, "edges")
 }
 
 #' @export
+#' @rdname ergm.ego-terms
 EgoStat.nodecov <- function(egor, attrname){
   nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$.alts[[1]]))
 
@@ -103,6 +103,7 @@ EgoStat.nodecov <- function(egor, attrname){
 }
 
 #' @export
+#' @rdname ergm.ego-terms
 EgoStat.nodefactor <- function(egor, attrname, base=1){
   nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$.alts[[1]]))
   if(nattr==0) .attrErr("nodefactor", attrname, "one")
@@ -121,6 +122,7 @@ EgoStat.nodefactor <- function(egor, attrname, base=1){
 }
 
 #' @export
+#' @rdname ergm.ego-terms
 EgoStat.nodematch <- function(egor, attrname, diff=FALSE, keep=NULL){
   nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$.alts[[1]]))
   if(nattr==0) .attrErr("nodematch", attrname, "both")
@@ -142,6 +144,7 @@ EgoStat.nodematch <- function(egor, attrname, diff=FALSE, keep=NULL){
 
 
 #' @export
+#' @rdname ergm.ego-terms
 EgoStat.nodemix <- function(egor, attrname, base=NULL){
   nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$.alts[[1]]))
   if(nattr==0) .attrErr("nodemix", attrname, "both")
@@ -162,6 +165,7 @@ EgoStat.nodemix <- function(egor, attrname, base=NULL){
 }
 
 #' @export
+#' @rdname ergm.ego-terms
 EgoStat.absdiff <- function(egor, attrname, pow=1){
   nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$.alts[[1]]))
   if(nattr==0) .attrErr("absdiff", attrname, "both")
@@ -175,6 +179,7 @@ EgoStat.absdiff <- function(egor, attrname, pow=1){
 }
 
 #' @export
+#' @rdname ergm.ego-terms
 EgoStat.degree <- function(egor, d, by=NULL, homophily=FALSE){
   ## if(any(d==0)) warning("degree(0) (isolate) count statistic depends strongly on the specified population network size.")
 
@@ -205,6 +210,7 @@ EgoStat.degree <- function(egor, d, by=NULL, homophily=FALSE){
 }
 
 #' @export
+#' @rdname ergm.ego-terms
 EgoStat.degrange <- function(egor, from=NULL, to=Inf, by=NULL, homophily=FALSE){
   ## if(any(from==0)) warning("degrange(0,...) (isolate) count depends strongly on the specified population network size.")
   
@@ -250,6 +256,7 @@ EgoStat.degrange <- function(egor, from=NULL, to=Inf, by=NULL, homophily=FALSE){
 }
 
 #' @export
+#' @rdname ergm.ego-terms
 EgoStat.concurrent <- function(egor, by=NULL){
 
   if(!is.null(by) && !by %in% names(egor)) stop("For term ",sQuote("concurrent")," attribute ", sQuote(by), " must be observed on egos.", call.=FALSE)
@@ -272,6 +279,7 @@ EgoStat.concurrent <- function(egor, by=NULL){
 }
 
 #' @export
+#' @rdname ergm.ego-terms
 EgoStat.concurrentties <- function(egor, by=NULL){
   if(!is.null(by) && !by %in% names(egor)) stop("For term ",sQuote("concurrent")," attribute ", sQuote(by), " must be observed on egos.", call.=FALSE)
   
@@ -293,6 +301,7 @@ EgoStat.concurrentties <- function(egor, by=NULL){
 }
 
 #' @export
+#' @rdname ergm.ego-terms
 EgoStat.degreepopularity <- function(egor){
 
   h <- function(e) nrow(e$.alts)^(3/2)
@@ -301,6 +310,7 @@ EgoStat.degreepopularity <- function(egor){
 }
 
 #' @export
+#' @rdname ergm.ego-terms
 EgoStat.transitiveties <- function(egor, attrname=NULL){
   if(!is.null(attrname)){
     nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$.alts[[1]]))
@@ -324,9 +334,11 @@ EgoStat.transitiveties <- function(egor, attrname=NULL){
 }
 
 #' @export
+#' @rdname ergm.ego-terms
 EgoStat.cyclicalties <- EgoStat.transitiveties
 
 #' @export
+#' @rdname ergm.ego-terms
 EgoStat.esp <- function(egor, d){
   h <- function(e){
     aaties <- unique(
@@ -345,6 +357,7 @@ EgoStat.esp <- function(egor, d){
 }
 
 #' @export
+#' @rdname ergm.ego-terms
 EgoStat.gwesp <- function(egor, decay=NULL, fixed=FALSE, cutoff=30, alpha=NULL){
   maxesp <- cutoff # Hopefully, network.size > cutoff
 

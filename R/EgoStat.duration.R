@@ -8,6 +8,7 @@
 #  Copyright 2015-2016 Statnet Commons
 #######################################################################
 #' @export
+#' @rdname ergm.ego-terms
 EgoStat.mean.age <- function(egor, emptyval=0){
   startcol <- attr(egor,"alter.design")$startcol
   if(is.null(startcol)) stop("Egocentric dataset does not appear to contain durational information.")
