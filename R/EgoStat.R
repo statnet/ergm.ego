@@ -308,8 +308,8 @@ EgoStat.transitiveties <- function(egor, attrname=NULL){
     # Note: alterID API is subject to change.
     egor$.matchAttr <- egor[[attrname]]
     egor <- subset(egor,
-                   .matchAttr==.alts[[attrname]][.aaties$.srcIx] &
-                   .matchAttr==.alts[[attrname]][.aaties$.tgtIx],
+                   .matchAttr==.alts[[attrname]][.aaties$.srcRow] &
+                   .matchAttr==.alts[[attrname]][.aaties$.tgtRow],
                    aspect="ties")
   }
   h <- function(e)
