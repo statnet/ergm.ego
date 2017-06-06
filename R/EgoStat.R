@@ -336,7 +336,7 @@ EgoStat.transitiveties <- function(egor, attrname=NULL){
                      r[[attrname]]==r$.alts[[attrname]][r$.aaties$.srcRow] &
                      r[[attrname]]==r$.alts[[attrname]][r$.aaties$.tgtRow],
                    attrname=attrname,
-                   aspect="ties")
+                   unit="ties")
   }
   h <- function(e)
     # Implement Krivitsky and Morris (2017, p. 490) This works
