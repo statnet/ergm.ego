@@ -331,10 +331,11 @@ EgoStat.transitiveties <- function(egor, attrname=NULL){
     nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$.alts[[1]]))
     if(nattr!=2) .attrErr("transitiveties and cyclicalties", attrname, "both")
     # Note: alterID API is subject to change.
-    egor$.matchAttr <- egor[[attrname]]
     egor <- subset(egor,
-                   .matchAttr==.alts[[attrname]][.aaties$.srcRow] &
-                   .matchAttr==.alts[[attrname]][.aaties$.tgtRow],
+                   function(r, attrname)
+                     r[[attrname]]==r$.alts[[attrname]][r$.aaties$.srcRow] &
+                     r[[attrname]]==r$.alts[[attrname]][r$.aaties$.tgtRow],
+                   attrname=attrname,
                    aspect="ties")
   }
   h <- function(e)
