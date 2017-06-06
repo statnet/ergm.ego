@@ -27,6 +27,7 @@
 \alias{EgoStat.cyclicalties}
 \alias{EgoStat.esp}
 \alias{EgoStat.gwesp}
+\alias{EgoStat.gwdegree}
 \alias{EgoStat.mean.age}
 \alias{InitErgmTerm.netsize.adj}
 \title{\code{\link[ergm]{ergm}} Terms Implemented for
@@ -64,6 +65,8 @@ EgoStat.esp(egor, d)
 EgoStat.gwesp(egor, decay = NULL, fixed = FALSE, cutoff = 30,
   alpha = NULL)
 
+EgoStat.gwdegree(egor, decay = NULL, fixed = FALSE, cutoff = 30)
+
 EgoStat.mean.age(egor, emptyval = 0)
 
 InitErgmTerm.netsize.adj(nw, arglist, ...)
@@ -100,14 +103,33 @@ combination of \code{\link[ergm]{edges}},
 adjustment offset. This term is added to the model automatically
 and should not be used in the model formula directly.  } } }
 
-\item{ergm:}{ \itemize{ \item \code{edges} \item \code{nodecov}
-\item \code{nodefactor} \item \code{nodematch} \item \code{nodemix} \item
-\code{absdiff} \item \code{degree} \item \code{degrange} \item
-\code{concurrent} \item \code{concurrentties} \item \code{degreepopularity}
-\item \code{transitiveties} \item \code{cyclicalties} \item \code{esp} \item \code{gwesp}
-} }
+\item{ergm:}{
+\itemize{
+\item \code{edges}
+\item \code{nodecov}
+\item \code{nodefactor}
+\item \code{nodematch}
+\item \code{nodemix}
+\item \code{absdiff}
+\item \code{degree}
+\item \code{degrange}
+\item \code{concurrent}
+\item \code{concurrentties}
+\item \code{degreepopularity}
+\item \code{transitiveties}
+\item \code{cyclicalties}
+\item \code{esp}
+\item \code{gwesp}
+\item \code{gwdegree}
+}
+}
 
-\item{tergm:}{ \itemize{ \item \code{mean.age} } } }
+\item{tergm:}{
+\itemize{
+\item \code{mean.age}
+}
+}
+}
 }
 
 \seealso{

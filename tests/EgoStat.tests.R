@@ -52,7 +52,9 @@ f <- (
     
     nodemix("a") + nodemix("a", base=1) + nodemix("a", base=2) + nodemix("a", base=2:3) +
     
-    transitiveties + transitiveties("a") + esp(0:6) + gwesp(fix=FALSE) + gwesp(0.5, fix=TRUE)
+    transitiveties + transitiveties("a") + esp(0:6) + gwesp(fix=FALSE) + gwesp(0.5, fix=TRUE) +
+    
+    gwdegree(fix=FALSE) + gwdegree(0.5, fix=TRUE)
 )
 
 f.y <- ergm.update.formula(f, y~.)

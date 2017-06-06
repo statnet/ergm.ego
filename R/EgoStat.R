@@ -70,14 +70,29 @@
 #' adjustment offset. This term is added to the model automatically
 #' and should not be used in the model formula directly.  } } }
 #' 
-#' \item{ergm:}{ \itemize{ \item \code{edges} \item \code{nodecov}
-#' \item \code{nodefactor} \item \code{nodematch} \item \code{nodemix} \item
-#' \code{absdiff} \item \code{degree} \item \code{degrange} \item
-#' \code{concurrent} \item \code{concurrentties} \item \code{degreepopularity}
-#' \item \code{transitiveties} \item \code{cyclicalties} \item \code{esp} \item \code{gwesp}
-#' } }
+#' \item{ergm:}{
+#' * `edges`
+#' * `nodecov`
+#' * `nodefactor`
+#' * `nodematch`
+#' * `nodemix`
+#' * `absdiff`
+#' * `degree`
+#' * `degrange`
+#' * `concurrent`
+#' * `concurrentties`
+#' * `degreepopularity`
+#' * `transitiveties`
+#' * `cyclicalties`
+#' * `esp`
+#' * `gwesp`
+#' * `gwdegree`
+#' }
 #' 
-#' \item{tergm:}{ \itemize{ \item \code{mean.age} } } }
+#' \item{tergm:}{
+#' * `mean.age`
+#' }
+#' }
 #'
 #' @param egor,attrname,base,diff,keep,pow,d,by,homophily,from,to,decay,fixed,cutoff,alpha,emptyval,nw,arglist,... arguments to terms. See \code{\link[ergm]{ergm-terms}}.
 #' @seealso \code{\link[ergm]{ergm-terms}}
@@ -371,6 +386,24 @@ EgoStat.gwesp <- function(egor, decay=NULL, fixed=FALSE, cutoff=30, alpha=NULL){
   eta <- exp(decay)*(1-(1-exp(-decay))^(1:maxesp))
   hv <- esp%*%eta
   colnames(hv) <- paste0("gwesp.fixed.",decay)
+  hv
+}
+
+#' @export
+#' @rdname ergm.ego-terms
+EgoStat.gwdegree <- function(egor, decay=NULL, fixed=FALSE, cutoff=30){
+  maxdeg <- cutoff # Hopefully, network.size > cutoff
+
+  deg <- EgoStat.degree(egor, 1:maxdeg)
+
+  if(fixed==FALSE){
+    colnames(deg) <- paste0("gwdegree#", 1:maxdeg)
+    return(deg)
+  }
+  
+  eta <- exp(decay)*(1-(1-exp(-decay))^(1:maxdeg))
+  hv <- deg%*%eta
+  colnames(hv) <- paste0("gwdeg.fixed.",decay)
   hv
 }
 
