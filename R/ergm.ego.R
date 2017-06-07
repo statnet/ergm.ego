@@ -144,6 +144,9 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
   
   # Get the sample h values.
   stats <- try(summary(remove.offset.formula(formula), individual=TRUE))
+  ord <- attr(stats, "order")  
+  adj.update <- call("~",as.name("."),call("+", call("offset", call("netsize.adj", +(1%in%ord), -(2%in%ord), -1/3*(3%in%ord))), as.name(".")))
+
   if(!inherits(stats,"try-error")){
     # h is just a matrix, so this will do the sensible thing.
     tmp <- na.action(cbind(w,stats))
@@ -186,6 +189,8 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
 
     n <- nrow(egor)
     m <- summary(remove.offset.formula(formula), basis=egor, individual=FALSE, scaleto=ppopsize)
+    ord <- attr(m, "order")  
+    adj.update <- call("~",as.name("."),call("+", call("offset", call("netsize.adj", +(1%in%ord), -(2%in%ord), -1/3*(3%in%ord))), as.name(".")))
       
     if(stats.est=="bootstrap"){
       m.b <- t(replicate(control$boot.R,{
@@ -209,10 +214,11 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
                 jackknife = (n-1)/n*crossprod(sweep(m.j,2,colMeans(m.j)))
                 )
   }
-  
-  ergm.formula <- ergm.update.formula(formula,popnw~offset(netsize.adj)+.,from.new="popnw")
-  ergm.offset.coef <- c(-log(ppopsize/popsize),offset.coef)
 
+  ergm.formula <- ergm.update.formula(formula,popnw~.,from.new="popnw")
+  ergm.formula <- ergm.update.formula(ergm.formula,adj.update)
+
+  ergm.offset.coef <- c(-log(ppopsize/popsize),offset.coef)
 
   # If nominations were limited, represent the cap a degree bound.
   constraints <- if(!control$ignore.max.alters && alter.design(egor)$max<Inf){
@@ -223,7 +229,7 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
       append.rhs.formula(constraints, term.list.formula(newterm))
   }else constraints
   
-  out <- list(v=v, m=m, formula=formula, ergm.formula=ergm.formula, offset.coef=offset.coef, ergm.offset.coef=ergm.offset.coef, egor=egor, ppopsize=ppopsize, popsize=popsize, constraints=constraints)
+  out <- list(v=v, m=m, formula=formula, ergm.formula=ergm.formula, offset.coef=offset.coef, ergm.offset.coef=ergm.offset.coef, egor=egor, ppopsize=ppopsize, popsize=popsize, constraints=constraints, netsize.adj=adj.update)
 
   if(do.fit){
 
