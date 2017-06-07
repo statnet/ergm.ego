@@ -31,11 +31,12 @@
 #'
 #' @return A numeric matrix with `nrow(egor)` rows.
 #' @noRd
-.eval.h <- function(egor, h, cn){
+.eval.h <- function(egor, h, cn, order=1){
   h <- apply(egor, 1, h)
   if(is.matrix(h)) h <- t(h) # apply() builds a matrix with egos in columns
   else h <- cbind(h)
   colnames(h) <- cn
+  attr(h, "order") <- order
   h
 }
 
@@ -368,7 +369,8 @@ EgoStat.esp <- function(egor, d){
   }
   
   .eval.h(egor, h,
-          paste0("esp",d)
+          paste0("esp",d),
+          3
           )
 }
 
@@ -387,6 +389,7 @@ EgoStat.gwesp <- function(egor, decay=NULL, fixed=FALSE, cutoff=30, alpha=NULL){
   eta <- exp(decay)*(1-(1-exp(-decay))^(1:maxesp))
   hv <- esp%*%eta
   colnames(hv) <- paste0("gwesp.fixed.",decay)
+  attr(hv, "order") <- 3
   hv
 }
 

@@ -24,7 +24,7 @@ EgoStat.mean.age <- function(egor, emptyval=0){
   }    
 
   names(out) <- "mean.age"
-  attr(out, "nonscaling") <- TRUE
+  attr(out, "order") <- 0
   out
 }
 

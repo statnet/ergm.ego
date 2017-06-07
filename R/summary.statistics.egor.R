@@ -73,7 +73,7 @@ summary.statistics.egor <- function(object,..., basis=NULL, individual=FALSE, sc
   scaling.pos <- c(0)
   nonscaling.stats <- c()
   nonscaling.pos <- c(0)
-  
+  orders <- c()
   
   for(trm in term.list.formula(object[[length(object)]])){
     if(is.call(trm)){
@@ -82,36 +82,41 @@ summary.statistics.egor <- function(object,..., basis=NULL, individual=FALSE, sc
     }else{
       init.call <- list(as.name(paste("EgoStat.", trm,sep="")),egor=egor)
     }
-    stat<-eval(as.call(init.call), environment(object))
-    if(isTRUE(attr(stat, "nonscaling"))){
+    stat <- eval(as.call(init.call), environment(object))
+    if(attr(stat, "order")==0){
       if(individual) stop("Nonscaling statistic detected. Individual contributions are meaningless.")
       nonscaling.stats <- c(nonscaling.stats, stat)
       nonscaling.pos <- c(nonscaling.pos, max(scaling.pos,nonscaling.pos) + seq_len(length(stat)))
     }else{
+      orders <- c(orders, attr(stat, "order"))
       scaling.stats<-cbind(scaling.stats,stat)
       scaling.pos <- c(scaling.pos, max(scaling.pos,nonscaling.pos) + seq_len(ncol(stat)))
     }
   }
   
-  if(!individual){
-    if(length(scaling.stats)){
-      scaleto <- if(is.null(scaleto)) nrow(egor) else scaleto
-      scaling.stats <- svymean(scaling.stats, ego.design(egor))
-      scaling.stats <- scaling.stats*scaleto
-    }
+  stats <-
+    if(!individual){
+      if(length(scaling.stats)){
+        scaleto <- if(is.null(scaleto)) nrow(egor) else scaleto
+        scaling.stats <- svymean(scaling.stats, ego.design(egor))
+        scaling.stats <- scaling.stats*scaleto
+      }
       
-    stats <- numeric(max(scaling.pos,nonscaling.pos))
-    scaling.pos <- scaling.pos[scaling.pos>0]
-    nonscaling.pos <- nonscaling.pos[nonscaling.pos>0]
+      stats <- numeric(max(scaling.pos,nonscaling.pos))
+      scaling.pos <- scaling.pos[scaling.pos>0]
+      nonscaling.pos <- nonscaling.pos[nonscaling.pos>0]
+      
+      stats[scaling.pos] <- scaling.stats
+      stats[nonscaling.pos] <- nonscaling.stats
+      
+      names(stats)[scaling.pos] <- names(scaling.stats)
+      names(stats)[nonscaling.pos] <- names(nonscaling.stats)
+      
+      stats
+    }else{
+      scaling.stats
+    }
 
-    stats[scaling.pos] <- scaling.stats
-    stats[nonscaling.pos] <- nonscaling.stats
-    
-    names(stats)[scaling.pos] <- names(scaling.stats)
-    names(stats)[nonscaling.pos] <- names(nonscaling.stats)
-    
-    stats
-  }else{
-    scaling.stats
-  }
+  attr(stats,"order") <- unique(orders)
+  stats
 }
