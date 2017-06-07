@@ -347,7 +347,8 @@ EgoStat.transitiveties <- function(egor, attrname=NULL){
 
   .eval.h(egor, h,
           if(is.null(attrname)) paste("transitiveties",sep=".")
-          else paste("transitiveties",attrname,sep="."))
+          else paste("transitiveties",attrname,sep="."),
+          3)
 }
 
 #' @export
