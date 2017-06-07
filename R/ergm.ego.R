@@ -145,7 +145,7 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
   # Get the sample h values.
   stats <- try(summary(remove.offset.formula(formula), individual=TRUE))
   ord <- attr(stats, "order")  
-  adj.update <- call("~",as.name("."),call("+", call("offset", call("netsize.adj", +(1%in%ord), -(2%in%ord), -1/3*(3%in%ord))), as.name(".")))
+  adj.update <- call("~",as.name("."),call("+", call("offset", call("netsize.adj", edges = +(1%in%ord), mutual = -(2%in%ord), transitiveties = -1/3*(3%in%ord))), as.name(".")))
 
   if(!inherits(stats,"try-error")){
     # h is just a matrix, so this will do the sensible thing.
@@ -190,7 +190,7 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
     n <- nrow(egor)
     m <- summary(remove.offset.formula(formula), basis=egor, individual=FALSE, scaleto=ppopsize)
     ord <- attr(m, "order")  
-    adj.update <- call("~",as.name("."),call("+", call("offset", call("netsize.adj", +(1%in%ord), -(2%in%ord), -1/3*(3%in%ord))), as.name(".")))
+    adj.update <- call("~",as.name("."),call("+", call("offset", call("netsize.adj", edges = +(1%in%ord), mutual = -(2%in%ord), transitiveties = -1/3*(3%in%ord))), as.name(".")))
       
     if(stats.est=="bootstrap"){
       m.b <- t(replicate(control$boot.R,{
