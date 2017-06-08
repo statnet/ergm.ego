@@ -409,6 +409,7 @@ EgoStat.gwdegree <- function(egor, decay=NULL, fixed=FALSE, cutoff=30){
   eta <- exp(decay)*(1-(1-exp(-decay))^(1:maxdeg))
   hv <- deg%*%eta
   colnames(hv) <- paste0("gwdeg.fixed.",decay)
+  attr(hv, "order") <- 1
   hv
 }
 
