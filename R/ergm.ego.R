@@ -32,7 +32,9 @@
 #' on the edges term.
 #' @param offset.coef A vector of coefficients for the offset terms.
 #' @param na.action How to handle missing actor attributes in egos or alters,
-#' when the terms need them.
+#' when the terms need them for  models that scale.
+#' @param na.rm How to handle missing actor attributes in egos or alters,
+#' when the terms need them for models that do not scale.
 #' @param \dots Additional arguments passed to \code{\link[ergm]{ergm}}.
 #' @param control A \code{\link{control.ergm.ego}} control list.
 #' @param do.fit Whether to actually call \code{\link[ergm]{ergm}}
@@ -102,7 +104,7 @@
 #' @import ergm stats
 #' @importFrom utils modifyList
 #' @export
-ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., control=control.ergm.ego(), na.action=na.fail, do.fit=TRUE){
+ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., control=control.ergm.ego(), na.action=na.fail, na.rm=FALSE, do.fit=TRUE){
   statnet.common::check.control.class()
   
   stats.est <- control$stats.est
@@ -141,13 +143,14 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
               data=weights(egor),
               ppop=tabulate(popnw %v% "ego.ind", nbins=nrow(egor))
               )
-  
-  # Get the sample h values.
-  stats <- try(summary(remove.offset.formula(formula), individual=TRUE))
-  ord <- attr(stats, "order")  
-  adj.update <- call("~",as.name("."),call("+", call("offset", call("netsize.adj", edges = +(1%in%ord), mutual = -(2%in%ord), transitiveties = -1/3*(3%in%ord))), as.name(".")))
 
-  if(!inherits(stats,"try-error")){
+  # Try to get the sample h values.
+  if(stats.est != "survey") stats <- try(summary(remove.offset.formula(formula), individual=TRUE))
+  
+  if(stats.est!="survey" && !inherits(stats,"try-error")){
+    ord <- attr(stats, "order")  
+    adj.update <- call("~",as.name("."),call("+", call("offset", call("netsize.adj", edges = +(1%in%ord), mutual = -(2%in%ord), transitiveties = -1/3*(3%in%ord))), as.name(".")))
+    
     # h is just a matrix, so this will do the sensible thing.
     tmp <- na.action(cbind(w,stats))
     w <- tmp[,1]
@@ -182,17 +185,21 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
                 asymptotic = .asymptotic.var(stats, w)/length(w)
                 )
   }else{
-    if(stats.est %in% c("naive","asymptotic"))
+    m <- summary(remove.offset.formula(formula), basis=egor, na.rm=na.rm, individual=FALSE, scaleto=ppopsize)
+    ord <- attr(m, "order")  
+    adj.update <- call("~",as.name("."),call("+", call("offset", call("netsize.adj", edges = +(1%in%ord), mutual = -(2%in%ord), transitiveties = -1/3*(3%in%ord))), as.name(".")))
+
+    if(0 %in% ord && stats.est %in% c("survey", "naive","asymptotic"))
       stop("Non-scaling statistic detected: use bootstrap or jackknife variance estimator.")
     if(do.fit && popsize!=ppopsize)
       warning("Non-scaling statistic detected when trying to fit a model: network-size invariant parametrization probably does not exist so pseudopopulation size should equal the population size.")
 
     n <- nrow(egor)
-    m <- summary(remove.offset.formula(formula), basis=egor, individual=FALSE, scaleto=ppopsize)
-    ord <- attr(m, "order")  
-    adj.update <- call("~",as.name("."),call("+", call("offset", call("netsize.adj", edges = +(1%in%ord), mutual = -(2%in%ord), transitiveties = -1/3*(3%in%ord))), as.name(".")))
-      
-    if(stats.est=="bootstrap"){
+
+    if(stats.est=="survey"){
+      v <- vcov(m)
+      m <- setNames(as.vector(m), names(m))
+    }else if(stats.est=="bootstrap"){
       m.b <- t(replicate(control$boot.R,{
                            i <- sample.int(length(w),replace=TRUE)
                            e <- egor[i,]
@@ -208,8 +215,9 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
       m <- n*m - (n-1)*colMeans(m.j)
     }
     
-    # TODO: Include finite-population correction here:
+    # TODO: Include finite-population correction for non-survey methods here:
     v <- switch(stats.est,
+                survey = v,
                 bootstrap = cov(m.b),
                 jackknife = (n-1)/n*crossprod(sweep(m.j,2,colMeans(m.j)))
                 )

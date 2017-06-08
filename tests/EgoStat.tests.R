@@ -62,5 +62,5 @@ environment(f.y) <- globalenv()
 f.y.e <- ergm.update.formula(f, y.e~.)
 environment(f.y.e) <- globalenv()
 
-stopifnot(all.equal(summary(f.y),summary(f.y.e)))
+stopifnot(all.equal(as.vector(summary(f.y)),as.vector(summary(f.y.e))))
         

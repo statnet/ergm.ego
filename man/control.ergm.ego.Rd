@@ -6,7 +6,7 @@
 \usage{
 control.ergm.ego(ppopsize = c("auto", "samp", "pop"), ppopsize.mul = 1,
   ppop.wt = c("round", "sample"), stats.wt = c("data", "ppop"),
-  stats.est = c("asymptotic", "bootstrap", "jackknife", "naive"),
+  stats.est = c("survey", "asymptotic", "bootstrap", "jackknife", "naive"),
   boot.R = 10000, ignore.max.alters = FALSE,
   ergm.control = control.ergm(), ...)
 }
@@ -58,6 +58,7 @@ pseudopopulation network.} }}
 
 \item{stats.est, boot.R}{Method to be used to estimate the ERGM's sufficient
 statistics and their variance: \describe{
+\item{"survey"}{Variance estimator returned by \code{\link[survey:svymean]{survey::svymean()}}, appropriate to the design of the dataset.}
 \item{"asymptotic"}{Delta method, as derived by Krivitsky and
 Morris (2015), assuming the ego weights are sampled alongside the
 egos.}\item{ (default)}{Delta method, as derived by Krivitsky and Morris

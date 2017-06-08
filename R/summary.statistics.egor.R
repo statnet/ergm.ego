@@ -31,7 +31,7 @@
 #' specified network statistics.
 #' @param scaleto Size of a hypothetical network to which to scale the
 #' statistics. Defaults to the number of egos in the dataset.
-#' @return If \code{individual==FALSE}, a named vector of statistics. If
+#' @return If \code{individual==FALSE}, a [svystat][survey::svymean] object---effectively a named vector of statistics. If
 #' \code{individual==TRUE}, a matrix with a row for each ego, giving that ego's
 #' contribution to the network statistic.
 #' @author Pavel N. Krivitsky
@@ -59,7 +59,7 @@
 #'                      absdiff("Grade")+nodemix("Grade"),
 #'                      scaleto=network.size(faux.mesa.high)))
 #' 
-#' stopifnot(isTRUE(all.equal(nw.summ,ego.summ)))
+#' stopifnot(isTRUE(all.equal(as.vector(nw.summ),as.vector(ego.summ))))
 #'
 #' @importFrom survey svymean
 #' @method summary.statistics egor
@@ -98,7 +98,7 @@ summary.statistics.egor <- function(object,..., basis=NULL, individual=FALSE, sc
     if(!individual){
       if(length(scaling.stats)){
         scaleto <- if(is.null(scaleto)) nrow(egor) else scaleto
-        scaling.stats <- svymean(scaling.stats, ego.design(egor))
+        scaling.stats <- svymean(scaling.stats, ego.design(egor), ...)
         scaling.stats <- scaling.stats*scaleto
       }
       
@@ -111,6 +111,14 @@ summary.statistics.egor <- function(object,..., basis=NULL, individual=FALSE, sc
       
       names(stats)[scaling.pos] <- names(scaling.stats)
       names(stats)[nonscaling.pos] <- names(nonscaling.stats)
+
+      attr(stats, "var") <- matrix(NA, max(scaling.pos,nonscaling.pos), max(scaling.pos,nonscaling.pos))
+      attr(stats, "var")[scaling.pos,scaling.pos] <- attr(scaling.stats, "var")
+      dimnames(attr(stats, "var")) <- rep(list(names(stats)), 2)
+
+      attr(stats, "statistic") <- paste("scaled mean")
+      
+      class(stats) <- class(scaling.stats)
       
       stats
     }else{

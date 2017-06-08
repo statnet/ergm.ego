@@ -6,7 +6,8 @@
 Sampled Data}
 \usage{
 ergm.ego(formula, popsize = 1, offset.coef = NULL, constraints = ~., ...,
-  control = control.ergm.ego(), na.action = na.fail, do.fit = TRUE)
+  control = control.ergm.ego(), na.action = na.fail, na.rm = FALSE,
+  do.fit = TRUE)
 }
 \arguments{
 \item{formula}{An \code{\link{formula}} object, of the form \code{e
@@ -33,7 +34,10 @@ details and examples.}
 \item{control}{A \code{\link{control.ergm.ego}} control list.}
 
 \item{na.action}{How to handle missing actor attributes in egos or alters,
-when the terms need them.}
+when the terms need them for  models that scale.}
+
+\item{na.rm}{How to handle missing actor attributes in egos or alters,
+when the terms need them for models that do not scale.}
 
 \item{do.fit}{Whether to actually call \code{\link[ergm]{ergm}}}
 }

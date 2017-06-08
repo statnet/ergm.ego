@@ -33,7 +33,7 @@ specified network statistics.}
 statistics. Defaults to the number of egos in the dataset.}
 }
 \value{
-If \code{individual==FALSE}, a named vector of statistics. If
+If \code{individual==FALSE}, a \link[survey:svymean]{svystat} object---effectively a named vector of statistics. If
 \code{individual==TRUE}, a matrix with a row for each ego, giving that ego's
 contribution to the network statistic.
 }
@@ -52,7 +52,7 @@ fmh.ego <- as.egor(faux.mesa.high)
                      absdiff("Grade")+nodemix("Grade"),
                      scaleto=network.size(faux.mesa.high)))
 
-stopifnot(isTRUE(all.equal(nw.summ,ego.summ)))
+stopifnot(isTRUE(all.equal(as.vector(nw.summ),as.vector(ego.summ))))
 
 }
 \references{

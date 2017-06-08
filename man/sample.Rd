@@ -51,7 +51,7 @@ s2000 <- sample(fmh.ego, 2000, replace=TRUE, prob=p)
 (summ.ego <- summary(s2000~edges+nodematch("Grade")+nodefactor("Race")+transitiveties, scaleto=network.size(faux.mesa.high)))
 
 \dontshow{
-stopifnot(isTRUE(all.equal(summ.net, summ.ego, tolerance=.05, check.attributes=FALSE)))
+stopifnot(isTRUE(all.equal(as.vector(summ.net), as.vector(summ.ego), tolerance=.05, check.attributes=FALSE)))
 }
 
 }
