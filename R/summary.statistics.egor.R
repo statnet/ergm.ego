@@ -120,3 +120,40 @@ summary.statistics.egor <- function(object,..., basis=NULL, individual=FALSE, sc
   attr(stats,"order") <- unique(orders)
   stats
 }
+
+#' A scalar multiplication method for `svystat`
+#'
+#' Multiply the values of survey statistics by the specified number, adjusting the variance.
+#'
+#' @param x an object of class `[svystat][survey::svymean]`.
+#' @param y a scalar (numeric vector of length 1).
+#'
+#' @return a `[svystat][survey::svymean]` object with the updated statistics and variance-covariance matrix.
+#'
+#' @examples
+#' library(survey)
+#' data(api)
+#' # From example(svymean):
+#' dclus1<-svydesign(id=~dnum, weights=~pw, data=apiclus1, fpc=~fpc)
+#'
+#' (m1 <- svymean(~api99, dclus1))
+#' (v1 <- vcov(m1))
+#'
+#' # Scale the suvery stat object by a factor of two:
+#' (m2 <- m1 * 2)
+#' (v2 <- vcov(m2))
+#'
+#' \dontshow{
+#' stopifnot(isTRUE(all.equal(as.vector(m2), as.vector(m1)*2, check.attributes=FALSE)))
+#' stopifnot(isTRUE(all.equal(v2, v1*4)))
+#' }
+#' @export
+`*.svystat` <- function(x, y){
+  if(!is.numeric(y) || length(y)!=1) stop("At this time, only scalar multiplication of ",sQuote("svystat")," objects is supported.")
+  o <- unclass(x);
+  attr(o, "statistic") <- paste("scaled", attr(o, "statistic"))
+  o <- o * y
+  attr(o, "var") <- attr(x, "var") * y^2
+  class(o) <- class(x)
+  o
+}
