@@ -25,27 +25,27 @@ as.egodata(object, ..., egoIDcol = "egoID")
 }
 \arguments{
 \item{alters}{The \code{\link{data.frame}} containing at least the column
-   named in \code{egoIDcol}, whose values do not have to be unique, and
-   not every ego has to be represented. Other columns contain information
-   about the alters.
+named in \code{egoIDcol}, whose values do not have to be unique, and
+not every ego has to be represented. Other columns contain information
+about the alters.
 
-   For the \code{\link{data.frame}} method in which the \code{object}
-   argument also contains alter information in \sQuote{wide} format, a
-   \code{\link{list}} with the following information:
-   \describe{
-     \item{\code{columns}}{A character, integer, or logical vector
+For the \code{\link{data.frame}} method in which the \code{object}
+argument also contains alter information in \sQuote{wide} format, a
+\code{\link{list}} with the following information:
+\describe{
+\item{\code{columns}}{A character, integer, or logical vector
 identifying which columns contain the alters' information.}
-     \item{\code{count}}{The name of the column containing the number
+\item{\code{count}}{The name of the column containing the number
 of alters nominated by that ego.}
-     \item{\code{name.sep}}{A one-character string or an empty string
+\item{\code{name.sep}}{A one-character string or an empty string
 (defaulting to \code{"."}) specifying the character, if any,
 used to separate alter attribute name from alter's index within
 the ego. If an empty string (\code{""}), attribute name is
 assumed to be made of letters, with any numbers being the alter
 index.}
-     
-   }
-   
+
+}
+
 \code{egoIDcol}, whose values do not have to be unique, and not every ego
 must be represented. Other columns contain information about the alters.}
 

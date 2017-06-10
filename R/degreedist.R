@@ -15,8 +15,8 @@
 #' egocentric dataset, optionally broken down by group and/or compared with a
 #' Bernoulli graph.
 #' 
-#' 
-#' @param egodata A \code{\link{egodata}} object.
+#' @aliases degreedist
+#' @param object A \code{\link{egodata}} object.
 #' @param freq,prob Whether to plot the raw frequencies or the conditional
 #' proportions of the degree values. Defaults to the latter.
 #' @param by A character vector giving the name of a vertex attribute; if
@@ -24,6 +24,7 @@
 #' @param brgmod Plot the range of predicted frequencies/probabilities
 #' according to a Bernoulli graph having the same expected density as the
 #' observed.
+#' @param ... Additional arguments, currently unused.
 #' @seealso \code{\link{degreedist}},
 #' \code{\link[ergm:summary.formula]{summary}}
 #' @examples
@@ -31,15 +32,15 @@
 #' data(faux.mesa.high)
 #' fmh.ego <- as.egodata(faux.mesa.high)
 #' 
-#' degreedist.egodata(fmh.ego,by="Grade",brgmod=TRUE)
-#'
+#' degreedist(fmh.ego,by="Grade",brgmod=TRUE)
+#' # Compare:
+#' degreedist(faux.mesa.high)
+#' 
 #' @importFrom graphics arrows barplot legend points
 #' @export
-degreedist.egodata <- function(egodata, freq = FALSE, prob = !freq, 
-                               by = NULL, brgmod = FALSE){
-  if (class(egodata) != "egodata"){
-    stop("The egodata object passed to degreedist.egodata must be of class egodata.")
-  }
+degreedist.egodata <- function(object, freq = FALSE, prob = !freq, 
+                               by = NULL, brgmod = FALSE, ...){
+  egodata <- object
   color <- "#83B6E1"
   beside <- TRUE
   ylabel <- "Frequency"
@@ -148,11 +149,13 @@ degreedist.egodata <- function(egodata, freq = FALSE, prob = !freq,
 #' alter of each group.
 #' 
 #' 
-#' @param egodata A \code{\link{egodata}} object.
+#' @aliases mixingmatrix
+#' @param object A \code{\link{egodata}} object.
 #' @param attrname A character vector containing the name of the network
 #' attribute whose mixing matrix is wanted.
 #' @param rowprob Whether the counts should be normalized by row sums. That is,
 #' whether they should be proportions conditional on the ego's group.
+#' @param ... Additional arguments, currently unused.
 #' @return A matrix with a row and a column for each level of \code{attrname}.
 #' 
 #' Note that, unlike \code{\link[network]{mixingmatrix}}, what is counted are
@@ -167,13 +170,14 @@ degreedist.egodata <- function(egodata, freq = FALSE, prob = !freq,
 #' fmh.ego <- as.egodata(faux.mesa.high)
 #' 
 #' (mm <- mixingmatrix(faux.mesa.high,"Grade"))
-#' (mm.ego <- mixingmatrix.egodata(fmh.ego,"Grade"))
+#' (mm.ego <- mixingmatrix(fmh.ego,"Grade"))
 #' 
 #' stopifnot(isTRUE(all.equal({tmp<-unclass(mm$matrix); diag(tmp) <- diag(tmp)*2;
 #' tmp}, mm.ego, check.attributes=FALSE)))
 #' 
 #' @export
-mixingmatrix.egodata <- function(egodata, attrname, rowprob = FALSE){
+mixingmatrix.egodata <- function(object, attrname, rowprob = FALSE, ...){
+  egodata <- object
   egos <- egodata$egos
   alters <- egodata$alters
   egoIDcol <- egodata$egoIDcol
