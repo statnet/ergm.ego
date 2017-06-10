@@ -2,13 +2,14 @@
 % Please edit documentation in R/degreedist.R
 \name{degreedist.egor}
 \alias{degreedist.egor}
+\alias{degreedist}
 \title{Plotting the degree distribution of an egocentric dataset}
 \usage{
-degreedist.egor(egor, freq = FALSE, prob = !freq, by = NULL,
-  brgmod = FALSE)
+\method{degreedist}{egor}(object, freq = FALSE, prob = !freq, by = NULL,
+  brgmod = FALSE, ...)
 }
 \arguments{
-\item{egor}{A \code{\link{egor}} object.}
+\item{object}{A \code{\link{egor}} object.}
 
 \item{freq, prob}{Whether to plot the raw frequencies or the conditional
 proportions of the degree values. Defaults to the latter.}
@@ -19,6 +20,8 @@ given, plots the frequences broken down by that attribute.}
 \item{brgmod}{Plot the range of predicted frequencies/probabilities
 according to a Bernoulli graph having the same expected density as the
 observed.}
+
+\item{...}{Additional arguments, currently unused.}
 }
 \description{
 A function to plot a histogram of the degree distribution of actors in the
@@ -30,7 +33,9 @@ Bernoulli graph.
 data(faux.mesa.high)
 fmh.ego <- as.egor(faux.mesa.high)
 
-degreedist.egor(fmh.ego,by="Grade",brgmod=TRUE)
+degreedist(fmh.ego,by="Grade",brgmod=TRUE)
+# Compare:
+degreedist(faux.mesa.high)
 
 }
 \seealso{

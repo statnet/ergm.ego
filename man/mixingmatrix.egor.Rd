@@ -2,18 +2,21 @@
 % Please edit documentation in R/degreedist.R
 \name{mixingmatrix.egor}
 \alias{mixingmatrix.egor}
+\alias{mixingmatrix}
 \title{Summarizing the mixing among groups in an egocentric dataset}
 \usage{
-mixingmatrix.egor(egor, attrname, rowprob = FALSE)
+\method{mixingmatrix}{egor}(object, attrname, rowprob = FALSE, ...)
 }
 \arguments{
-\item{egor}{A \code{\link{egor}} object.}
+\item{object}{A \code{\link{egor}} object.}
 
 \item{attrname}{A character vector containing the name of the network
 attribute whose mixing matrix is wanted.}
 
 \item{rowprob}{Whether the counts should be normalized by row sums. That is,
 whether they should be proportions conditional on the ego's group.}
+
+\item{...}{Additional arguments, currently unused.}
 }
 \value{
 A matrix with a row and a column for each level of \code{attrname}.
@@ -33,7 +36,7 @@ data(faux.mesa.high)
 fmh.ego <- as.egor(faux.mesa.high)
 
 (mm <- mixingmatrix(faux.mesa.high,"Grade"))
-(mm.ego <- mixingmatrix.egor(fmh.ego,"Grade"))
+(mm.ego <- mixingmatrix(fmh.ego,"Grade"))
 
 stopifnot(isTRUE(all.equal({tmp<-unclass(mm$matrix); diag(tmp) <- diag(tmp)*2;
 tmp}, mm.ego, check.attributes=FALSE)))

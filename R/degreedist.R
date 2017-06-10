@@ -15,8 +15,8 @@
 #' egocentric dataset, optionally broken down by group and/or compared with a
 #' Bernoulli graph.
 #' 
-#' 
-#' @param egor A \code{\link{egor}} object.
+#' @aliases degreedist
+#' @param object A \code{\link{egor}} object.
 #' @param freq,prob Whether to plot the raw frequencies or the conditional
 #' proportions of the degree values. Defaults to the latter.
 #' @param by A character vector giving the name of a vertex attribute; if
@@ -24,6 +24,7 @@
 #' @param brgmod Plot the range of predicted frequencies/probabilities
 #' according to a Bernoulli graph having the same expected density as the
 #' observed.
+#' @param ... Additional arguments, currently unused.
 #' @seealso \code{\link{degreedist}},
 #' \code{\link[ergm:summary.formula]{summary}}
 #' @examples
@@ -31,16 +32,16 @@
 #' data(faux.mesa.high)
 #' fmh.ego <- as.egor(faux.mesa.high)
 #' 
-#' degreedist.egor(fmh.ego,by="Grade",brgmod=TRUE)
-#'
+#' degreedist(fmh.ego,by="Grade",brgmod=TRUE)
+#' # Compare:
+#' degreedist(faux.mesa.high)
+#' 
 #' @importFrom graphics arrows barplot legend points
 #' @importFrom methods is
 #' @export
-degreedist.egor <- function(egor, freq = FALSE, prob = !freq, 
-                               by = NULL, brgmod = FALSE){
-  if (!is(egor, "egor")){
-    stop("The egor object passed to degreedist.egor must be of class egor.")
-  }
+degreedist.egor <- function(object, freq = FALSE, prob = !freq, 
+                            by = NULL, brgmod = FALSE, ...){
+  egor <- object
   color <- "#83B6E1"
   beside <- TRUE
   ylabel <- "Frequency"
@@ -147,11 +148,13 @@ degreedist.egor <- function(egor, freq = FALSE, prob = !freq,
 #' alter of each group.
 #' 
 #' 
-#' @param egor A \code{\link{egor}} object.
+#' @aliases mixingmatrix
+#' @param object A \code{\link{egor}} object.
 #' @param attrname A character vector containing the name of the network
 #' attribute whose mixing matrix is wanted.
 #' @param rowprob Whether the counts should be normalized by row sums. That is,
 #' whether they should be proportions conditional on the ego's group.
+#' @param ... Additional arguments, currently unused.
 #' @return A matrix with a row and a column for each level of \code{attrname}.
 #' 
 #' Note that, unlike \code{\link[network]{mixingmatrix}}, what is counted are
@@ -166,13 +169,14 @@ degreedist.egor <- function(egor, freq = FALSE, prob = !freq,
 #' fmh.ego <- as.egor(faux.mesa.high)
 #' 
 #' (mm <- mixingmatrix(faux.mesa.high,"Grade"))
-#' (mm.ego <- mixingmatrix.egor(fmh.ego,"Grade"))
+#' (mm.ego <- mixingmatrix(fmh.ego,"Grade"))
 #' 
 #' stopifnot(isTRUE(all.equal({tmp<-unclass(mm$matrix); diag(tmp) <- diag(tmp)*2;
 #' tmp}, mm.ego, check.attributes=FALSE)))
 #' 
 #' @export
-mixingmatrix.egor <- function(egor, attrname, rowprob = FALSE){
+mixingmatrix.egor <- function(object, attrname, rowprob = FALSE, ...){
+  egor <- object
   levs <- sort(unique(c(egor[[attrname]], .allAlters(egor)[[attrname]])))
 
   ds <- sapply(egor$.alts, nrow)
