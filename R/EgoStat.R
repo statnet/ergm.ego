@@ -331,19 +331,18 @@ EgoStat.transitiveties <- function(egor, attrname=NULL){
   if(!is.null(attrname)){
     nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$.alts[[1]]))
     if(nattr!=2) .attrErr("transitiveties and cyclicalties", attrname, "both")
-    # Note: alterID API is subject to change.
     egor <- subset(egor,
                    function(r, attrname)
                      r[[attrname]]==r$.alts[[attrname]][r$.aaties$.srcRow] &
                      r[[attrname]]==r$.alts[[attrname]][r$.aaties$.tgtRow],
                    attrname=attrname,
-                   unit="ties")
+                   unit="aatie")
   }
   h <- function(e)
     # Implement Krivitsky and Morris (2017, p. 490) This works
     # because we want to count how many alters have at least one
     # alter-alter tie, thus forming a transitive tie.
-    length(unique(union(e$.aaties$Source, e$.aaties$Target)))/2
+    length(unique(union(e$.aaties$.srcID, e$.aaties$.tgtID)))/2
 
   .eval.h(egor, h,
           if(is.null(attrname)) paste("transitiveties",sep=".")
@@ -360,10 +359,10 @@ EgoStat.cyclicalties <- EgoStat.transitiveties
 EgoStat.esp <- function(egor, d){
   h <- function(e){
     aaties <- unique(
-      cbind(pmin(e$.aaties$Source,e$.aaties$Target),
-            pmax(e$.aaties$Source,e$.aaties$Target))
+      cbind(pmin(e$.aaties$.srcID,e$.aaties$.tgtID),
+            pmax(e$.aaties$.srcID,e$.aaties$.tgtID))
     )
-    sp <- sapply(e$.alts$alterID, # for each alter
+    sp <- sapply(e$.alts$.altID, # for each alter
            function(a) length(unique(c(aaties[aaties[,1]==a,2],aaties[aaties[,2]==a,1]))) # Number of shared partners
            )
     sapply(d, function(k) sum(sp==k))/2

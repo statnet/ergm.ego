@@ -25,7 +25,7 @@
 #' @export
 as.egor.egodata <- function(x, ...){
   ego.design <- list(~1, weights = rep(x$egoWt, length.out=nrow(x$egos)))
-  egor(egos.df=x$egos, alters.df=x$alters, egoID = x$egoIDcol, ego.design=ego.design)
+  egor(egos.df=x$egos, alters.df=x$alters, ID.vars = list(ego = x$egoIDcol), ego.design=ego.design)
 }
 
 #' Construct an Egocentric View of a \code{\link{network}} Object
@@ -70,13 +70,14 @@ as.egor.network<-function(x,special.cols=c("na"),...){
     # Only keep alters' ties that are with another alter of this ego.
     aa <- lapply(aa, function(ks) ks[ks %in% a])
     # FIXME: Save edge attributes as well.
-    tibble(Source=rep(a, sapply(aa, length)), Target=as.vector(unlist(aa), mode=storage.mode(a)))
+    tibble(.Source=rep(a, sapply(aa, length)), .Target=as.vector(unlist(aa), mode=storage.mode(a)))
   }, alters, aaties, SIMPLIFY=FALSE)
 
-  # Note: Alter ID API is subject to change.
-  alters <- lapply(alters, function(js) cbind(egos[js,,drop=FALSE], alterID=js))
+  alters <- lapply(alters, function(js) cbind(egos[js,,drop=FALSE], .alterID=js))
   
-  egor(egos.df=egos, alters.df=alters, aaties.df=aaties, ego.design=list(~1, weights=~1))
+  egor(egos.df=egos, alters.df=alters, aaties.df=aaties,
+       ID.vars=list(alter=".alterID", source=".Source", target=".Target"),
+       ego.design=list(~1, weights=~1))
 }
 
 
