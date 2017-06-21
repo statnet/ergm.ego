@@ -4,3 +4,5 @@ r:
 - devel
 sudo: false
 cache: packages
+r_github_packages:
+- statnet/network
