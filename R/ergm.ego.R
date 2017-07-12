@@ -191,7 +191,7 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
 
     if(0 %in% ord && stats.est %in% c("survey", "naive","asymptotic"))
       stop("Non-scaling statistic detected: use bootstrap or jackknife variance estimator.")
-    if(do.fit && popsize!=ppopsize)
+    if(0 %in% ord && do.fit && popsize!=ppopsize)
       warning("Non-scaling statistic detected when trying to fit a model: network-size invariant parametrization probably does not exist so pseudopopulation size should equal the population size.")
 
     n <- nrow(egor)
