@@ -145,15 +145,17 @@ degreedist.egodata <- function(egodata, freq = FALSE, prob = !freq,
 
 #' Summarizing the mixing among groups in an egocentric dataset
 #' 
-#' A function to return counts of how often a ego of each group nominates an
-#' alter of each group.
+#' A \code{\link[network]{mixingmatrix}} method for
+#' \code{\link{egodata}} objects, to return counts of how often a ego
+#' of each group nominates an alter of each group.
 #' 
 #' 
-#' @param egodata A \code{\link{egodata}} object.
+#' @param object A \code{\link{egodata}} object.
 #' @param attrname A character vector containing the name of the network
 #' attribute whose mixing matrix is wanted.
 #' @param rowprob Whether the counts should be normalized by row sums. That is,
 #' whether they should be proportions conditional on the ego's group.
+#' @param ... Additional arguments, currently unused.
 #' @return A matrix with a row and a column for each level of \code{attrname}.
 #' 
 #' Note that, unlike \code{\link[network]{mixingmatrix}}, what is counted are
@@ -168,16 +170,16 @@ degreedist.egodata <- function(egodata, freq = FALSE, prob = !freq,
 #' fmh.ego <- as.egodata(faux.mesa.high)
 #' 
 #' (mm <- mixingmatrix(faux.mesa.high,"Grade"))
-#' (mm.ego <- mixingmatrix.egodata(fmh.ego,"Grade"))
+#' (mm.ego <- mixingmatrix(fmh.ego,"Grade"))
 #' 
 #' stopifnot(isTRUE(all.equal({tmp<-unclass(mm$matrix); diag(tmp) <- diag(tmp)*2;
 #' tmp}, mm.ego, check.attributes=FALSE)))
 #' 
-#' @export mixingmatrix.egodata
-mixingmatrix.egodata <- function(egodata, attrname, rowprob = FALSE){
-  egos <- egodata$egos
-  alters <- egodata$alters
-  egoIDcol <- egodata$egoIDcol
+#' @export
+mixingmatrix.egodata <- function(object, attrname, rowprob = FALSE, ...){
+  egos <- object$egos
+  alters <- object$alters
+  egoIDcol <- object$egoIDcol
   
   levs <- sort(unique(c(egos[[attrname]], alters[[attrname]])))
   egos[[attrname]] <- match(egos[[attrname]], levs, 0)
@@ -185,7 +187,7 @@ mixingmatrix.egodata <- function(egodata, attrname, rowprob = FALSE){
   
   ties <- merge(egos[c(egoIDcol,attrname)], alters[c(egoIDcol,attrname)], 
                 by = egoIDcol, suffixes = c(".ego",".alter"))
-  ties$wt <- egodata$egoWt[match(ties[[egoIDcol]],egos[[egoIDcol]])]
+  ties$wt <- object$egoWt[match(ties[[egoIDcol]],egos[[egoIDcol]])]
   mxmat <- matrix(0, nrow = length(levs), ncol = length(levs))
   
   for(i in 1:length(levs)){
