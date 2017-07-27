@@ -24,6 +24,7 @@
 #' @param brgmod Plot the range of predicted frequencies/probabilities
 #' according to a Bernoulli graph having the same expected density as the
 #' observed.
+#' @param main Main title of the plot.
 #' @param ... Additional arguments, currently unused.
 #' @seealso \code{\link{degreedist}},
 #' \code{\link[ergm:summary.formula]{summary}}
@@ -39,11 +40,14 @@
 #' @importFrom graphics arrows barplot legend points
 #' @export
 degreedist.egodata <- function(object, freq = FALSE, prob = !freq, 
-                               by = NULL, brgmod = FALSE, ...){
+                               by = NULL, brgmod = FALSE, main = NULL, ...){
   egodata <- object
   color <- "#83B6E1"
   beside <- TRUE
-  ylabel <- "Frequency"
+
+  ylabel <- if(prob) "Proportion" else "Frequency"
+  if(!is.null(by)) ylabel <- paste(ylabel, "(within attr level)")
+
   egoIDcol <- egodata$egoIDcol
   degtable <- rep(0, nrow(egodata$egos))
   degtable[as.numeric(names(table(egodata$alters[egoIDcol])))] <- table(egodata$alters[egoIDcol])
@@ -105,12 +109,10 @@ degreedist.egodata <- function(object, freq = FALSE, prob = !freq,
         brgmeans <- brgmeans/scaledeg
         upper <- upper/scaledeg
         lower <- lower/scaledeg
-        ylabel <- "Probability"
       } else {
         upper <- upper/sum(brgmeans)
         lower <- lower/sum(brgmeans)
         brgmeans <- brgmeans/sum(brgmeans)
-        ylabel <- "Probability (within attr level)"
       }
       
     }
@@ -119,7 +121,7 @@ degreedist.egodata <- function(object, freq = FALSE, prob = !freq,
   
   baraxis <- barplot(deg.ego, xlab = "Degree", ylab = ylabel,
                      col = color, beside = beside, plot = TRUE,
-                     ylim = c(0, maxfreq))
+                     ylim = c(0, maxfreq), main = main)
   
   if(brgmod){
     baraxis <- if(is.null(by)){
@@ -145,8 +147,9 @@ degreedist.egodata <- function(object, freq = FALSE, prob = !freq,
 
 #' Summarizing the mixing among groups in an egocentric dataset
 #' 
-#' A function to return counts of how often a ego of each group nominates an
-#' alter of each group.
+#' A \code{\link[network]{mixingmatrix}} method for
+#' \code{\link{egodata}} objects, to return counts of how often a ego
+#' of each group nominates an alter of each group.
 #' 
 #' 
 #' @aliases mixingmatrix
@@ -188,7 +191,7 @@ mixingmatrix.egodata <- function(object, attrname, rowprob = FALSE, ...){
   
   ties <- merge(egos[c(egoIDcol,attrname)], alters[c(egoIDcol,attrname)], 
                 by = egoIDcol, suffixes = c(".ego",".alter"))
-  ties$wt <- egodata$egoWt[match(ties[[egoIDcol]],egos[[egoIDcol]])]
+  ties$wt <- object$egoWt[match(ties[[egoIDcol]],egos[[egoIDcol]])]
   mxmat <- matrix(0, nrow = length(levs), ncol = length(levs))
   
   for(i in 1:length(levs)){
