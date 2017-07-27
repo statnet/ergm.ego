@@ -24,6 +24,7 @@
 #' @param brgmod Plot the range of predicted frequencies/probabilities
 #' according to a Bernoulli graph having the same expected density as the
 #' observed.
+#' @param main Main title of the plot.
 #' @param ... Additional arguments, currently unused.
 #' @seealso \code{\link{degreedist}},
 #' \code{\link[ergm:summary.formula]{summary}}
@@ -40,11 +41,14 @@
 #' @importFrom methods is
 #' @export
 degreedist.egor <- function(object, freq = FALSE, prob = !freq, 
-                            by = NULL, brgmod = FALSE, ...){
+                            by = NULL, brgmod = FALSE, main = NULL, ...){
   egor <- object
   color <- "#83B6E1"
   beside <- TRUE
-  ylabel <- "Frequency"
+
+  ylabel <- if(prob) "Proportion" else "Frequency"
+  if(!is.null(by)) ylabel <- paste(ylabel, "(within attr level)")
+
   degtable <- sapply(egor$.alts, nrow)
   degtable.wt <- degtable * weights(egor)
   maxdeg <- max(degtable.wt)
@@ -104,12 +108,10 @@ degreedist.egor <- function(object, freq = FALSE, prob = !freq,
         brgmeans <- brgmeans/scaledeg
         upper <- upper/scaledeg
         lower <- lower/scaledeg
-        ylabel <- "Probability"
       } else {
         upper <- upper/sum(brgmeans)
         lower <- lower/sum(brgmeans)
         brgmeans <- brgmeans/sum(brgmeans)
-        ylabel <- "Probability (within attr level)"
       }
       
     }
@@ -118,7 +120,7 @@ degreedist.egor <- function(object, freq = FALSE, prob = !freq,
   
   baraxis <- barplot(deg.ego, xlab = "Degree", ylab = ylabel,
                      col = color, beside = beside, plot = TRUE,
-                     ylim = c(0, maxfreq))
+                     ylim = c(0, maxfreq), main = main)
   
   if(brgmod){
     baraxis <- if(is.null(by)){
@@ -144,8 +146,9 @@ degreedist.egor <- function(object, freq = FALSE, prob = !freq,
 
 #' Summarizing the mixing among groups in an egocentric dataset
 #' 
-#' A function to return counts of how often a ego of each group nominates an
-#' alter of each group.
+#' A \code{\link[network]{mixingmatrix}} method for
+#' \code{\link{egodata}} objects, to return counts of how often a ego
+#' of each group nominates an alter of each group.
 #' 
 #' 
 #' @aliases mixingmatrix

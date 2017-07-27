@@ -6,7 +6,7 @@
 \title{Plotting the degree distribution of an egocentric dataset}
 \usage{
 \method{degreedist}{egor}(object, freq = FALSE, prob = !freq, by = NULL,
-  brgmod = FALSE, ...)
+  brgmod = FALSE, main = NULL, ...)
 }
 \arguments{
 \item{object}{A \code{\link{egor}} object.}
@@ -20,6 +20,8 @@ given, plots the frequences broken down by that attribute.}
 \item{brgmod}{Plot the range of predicted frequencies/probabilities
 according to a Bernoulli graph having the same expected density as the
 observed.}
+
+\item{main}{Main title of the plot.}
 
 \item{...}{Additional arguments, currently unused.}
 }

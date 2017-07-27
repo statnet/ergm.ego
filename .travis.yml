@@ -2,7 +2,17 @@ language: r
 r:
 - release
 - devel
+os:
+- linux
+- osx
+matrix:
+  exclude:
+  - r: devel
+    os: osx
 sudo: false
 cache: packages
 r_github_packages:
+- statnet/statnet.common
 - statnet/network
+- statnet/ergm
+
