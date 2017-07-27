@@ -43,7 +43,10 @@ degreedist.egodata <- function(egodata, freq = FALSE, prob = !freq,
   }
   color <- "#83B6E1"
   beside <- TRUE
-  ylabel <- "Frequency"
+
+  ylabel <- if(prob) "Proportion" else "Frequency"
+  if(!is.null(by)) ylabel <- paste(ylabel, "(within attr level)")
+
   egoIDcol <- egodata$egoIDcol
   degtable <- rep(0, nrow(egodata$egos))
   degtable[as.numeric(names(table(egodata$alters[egoIDcol])))] <- table(egodata$alters[egoIDcol])
@@ -105,12 +108,10 @@ degreedist.egodata <- function(egodata, freq = FALSE, prob = !freq,
         brgmeans <- brgmeans/scaledeg
         upper <- upper/scaledeg
         lower <- lower/scaledeg
-        ylabel <- "Probability"
       } else {
         upper <- upper/sum(brgmeans)
         lower <- lower/sum(brgmeans)
         brgmeans <- brgmeans/sum(brgmeans)
-        ylabel <- "Probability (within attr level)"
       }
       
     }
