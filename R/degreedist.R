@@ -24,6 +24,7 @@
 #' @param brgmod Plot the range of predicted frequencies/probabilities
 #' according to a Bernoulli graph having the same expected density as the
 #' observed.
+#' @param main Main title of the plot.
 #' @seealso \code{\link{degreedist}},
 #' \code{\link[ergm:summary.formula]{summary}}
 #' @examples
@@ -34,9 +35,9 @@
 #' degreedist.egodata(fmh.ego,by="Grade",brgmod=TRUE)
 #'
 #' @importFrom graphics arrows barplot legend points
-#' @export
+#' @export degreedist.egodata
 degreedist.egodata <- function(egodata, freq = FALSE, prob = !freq, 
-                               by = NULL, brgmod = FALSE){
+                               by = NULL, brgmod = FALSE, main = NULL){
   if (class(egodata) != "egodata"){
     stop("The egodata object passed to degreedist.egodata must be of class egodata.")
   }
@@ -118,7 +119,7 @@ degreedist.egodata <- function(egodata, freq = FALSE, prob = !freq,
   
   baraxis <- barplot(deg.ego, xlab = "Degree", ylab = ylabel,
                      col = color, beside = beside, plot = TRUE,
-                     ylim = c(0, maxfreq))
+                     ylim = c(0, maxfreq), main = main)
   
   if(brgmod){
     baraxis <- if(is.null(by)){
@@ -172,7 +173,7 @@ degreedist.egodata <- function(egodata, freq = FALSE, prob = !freq,
 #' stopifnot(isTRUE(all.equal({tmp<-unclass(mm$matrix); diag(tmp) <- diag(tmp)*2;
 #' tmp}, mm.ego, check.attributes=FALSE)))
 #' 
-#' @export
+#' @export mixingmatrix.egodata
 mixingmatrix.egodata <- function(egodata, attrname, rowprob = FALSE){
   egos <- egodata$egos
   alters <- egodata$alters

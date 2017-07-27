@@ -4,8 +4,8 @@
 \alias{degreedist.egodata}
 \title{Plotting the degree distribution of an egocentric dataset}
 \usage{
-degreedist.egodata(egodata, freq = FALSE, prob = !freq, by = NULL,
-  brgmod = FALSE)
+\method{degreedist}{egodata}(egodata, freq = FALSE, prob = !freq,
+  by = NULL, brgmod = FALSE, main = NULL)
 }
 \arguments{
 \item{egodata}{A \code{\link{egodata}} object.}
@@ -19,6 +19,8 @@ given, plots the frequences broken down by that attribute.}
 \item{brgmod}{Plot the range of predicted frequencies/probabilities
 according to a Bernoulli graph having the same expected density as the
 observed.}
+
+\item{main}{Main title of the plot.}
 }
 \description{
 A function to plot a histogram of the degree distribution of actors in the
