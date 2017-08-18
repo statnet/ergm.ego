@@ -52,7 +52,7 @@ degreedist.egor <- function(object, freq = FALSE, prob = !freq,
   degtable <- sapply(egor$.alts, nrow)
   degtable.wt <- degtable * weights(egor)
   maxdeg <- max(degtable.wt)
-  deg.ego <- summary(egor ~ degree(0:maxdeg, by = by))
+  deg.ego <- as.vector( summary(egor ~ degree(0:maxdeg, by = by)) )
   names(deg.ego) <- 0:maxdeg
   maxfreq <- max(deg.ego)
   if(!is.null(by)){
