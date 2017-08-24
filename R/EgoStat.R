@@ -22,6 +22,21 @@
   else stop("In EgoStat ",sQuote(term)," attribute ", sQuote(attrname), " must be observed for both egos and alters.", call.=FALSE)
 }
 
+.concat_factor <- function(egor, attrname){
+  # If there are multiple attributes, concatenate their names with a
+  # dot and concatenate their values with a dot.
+  if(length(attrname)>1){
+    attrnamename <- paste(attrname, collapse=".")
+    egor[[attrnamename]] <- do.call(paste,c(as.list(as.tibble(egor)[,attrname]),list(sep=".")))
+    egor$.alts <- lapply(egor$.alts, function(a){
+      a[[attrnamename]] <- do.call(paste,c(as.list(a[,attrname]),list(sep=".")))
+      a
+    })
+    attrname <- attrnamename
+  }
+  list(egor=egor, attrname=attrname)
+}
+
 #' Generate the ego contribution matrix from an [egor()] object.
 #'
 #' @param egor an [egor()] object containing the egocentric dataset.
@@ -121,9 +136,13 @@ EgoStat.nodecov <- function(egor, attrname){
 #' @export
 #' @rdname ergm.ego-terms
 EgoStat.nodefactor <- function(egor, attrname, base=1){
+  tmp <- .concat_factor(egor, attrname)
+  egor <- tmp$egor
+  attrname <- tmp$attrname
+  
   nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$.alts[[1]]))
   if(nattr==0) .attrErr("nodefactor", attrname, "one")
-
+  
   l <- sort(unique(c(egor[[attrname]],.allAlters(egor)[[attrname]])))
   # Note that all "base" levels will be matched to 0 and therefore
   # excluded from the tabulation below.
@@ -140,6 +159,10 @@ EgoStat.nodefactor <- function(egor, attrname, base=1){
 #' @export
 #' @rdname ergm.ego-terms
 EgoStat.nodematch <- function(egor, attrname, diff=FALSE, keep=NULL){
+  tmp <- .concat_factor(egor, attrname)
+  egor <- tmp$egor
+  attrname <- tmp$attrname
+
   nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$.alts[[1]]))
   if(nattr==0) .attrErr("nodematch", attrname, "both")
   
@@ -162,6 +185,10 @@ EgoStat.nodematch <- function(egor, attrname, diff=FALSE, keep=NULL){
 #' @export
 #' @rdname ergm.ego-terms
 EgoStat.nodemix <- function(egor, attrname, base=NULL){
+  tmp <- .concat_factor(egor, attrname)
+  egor <- tmp$egor
+  attrname <- tmp$attrname
+
   nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$.alts[[1]]))
   if(nattr==0) .attrErr("nodemix", attrname, "both")
 
