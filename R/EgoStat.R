@@ -102,6 +102,15 @@ EgoStat.nodefactor <- function(egodata, attrname, base=1){
   egos <- egodata$egos
   alters <- egodata$alters
   egoIDcol <- egodata$egoIDcol
+
+  # If there are multiple attributes, concatenate their names with a
+  # dot and concatenate their values with a dot.
+  if(length(attrname)>1){
+    attrnamename <- paste(attrname, collapse=".")
+    egos[[attrnamename]] <- do.call(paste,c(as.list(egos[,attrname]),list(sep=".")))
+    alters[[attrnamename]] <- do.call(paste,c(as.list(alters[,attrname]),list(sep=".")))
+    attrname <- attrnamename
+  }
   
   levs <- sort(unique(c(egos[[attrname]],alters[[attrname]])))
   egos[[attrname]] <- match(egos[[attrname]], levs, 0)
@@ -123,6 +132,15 @@ EgoStat.nodematch <- function(egodata, attrname, diff=FALSE, keep=NULL){
   egos <- egodata$egos
   alters <- egodata$alters
   egoIDcol <- egodata$egoIDcol
+
+  # If there are multiple attributes, concatenate their names with a
+  # dot and concatenate their values with a dot.
+  if(length(attrname)>1){
+    attrnamename <- paste(attrname, collapse=".")
+    egos[[attrnamename]] <- do.call(paste,c(as.list(egos[,attrname]),list(sep=".")))
+    alters[[attrnamename]] <- do.call(paste,c(as.list(alters[,attrname]),list(sep=".")))
+    attrname <- attrnamename
+  }
   
   levs <- sort(unique(c(egos[[attrname]],alters[[attrname]])))
   egos[[attrname]] <- match(egos[[attrname]], levs, 0)
@@ -152,6 +170,15 @@ EgoStat.nodemix <- function(egodata, attrname, base=NULL){
   alters <- egodata$alters
   egoIDcol <- egodata$egoIDcol
   
+  # If there are multiple attributes, concatenate their names with a
+  # dot and concatenate their values with a dot.
+  if(length(attrname)>1){
+    attrnamename <- paste(attrname, collapse=".")
+    egos[[attrnamename]] <- do.call(paste,c(as.list(egos[,attrname]),list(sep=".")))
+    alters[[attrnamename]] <- do.call(paste,c(as.list(alters[,attrname]),list(sep=".")))
+    attrname <- attrnamename
+  }
+
   levs <- sort(unique(c(egos[[attrname]],alters[[attrname]])))
   egos[[attrname]] <- match(egos[[attrname]], levs, 0)
   alters[[attrname]] <- match(alters[[attrname]], levs, 0)
