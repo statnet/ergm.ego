@@ -42,9 +42,7 @@
 #' @export
 degreedist.egor <- function(object, freq = FALSE, prob = !freq, 
                             by = NULL, brgmod = FALSE, main = NULL, ...){
-  tmp <- .preproc_factor(object, by)
-  egor <- tmp$egor
-  by <- tmp$attrname
+  c(egor, by) %<-% .preproc_factor(object, by)
 
   color <- "#83B6E1"
   beside <- TRUE
@@ -182,9 +180,7 @@ degreedist.egor <- function(object, freq = FALSE, prob = !freq,
 #' 
 #' @export
 mixingmatrix.egor <- function(object, attrname, rowprob = FALSE, ...){
-  tmp <- .preproc_factor(object, attrname)
-  egor <- tmp$egor
-  attrname <- tmp$attrname
+  c(egor, attrname) %<-% .preproc_factor(object, attrname)
 
   levs <- sort(unique(c(egor[[attrname]], .allAlters(egor)[[attrname]])))
 

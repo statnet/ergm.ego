@@ -125,6 +125,7 @@
 #' }
 #'
 #' @param egor,attrname,base,diff,keep,pow,d,by,homophily,from,to,decay,fixed,cutoff,alpha,emptyval,nw,arglist,... arguments to terms. See \code{\link[ergm]{ergm-terms}}.
+#' @import zeallot
 #' @seealso \code{\link[ergm]{ergm-terms}}
 #' @keywords models
 NULL
@@ -150,9 +151,7 @@ EgoStat.nodecov <- function(egor, attrname){
 #' @export
 #' @rdname ergm.ego-terms
 EgoStat.nodefactor <- function(egor, attrname, base=1){
-  tmp <- .preproc_factor(egor, attrname)
-  egor <- tmp$egor
-  attrname <- tmp$attrname
+  c(egor, attrname) %<-% .preproc_factor(egor, attrname)
   
   nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$.alts[[1]]))
   if(nattr==0) .attrErr("nodefactor", attrname, "one")
@@ -173,9 +172,7 @@ EgoStat.nodefactor <- function(egor, attrname, base=1){
 #' @export
 #' @rdname ergm.ego-terms
 EgoStat.nodematch <- function(egor, attrname, diff=FALSE, keep=NULL){
-  tmp <- .preproc_factor(egor, attrname)
-  egor <- tmp$egor
-  attrname <- tmp$attrname
+  c(egor, attrname) %<-% .preproc_factor(egor, attrname)
 
   nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$.alts[[1]]))
   if(nattr==0) .attrErr("nodematch", attrname, "both")
@@ -199,9 +196,7 @@ EgoStat.nodematch <- function(egor, attrname, diff=FALSE, keep=NULL){
 #' @export
 #' @rdname ergm.ego-terms
 EgoStat.nodemix <- function(egor, attrname, base=NULL){
-  tmp <- .preproc_factor(egor, attrname)
-  egor <- tmp$egor
-  attrname <- tmp$attrname
+  c(egor, attrname) %<-% .preproc_factor(egor, attrname)
 
   nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$.alts[[1]]))
   if(nattr==0) .attrErr("nodemix", attrname, "both")
@@ -239,9 +234,7 @@ EgoStat.absdiff <- function(egor, attrname, pow=1){
 #' @rdname ergm.ego-terms
 EgoStat.degree <- function(egor, d, by=NULL, homophily=FALSE){
   ## if(any(d==0)) warning("degree(0) (isolate) count statistic depends strongly on the specified population network size.")
-  tmp <- .preproc_factor(egor, by)
-  egor <- tmp$egor
-  by <- tmp$attrname
+  c(egor, by) %<-% .preproc_factor(egor, by)
 
   if(!is.null(by) && !by %in% names(egor)) stop("For term ",sQuote("degree")," attribute ", sQuote(by), " must be observed on egos.", call.=FALSE)
   
@@ -273,9 +266,7 @@ EgoStat.degree <- function(egor, d, by=NULL, homophily=FALSE){
 #' @rdname ergm.ego-terms
 EgoStat.degrange <- function(egor, from=NULL, to=Inf, by=NULL, homophily=FALSE){
   ## if(any(from==0)) warning("degrange(0,...) (isolate) count depends strongly on the specified population network size.")
-  tmp <- .preproc_factor(egor, by)
-  egor <- tmp$egor
-  by <- tmp$attrname
+  c(egor, by) %<-% .preproc_factor(egor, by)
   
   to <- ifelse(to==Inf, .Machine$integer.max, to)
 
@@ -321,9 +312,7 @@ EgoStat.degrange <- function(egor, from=NULL, to=Inf, by=NULL, homophily=FALSE){
 #' @export
 #' @rdname ergm.ego-terms
 EgoStat.concurrent <- function(egor, by=NULL){
-  tmp <- .preproc_factor(egor, by)
-  egor <- tmp$egor
-  by <- tmp$attrname
+  c(egor, by) %<-% .preproc_factor(egor, by)
 
   if(!is.null(by) && !by %in% names(egor)) stop("For term ",sQuote("concurrent")," attribute ", sQuote(by), " must be observed on egos.", call.=FALSE)
   
@@ -347,9 +336,7 @@ EgoStat.concurrent <- function(egor, by=NULL){
 #' @export
 #' @rdname ergm.ego-terms
 EgoStat.concurrentties <- function(egor, by=NULL){
-  tmp <- .preproc_factor(egor, by)
-  egor <- tmp$egor
-  by <- tmp$attrname
+  c(egor, by) %<-% .preproc_factor(egor, by)
 
   if(!is.null(by) && !by %in% names(egor)) stop("For term ",sQuote("concurrent")," attribute ", sQuote(by), " must be observed on egos.", call.=FALSE)
   
@@ -382,9 +369,7 @@ EgoStat.degreepopularity <- function(egor){
 #' @export
 #' @rdname ergm.ego-terms
 EgoStat.transitiveties <- function(egor, attrname=NULL){
-  tmp <- .preproc_factor(egor, attrname)
-  egor <- tmp$egor
-  attrname <- tmp$attrname
+  c(egor, attrname) %<-% .preproc_factor(egor, attrname)
 
   if(!is.null(attrname)){
     nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$.alts[[1]]))

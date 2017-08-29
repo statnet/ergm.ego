@@ -9,7 +9,7 @@ Authors@R: c(
 	    person("Kirk", "Li", role=c("ctb"), email="kirkli@uw.edu"),
 	    person("Emily N.", "Beylerian", role=c("ctb"), email="ebey@uw.edu"))
 Depends: ergm (>= 4.0), network (>= 1.14), egor
-Imports: statnet.common, coda, RColorBrewer, stats, tibble, survey, methods
+Imports: statnet.common, coda, RColorBrewer, stats, tibble, survey, methods, zeallot
 LinkingTo: ergm
 Suggests: testthat
 Description: Utilities for managing egocentrically sampled network data and a wrapper around the 'ergm' package to facilitate ERGM inference and simulation from such data.
