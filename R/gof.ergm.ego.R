@@ -127,7 +127,7 @@ gof.ergm.ego <- function (object, ...,
                           GOF=c("model","degree"), 
                           control=control.gof.ergm(),
                           verbose=FALSE) {
-  statnet.common::check.control.class(c("gof.ergm","gof.formula"))
+  statnet.common::check.control.class(c("gof.ergm","gof.formula"), "gof.ergm.ego")
   
   #Set up the defaults, if called with GOF==NULL
   if(is.null(GOF)){

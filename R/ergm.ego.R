@@ -105,7 +105,7 @@
 #' @importFrom utils modifyList
 #' @export
 ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., control=control.ergm.ego(), na.action=na.fail, na.rm=FALSE, do.fit=TRUE){
-  statnet.common::check.control.class("ergm.ego")
+  statnet.common::check.control.class("ergm.ego","ergm.ego")
   
   stats.est <- control$stats.est
   stats.wt <- control$stats.wt
