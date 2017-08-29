@@ -12,7 +12,8 @@ matrix:
 sudo: false
 cache: packages
 r_github_packages:
+- tilltnet/egor
 - statnet/statnet.common
 - statnet/network
-- statnet/ergm
+- statnet/ergm-private@dev
 
