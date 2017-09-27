@@ -64,7 +64,7 @@
 #' @importFrom stats simulate
 #' @export
 simulate.ergm.ego <- function(object, nsim = 1, seed = NULL, popsize=if(object$popsize==1) object$ppopsize else object$popsize, control=control.simulate.ergm.ego(), ..., verbose=FALSE){
-  statnet.common::check.control.class("simulate.ergm.ego","simulate.ergm.ego")
+  statnet.common::check.control.class("simulate.ergm.ego", "simulate.ergm.ego")
   
   if(is.data.frame(popsize)){ # If pseudopoluation composition is given in popsize, use that.
     pegos <- popsize
