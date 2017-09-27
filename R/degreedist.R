@@ -97,7 +97,7 @@ degreedist.egodata <- function(object, freq = FALSE, prob = !freq,
 
 
   if(brgmod) {
-    brgdraws <- simulate.ergm.ego(ergm.ego(egodata ~ edges), nsim = 50)
+    brgdraws <- simulate.ergm.ego(suppressMessages(ergm.ego(egodata ~ edges)), nsim = 50)
     deg.brg <- summary(brgdraws ~ degree(0:maxdeg))
     brgmeans <- apply(deg.brg, MARGIN = 2, FUN = mean)
     brgsd <- apply(deg.brg, MARGIN = 2, FUN = sd)

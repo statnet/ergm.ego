@@ -217,10 +217,15 @@ as.egodata.data.frame <- function(object, alters, egoWt = 1, ..., egoIDcol="egoI
 as.egodata.network<-function(object,special.cols=c("na","vertex.names"),...,egoIDcol="vertex.names"){
   N<-network.size(object)
 
-  egoIDs<-object%v%egoIDcol
-  if(any(duplicated(egoIDs))){
-    warning("Non-unique ego IDs; using 1..N.")
-    egoIDs <- seq_along(egoIDs)
+  if(egoIDcol%in%list.vertex.attributes(object)){
+    egoIDs<-object%v%egoIDcol
+    if(any(duplicated(egoIDs))){
+      warning("Non-unique ego IDs; using 1..N.")
+      egoIDs <- seq_along(egoIDs)
+    }
+  }else{
+    message("Network does not have vertex attribute ",sQuote(egoIDcol)," to use as ego ID; using 1..N.")
+    egoIDs <- seq_len(N)
   }
   
   egos<-list()
