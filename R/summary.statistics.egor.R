@@ -14,7 +14,7 @@
 #' \code{\link{egor}} object.
 #' 
 #' 
-#' @aliases summary.statistics.egor summary summary.formula
+#' @aliases summary summary.formula
 #' @param object An \code{\link[ergm]{ergm}}-style formula with a
 #' \code{\link{egor}} object as the LHS.
 #' 
@@ -35,8 +35,8 @@
 #' \code{individual==TRUE}, a matrix with a row for each ego, giving that ego's
 #' contribution to the network statistic.
 #' @author Pavel N. Krivitsky
-#' @seealso \code{\link[ergm]{summary.statistics}},
-#' \code{\link[ergm]{summary.statistics.ergm}}
+#' @seealso \code{\link[ergm]{summary_formula}},
+#' \code{\link[ergm]{summary_formula.ergm}}
 #' @references Pavel N. Krivitsky and Martina Morris. Inference for Social
 #' Network Models from Egocentrically-Sampled Data, with Application to
 #' Understanding Persistent Racial Disparities in HIV Prevalence in the US.
@@ -62,9 +62,8 @@
 #' stopifnot(isTRUE(all.equal(as.vector(nw.summ),as.vector(ego.summ))))
 #'
 #' @importFrom survey svymean
-#' @method summary.statistics egor
 #' @export
-summary.statistics.egor <- function(object,..., basis=NULL, individual=FALSE, scaleto=NULL){
+summary_formula.egor <- function(object,..., basis=NULL, individual=FALSE, scaleto=NULL){
   egor <-
     if(!is.null(basis)) basis
     else get(as.character(object[[2]]), envir=environment(object))
