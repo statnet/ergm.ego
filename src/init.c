@@ -1,3 +1,6 @@
+#include <stdlib.h> // for NULL
+#include <R_ext/Rdynload.h>
+
 static const R_CMethodDef CEntries[] = {
     {NULL, NULL, 0}
 };
