@@ -4,8 +4,8 @@
 \alias{degreedist.egodata}
 \title{Plotting the degree distribution of an egocentric dataset}
 \usage{
-degreedist.egodata(egodata, freq = FALSE, prob = !freq, by = NULL,
-  brgmod = FALSE, main = NULL)
+\method{degreedist}{egodata}(egodata, freq = FALSE, prob = !freq,
+  by = NULL, brgmod = FALSE, main = NULL)
 }
 \arguments{
 \item{egodata}{A \code{\link{egodata}} object.}

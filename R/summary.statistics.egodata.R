@@ -16,7 +16,7 @@
 #' \code{\link{egodata}} object.
 #' 
 #' 
-#' @aliases summary.statistics.egodata summary summary.formula
+#' @aliases summary_formula.egodata summary summary.formula
 #' @param object An \code{\link[ergm]{ergm}}-style formula with a
 #' \code{\link{egodata}} object as the LHS.
 #' 
@@ -37,8 +37,8 @@
 #' \code{individual==TRUE}, a matrix with a row for each ego, giving that ego's
 #' contribution to the network statistic.
 #' @author Pavel N. Krivitsky
-#' @seealso \code{\link[ergm]{summary.statistics}},
-#' \code{\link[ergm]{summary.statistics.ergm}}
+#' @seealso \code{\link[ergm]{summary_formula}},
+#' \code{\link[ergm]{summary_formula.ergm}}
 #' @references Pavel N. Krivitsky and Martina Morris. Inference for Social
 #' Network Models from Egocentrically-Sampled Data, with Application to
 #' Understanding Persistent Racial Disparities in HIV Prevalence in the US.
@@ -63,9 +63,8 @@
 #' 
 #' stopifnot(isTRUE(all.equal(nw.summ,ego.summ)))
 #' 
-#' @method summary.statistics egodata
 #' @export
-summary.statistics.egodata <- function(object,..., basis=NULL, individual=FALSE, scaleto=NULL){
+summary_formula.egodata <- function(object,..., basis=NULL, individual=FALSE, scaleto=NULL){
   egodata <-
     if(!is.null(basis)) basis
     else get(as.character(object[[2]]), envir=environment(object))
