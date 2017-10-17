@@ -23,7 +23,7 @@ observed.}
 
 \item{main}{Main title of the plot.}
 
-\item{...}{Additional rguments to \code{\link[=simulate.ergm.ego]{simulate.ergm.ego()}}.}
+\item{...}{Additional arguments to \code{\link[=simulate.ergm.ego]{simulate.ergm.ego()}}.}
 }
 \description{
 A function to plot a histogram of the degree distribution of actors in the

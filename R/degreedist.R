@@ -25,7 +25,7 @@
 #' according to a Bernoulli graph having the same expected density as the
 #' observed.
 #' @param main Main title of the plot.
-#' @param ... Additional rguments to [simulate.ergm.ego()].
+#' @param ... Additional arguments to [simulate.ergm.ego()].
 #' @seealso \code{\link{degreedist}},
 #' \code{\link[ergm:summary.formula]{summary}}
 #' @examples
