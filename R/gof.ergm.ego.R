@@ -122,6 +122,7 @@
 #' plot(deggof)
 #'
 #' @import ergm stats
+#' @method gof ergm.ego
 #' @export
 gof.ergm.ego <- function (object, ..., 
                           GOF=c("model","degree"), 
@@ -214,6 +215,6 @@ gof.ergm.ego <- function (object, ...,
     returnlist$sim.deg <- sim.deg
   }
 
-  class(returnlist) <- "gofobject"
+  class(returnlist) <- "gof"
   returnlist
 }

@@ -79,9 +79,6 @@ This page describes the \code{\link[ergm]{ergm}} terms (and hence network
 statistics) for which inference based on egocentrically sampled data is
 implemented in \code{ergm.ego} package. Other packages may add their own
 terms.
-
-A custom term giving a linear combination of change statistics
-useful for network size adjustment.
 }
 \details{
 The current recommendation for any package implementing additional

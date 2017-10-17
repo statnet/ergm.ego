@@ -23,6 +23,7 @@ summary.ergm.ego <- function (object, ...,
 #' @method print summary.ergm.ego
 #' @export
 print.summary.ergm.ego <- function (x, ...){
-  print.summary.ergm(x, ..., print.deviances=FALSE)
+  class(x) <- "summary.ergm"
+  NextMethod("print", object=x, ..., print.deviances=FALSE)
 }
 
