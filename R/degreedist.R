@@ -16,7 +16,7 @@
 #' Bernoulli graph.
 #' 
 #' 
-#' @param egodata A \code{\link{egodata}} object.
+#' @param object A \code{\link{egodata}} object.
 #' @param freq,prob Whether to plot the raw frequencies or the conditional
 #' proportions of the degree values. Defaults to the latter.
 #' @param by A character vector giving the name of a vertex attribute; if
@@ -25,6 +25,7 @@
 #' according to a Bernoulli graph having the same expected density as the
 #' observed.
 #' @param main Main title of the plot.
+#' @param ... Additional rguments to [simulate.ergm.ego()].
 #' @seealso \code{\link{degreedist}},
 #' \code{\link[ergm:summary.formula]{summary}}
 #' @examples
@@ -36,11 +37,10 @@
 #'
 #' @importFrom graphics arrows barplot legend points
 #' @export degreedist.egodata
-degreedist.egodata <- function(egodata, freq = FALSE, prob = !freq, 
-                               by = NULL, brgmod = FALSE, main = NULL){
-  if (class(egodata) != "egodata"){
-    stop("The egodata object passed to degreedist.egodata must be of class egodata.")
-  }
+degreedist.egodata <- function(object, freq = FALSE, prob = !freq, 
+                               by = NULL, brgmod = FALSE, main = NULL, ...){
+  egodata <- object
+  
   color <- "#83B6E1"
   beside <- TRUE
 
@@ -96,7 +96,7 @@ degreedist.egodata <- function(egodata, freq = FALSE, prob = !freq,
 
 
   if(brgmod) {
-    brgdraws <- simulate.ergm.ego(suppressMessages(ergm.ego(egodata ~ edges)), nsim = 50)
+    brgdraws <- simulate.ergm.ego(suppressMessages(ergm.ego(egodata ~ edges)), nsim = 50, ...)
     deg.brg <- summary(brgdraws ~ degree(0:maxdeg))
     brgmeans <- apply(deg.brg, MARGIN = 2, FUN = mean)
     brgsd <- apply(deg.brg, MARGIN = 2, FUN = sd)

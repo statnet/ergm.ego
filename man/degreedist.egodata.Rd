@@ -4,11 +4,11 @@
 \alias{degreedist.egodata}
 \title{Plotting the degree distribution of an egocentric dataset}
 \usage{
-\method{degreedist}{egodata}(egodata, freq = FALSE, prob = !freq,
-  by = NULL, brgmod = FALSE, main = NULL)
+\method{degreedist}{egodata}(object, freq = FALSE, prob = !freq,
+  by = NULL, brgmod = FALSE, main = NULL, ...)
 }
 \arguments{
-\item{egodata}{A \code{\link{egodata}} object.}
+\item{object}{A \code{\link{egodata}} object.}
 
 \item{freq, prob}{Whether to plot the raw frequencies or the conditional
 proportions of the degree values. Defaults to the latter.}
@@ -21,6 +21,8 @@ according to a Bernoulli graph having the same expected density as the
 observed.}
 
 \item{main}{Main title of the plot.}
+
+\item{...}{Additional rguments to \code{\link[=simulate.ergm.ego]{simulate.ergm.ego()}}.}
 }
 \description{
 A function to plot a histogram of the degree distribution of actors in the
