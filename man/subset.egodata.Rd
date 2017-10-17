@@ -3,7 +3,6 @@
 \name{[.egodata}
 \alias{[.egodata}
 \alias{subset.egodata}
-\alias{[.egodata}
 \title{Subsetting \code{\link{egodata}} Objects}
 \usage{
 \method{[}{egodata}(x, i, j, ..., dup.action = c("make.unique", "fail",
