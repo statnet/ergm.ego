@@ -12,8 +12,6 @@
 \alias{head.egodata}
 \alias{sample}
 \alias{sample.default}
-\alias{as.egodata}
-\alias{as.egodata.data.frame}
 \title{Convert to or Construct \code{\link{egodata}} Objects}
 \usage{
 egodata(egos, alters, egoWt = 1, ..., egoIDcol = "egoID")
