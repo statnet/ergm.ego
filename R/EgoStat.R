@@ -27,12 +27,16 @@
 #' 
 #' 
 #' @name ergm.ego-terms
-#' @aliases ergm.ego-terms terms-ergm.ego ergm.ego.terms terms.ergm.ego
-#' ergm-terms ergm.terms terms-ergm terms.ergm EgoStat EgoStat.edges
-#' EgoStat.nodecov EgoStat.nodefactor EgoStat.nodematch EgoStat.nodemix
-#' EgoStat.absdiff EgoStat.degree EgoStat.degrange EgoStat.concurrent
-#' EgoStat.concurrentties EgoStat.degreepopularity EgoStat.mean.age netsize.adj
-#' InitErgmTerm.netsize.adj
+#' 
+#' @aliases ergm.ego-terms terms-ergm.ego ergm.ego.terms
+#'   terms.ergm.ego ergm-terms ergm.terms terms-ergm terms.ergm
+#'   EgoStat EgoStat.offset EgoStat.edges EgoStat.nodecov
+#'   EgoStat.nodefactor EgoStat.nodematch EgoStat.nodemix
+#'   EgoStat.absdiff EgoStat.degree EgoStat.degrange
+#'   EgoStat.concurrent EgoStat.concurrentties
+#'   EgoStat.degreepopularity EgoStat.mean.age netsize.adj
+#'   InitErgmTerm.netsize.adj
+#'
 #' @docType methods
 #' @section Currently implemented egocentric statistics: For each of these,
 #' please see their respective package's \code{ergm-terms} help for meaning and
@@ -44,17 +48,28 @@
 #' term is added to the model automatically and should not be used in the model
 #' formula directly.  } } }
 #' 
-#' \item{ergm:}{ \itemize{ \item \code{edges} \item \code{nodecov}
-#' \item \code{nodefactor} \item \code{nodematch} \item \code{nodemix} \item
-#' \code{absdiff} \item \code{degree} \item \code{degrange} \item
-#' \code{concurrent} \item \code{concurrentties} \item \code{degreepopularity}
-#' } }
+#' \item{ergm:}{ \itemize{ \item \code{offset} \item \code{edges}
+#' \item \code{nodecov} \item \code{nodefactor} \item \code{nodematch}
+#' \item \code{nodemix} \item \code{absdiff} \item \code{degree} \item
+#' \code{degrange} \item \code{concurrent} \item \code{concurrentties}
+#' \item \code{degreepopularity} } }
 #' 
 #' \item{tergm:}{ \itemize{ \item \code{mean.age} } } }
 #' @seealso \code{\link[ergm]{ergm-terms}}
 #' @keywords models
 NULL
 
+#' @export
+EgoStat.offset <- function(egodata, trm){
+  trm <- substitute(trm)
+  if(is.call(trm)){
+    init.call <- list(as.name(paste("EgoStat.", trm[[1]],sep="")),egodata=egodata)
+    init.call <- c(init.call,as.list(trm[-1]))
+  }else{
+    init.call <- list(as.name(paste("EgoStat.", trm,sep="")),egodata=egodata)
+  }
+  eval(as.call(init.call))
+}
 
 #' @export
 EgoStat.edges <- function(egodata){

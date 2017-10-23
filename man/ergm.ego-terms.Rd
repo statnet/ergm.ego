@@ -11,6 +11,7 @@
 \alias{terms-ergm}
 \alias{terms.ergm}
 \alias{EgoStat}
+\alias{EgoStat.offset}
 \alias{EgoStat.edges}
 \alias{EgoStat.nodecov}
 \alias{EgoStat.nodefactor}
@@ -50,11 +51,11 @@ parameters. The simplest way to do this is usually via \code{? TERM}.
 term is added to the model automatically and should not be used in the model
 formula directly.  } } }
 
-\item{ergm:}{ \itemize{ \item \code{edges} \item \code{nodecov}
-\item \code{nodefactor} \item \code{nodematch} \item \code{nodemix} \item
-\code{absdiff} \item \code{degree} \item \code{degrange} \item
-\code{concurrent} \item \code{concurrentties} \item \code{degreepopularity}
-} }
+\item{ergm:}{ \itemize{ \item \code{offset} \item \code{edges}
+\item \code{nodecov} \item \code{nodefactor} \item \code{nodematch}
+\item \code{nodemix} \item \code{absdiff} \item \code{degree} \item
+\code{degrange} \item \code{concurrent} \item \code{concurrentties}
+\item \code{degreepopularity} } }
 
 \item{tergm:}{ \itemize{ \item \code{mean.age} } } }
 }
