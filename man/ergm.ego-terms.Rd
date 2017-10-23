@@ -102,6 +102,7 @@ and should not be used in the model formula directly.  } } }
 
 \item{ergm:}{
 \itemize{
+\item \code{offset}
 \item \code{edges}
 \item \code{nodecov}
 \item \code{nodefactor}

@@ -101,6 +101,7 @@
 #' and should not be used in the model formula directly.  } } }
 #' 
 #' \item{ergm:}{
+#' * `offset`
 #' * `edges`
 #' * `nodecov`
 #' * `nodefactor`
@@ -129,6 +130,18 @@
 #' @seealso \code{\link[ergm]{ergm-terms}}
 #' @keywords models
 NULL
+
+#' @export
+EgoStat.offset <- function(egor, trm){
+  trm <- substitute(trm)
+  if(is.call(trm)){
+    init.call <- list(as.name(paste("EgoStat.", trm[[1]],sep="")),egor=egor)
+    init.call <- c(init.call,as.list(trm[-1]))
+  }else{
+    init.call <- list(as.name(paste("EgoStat.", trm,sep="")),egor=egor)
+  }
+  eval(as.call(init.call))
+}
 
 #' @export
 #' @rdname ergm.ego-terms
