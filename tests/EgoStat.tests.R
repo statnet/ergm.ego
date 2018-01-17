@@ -9,6 +9,7 @@
 #######################################################################
 library(ergm.ego)
 library(ergm)
+library(statnet.common)
 
 n <- 100
 e <- 150
@@ -57,10 +58,67 @@ f <- (
     gwdegree(fix=FALSE) + gwdegree(0.5, fix=TRUE)
 )
 
-f.y <- ergm.update.formula(f, y~.)
+f.y <- nonsimp.update.formula(f, y~.)
 environment(f.y) <- globalenv()
-f.y.e <- ergm.update.formula(f, y.e~.)
+f.y.e <- nonsimp.update.formula(f, y.e~.)
 environment(f.y.e) <- globalenv()
 
 stopifnot(all.equal(as.vector(summary(f.y)),as.vector(summary(f.y.e))))
-        
+
+
+f <- (
+  ~ edges +
+    nodecov("a") +
+    
+    nodefactor("a", 0) + nodefactor("a", 1) + nodefactor("a", 2) +
+    
+    nodematch("a") + nodematch("a", TRUE) + nodematch("a", TRUE, 2) +
+    
+    absdiff("a") + absdiff("a", 2) +
+    
+    degree(0) + degree(3) + degree(0:6) +
+    degree(0, by="a") + degree(3, by="a") + degree(0:6, by="a") +
+    
+    degrange(0) + degrange(3) + degrange(0:6) +
+    degrange(0) + degrange(3) + degrange(0:6) +
+    degrange(0, by="a") + degrange(3, by="a") + degrange(0:6, by="a") +
+    
+    degrange(0,2) + degrange(3,5) + degrange(0:6,7) +
+    degrange(0,2) + degrange(3,5) + degrange(0:6,7) +
+    degrange(0,2, by="a") + degrange(3,5, by="a") + degrange(0:6,7, by="a") +
+    
+    concurrent + concurrent("a") +
+    
+    concurrentties + concurrentties("a") +
+    
+    degreepopularity +
+    
+    nodemix("a") + nodemix("a", base=1) + nodemix("a", base=2) + nodemix("a", base=2:3) +
+    
+    transitiveties + esp(0:6) + gwesp(fix=FALSE) + gwesp(0.5, fix=TRUE) +
+    
+    gwdegree(fix=FALSE) + gwdegree(0.5, fix=TRUE)
+)
+
+replicate(30,{
+y.em <- y.e
+y.em$.alts <- lapply(y.em$.alts, function(a){
+  N <- nrow(a)
+  if(N){
+    am <- a
+    am[-sample.int(N,1),] <- NA
+    am$.altID <- a$.altID
+    am
+  }else a
+})
+f.y.em <- nonsimp.update.formula(f, y.em~., from.new="y.em")
+summary(f.y.em)
+})->s
+
+f.y <- nonsimp.update.formula(f, y~., from.new="y")
+d <- sweep(s, 1, summary(f.y))
+novar <- apply(d, 1, sd) < sqrt(.Machine$double.eps)
+if(any(abs(d[novar,]) > sqrt(.Machine$double.eps))) stop("Novarying missing alter data estimate is off.")
+pvals <- sapply(apply(d[!novar,], 1, t.test), "[[", "p.value")
+pval <- pchisq(-2*sum(log(pvals)), 2*sum(!novar), lower.tail=FALSE)
+if(pval<0.0001) stop("Varying missing alter data estimate is off.")

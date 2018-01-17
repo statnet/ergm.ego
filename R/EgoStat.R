@@ -13,21 +13,21 @@
 
 #' @title Helper functions of EgoStats. Some may be documented and exported in the future.
 #' 
-#' @name EgoStats-internal
+#' @name EgoStat-internal
 #' @keywords internal
 #'
 #' @param egor an [egor()] object.
 #'
 NULL
 
-#' @describeIn EgoStats-internal
+#' @describeIn EgoStat-internal
 #'
 #' Return a [`tibble`] containing all alters.
 .allAlters <- function(egor){
   do.call(rbind, egor$.alts)
 }
 
-#' @describeIn EgoStats-internal
+#' @describeIn EgoStat-internal
 #'
 #' Construct and throw an error message about ego or alter attributes being missing.
 .attrErr <- function(term, attrname, req = c("one","both")){
@@ -36,7 +36,7 @@ NULL
   else stop("In EgoStat ",sQuote(term)," attribute ", sQuote(attrname), " must be observed for both egos and alters.", call.=FALSE)
 }
 
-#' @describeIn EgoStats-internal
+#' @describeIn EgoStat-internal
 #'
 #' Convert a factor to its "ordinary" vector representation.
 #' @param x a vector.
@@ -46,21 +46,36 @@ NULL
   }else x
 }
 
-#' @describeIn EgoStats-internal
+#' @describeIn EgoStat-internal
 #'
 #' As [sum()], but "extrapolating" the `NA`s.
 .exsum <- function(x){
-  sum(x, na.rm=TRUE)/mean(!is.na(x))
+  if(length(x)) sum(x, na.rm=TRUE)/mean(!is.na(x)) else 0
 }
 
-#' @describeIn EgoStats-internal
+#' @describeIn EgoStat-internal
 #'
 #' As [tabulate()], but "extrapolating" the `NA`s.
 .extabulate <- function(x, nbins = max(1, bin, na.rm = TRUE)){
-  tabulate(x, nbins)/mean(!is.na(x))
+  if(length(x)) tabulate(x, nbins)/mean(!is.na(x)) else rep(0, nbins)
 }
 
-#' @describeIn EgoStats-internal
+#' @describeIn EgoStat-internal
+#'
+#' As [base::match()], but `NA`s are passed through.
+.matchNA <- function(x, table, nomatch = NA_integer_, incomparables = NULL){
+  as.integer(ifelse(is.na(x), NA, match(x, table, nomatch, incomparables)))
+}
+
+#' @describeIn EgoStat-internal
+#'
+#' As [paste()], but `NA`s are passed through rather than typeset.
+.pasteNA <- function(..., sep = " ", collapse = NULL){
+  ifelse(apply(do.call(cbind,lapply(list(...), is.na)),1,any), NA, paste(..., sep=sep, collapse=collapse))
+}
+
+
+#' @describeIn EgoStat-internal
 #'
 #' Pass through the input if it does not contain mising values; otherwise stop with given error. Arguments after the first are passed through to [stop()].
 #' 
@@ -219,7 +234,7 @@ EgoStat.nodefactor <- function(egor, attrname, base=1){
 
   h <- function(e)
   (tabulate(match(e[[attrname]],l,0), nbins=nl)*nrow(e$.alts)
-    + .extabulate(match(e$.alts[[attrname]],l,0), nbins=nl))/nattr
+    + .extabulate(.matchNA(e$.alts[[attrname]],l,0), nbins=nl))/nattr
   
   .eval.h(egor, h, paste("nodefactor",attrname,l,sep="."))
 }
@@ -264,7 +279,7 @@ EgoStat.nodemix <- function(egor, attrname, base=NULL){
   if (length(base) && !identical(as.integer(base),as.integer(0))) l <- l[-base]
   nl <- length(l)
   h <- function(e)
-    .extabulate(match(paste(pmin(e[[attrname]],e$.alts[[attrname]]),
+    .extabulate(.matchNA(.pasteNA(pmin(e[[attrname]],e$.alts[[attrname]]),
                          pmax(e[[attrname]],e$.alts[[attrname]]),
                          sep="."),l,0), nbins=nl)/2
   .eval.h(egor, h,
@@ -308,7 +323,7 @@ EgoStat.degree <- function(egor, d, by=NULL, homophily=FALSE){
     h <- function(e) as.numeric(nrow(e$.alts)==degs & e[[by]]==bys)
   }else if(homophily){
     cn <-  paste0("deg",d,".homophily.",by)
-    h <- function(e) as.numeric(.exsum(e[[by]]==e$.alts[[by]])==d)
+    h <- function(e) as.numeric(sum(.checkNA(e[[by]]==e$.alts[[by]]), "Degree distribution within group by attribute cannot be estimated when alter attributes are missing at this time.")==d)
   }else{
     cn <-  paste0("degree",d)
     h <- function(e) as.numeric(nrow(e$.alts)==d)
@@ -353,7 +368,7 @@ EgoStat.degrange <- function(egor, from=NULL, to=Inf, by=NULL, homophily=FALSE){
     cn <- ifelse(to>=.Machine$integer.max,
                  paste0("deg", from,  "+",     ".homophily.", by),
                  paste0("deg", from, "to", to, ".homophily.", by))
-    h <- function(e) as.numeric(.exsum(e[[by]]==e$.alts[[by]])>=from & .exsum(e[[by]]==e$.alts[[by]])<to)
+    h <- function(e) as.numeric(sum(.checkNA(e[[by]]==e$.alts[[by]]), "Degree distribution within group by attribute cannot be estimated when alter attributes are missing at this time.")>=from & sum(.checkNA(e[[by]]==e$.alts[[by]]), "Degree distribution within group by attribute cannot be estimated when alter attributes are missing at this time.")<to)
   }else{
     cn <- ifelse(to>=.Machine$integer.max,
                  paste0("deg", from,  "+"),
@@ -432,7 +447,7 @@ EgoStat.transitiveties <- function(egor, attrname=NULL){
     egor <- subset(egor,
                    function(r, attrname)
                      .checkNA(r[[attrname]]==r$.alts[[attrname]][r$.aaties$.srcRow] &
-                     r[[attrname]]==r$.alts[[attrname]][r$.aaties$.tgtRow]),
+                     r[[attrname]]==r$.alts[[attrname]][r$.aaties$.tgtRow], "Transitive ties count with grouping by attribute cannot be estimated when alter attributes are missing at this time."),
                    attrname=attrname,
                    unit="aatie")
   }
