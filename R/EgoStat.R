@@ -11,22 +11,62 @@
 # h(e[i]) values, with egos in rows and elements of h(e[i]) in
 # columns.
 
+#' @title Helper functions of EgoStats. Some may be documented and exported in the future.
+#' 
+#' @name EgoStats-internal
+#' @keywords internal
+#'
+#' @param egor an [egor()] object.
+#'
+NULL
 
+#' @describeIn EgoStats-internal
+#'
+#' Return a [`tibble`] containing all alters.
 .allAlters <- function(egor){
   do.call(rbind, egor$.alts)
 }
 
+#' @describeIn EgoStats-internal
+#'
+#' Construct and throw an error message about ego or alter attributes being missing.
 .attrErr <- function(term, attrname, req = c("one","both")){
   req <- match.arg(req)
   if(req=="one") stop("In EgoStat ",sQuote(term)," attribute ", sQuote(attrname), " is observed for neither egos nor alters.", call.=FALSE)
   else stop("In EgoStat ",sQuote(term)," attribute ", sQuote(attrname), " must be observed for both egos and alters.", call.=FALSE)
 }
 
+#' @describeIn EgoStats-internal
+#'
+#' Convert a factor to its "ordinary" vector representation.
+#' @param x a vector.
 .unfactor <- function(x){
   if(is.factor(x)){
     levels(x)[as.integer(x)]
   }else x
 }
+
+#' @describeIn EgoStats-internal
+#'
+#' As [sum()], but "extrapolating" the `NA`s.
+.exsum <- function(x){
+  sum(x, na.rm=TRUE)/mean(!is.na(x))
+}
+
+#' @describeIn EgoStats-internal
+#'
+#' As [tabulate()], but "extrapolating" the `NA`s.
+.extabulate <- function(x, nbins = max(1, bin, na.rm = TRUE)){
+  tabulate(x, nbins)/mean(!is.na(x))
+}
+
+#' @describeIn EgoStats-internal
+#'
+#' Pass through the input if it does not contain mising values; otherwise stop with given error. Arguments after the first are passed through to [stop()].
+#' 
+#' @param ... Additional arguments to subroutines.
+#' 
+.checkNA <- function(x, ...) if(any(is.na(x))) stop(...) else x
 
 .preproc_factor <- function(egor, attrname){
   if(!is.null(attrname)){
@@ -34,9 +74,11 @@
       # If there are multiple attributes, concatenate their names with a
       # dot and concatenate their values with a dot.
       attrnamename <- paste(attrname, collapse=".")
-      egor[[attrnamename]] <- .unfactor(do.call(paste,c(as.list(as.tibble(egor)[,attrname]),list(sep="."))))
+      NAlist <- apply(is.na(as.tibble(egor)[,attrname]), 1, any)
+      egor[[attrnamename]] <- ifelse(NAlist, NA, .unfactor(do.call(paste,c(as.list(as.tibble(egor)[,attrname]),list(sep=".")))))
       egor$.alts <- lapply(egor$.alts, function(a){
-        a[[attrnamename]] <- .unfactor(do.call(paste,c(as.list(a[,attrname]),list(sep="."))))
+        NAlist <- apply(is.na(a[,attrname]), 1, any)
+        a[[attrnamename]] <- ifelse(NAlist, NA, .unfactor(do.call(paste,c(as.list(a[,attrname]),list(sep=".")))))
         a
       })
       attrname <- attrnamename
@@ -157,7 +199,7 @@ EgoStat.nodecov <- function(egor, attrname){
 
   if(nattr==0) .attrErr("nodecov", attrname, "one")
   
-  h <- function(e) (sum(e[[attrname]])*nrow(e$.alts) + sum(e$.alts[[attrname]]))/nattr
+  h <- function(e) (sum(e[[attrname]])*nrow(e$.alts) + .exsum(e$.alts[[attrname]]))/nattr
   .eval.h(egor, h, paste("nodecov",attrname,sep="."))
 }
 
@@ -177,7 +219,7 @@ EgoStat.nodefactor <- function(egor, attrname, base=1){
 
   h <- function(e)
   (tabulate(match(e[[attrname]],l,0), nbins=nl)*nrow(e$.alts)
-    + tabulate(match(e$.alts[[attrname]],l,0), nbins=nl))/nattr
+    + .extabulate(match(e$.alts[[attrname]],l,0), nbins=nl))/nattr
   
   .eval.h(egor, h, paste("nodefactor",attrname,l,sep="."))
 }
@@ -198,7 +240,7 @@ EgoStat.nodematch <- function(egor, attrname, diff=FALSE, keep=NULL){
 
   combine <- if(diff) identity else sum
   h <- function(e)
-    combine(tabulate(match(e[[attrname]],l,0), nbins=nl)*sum(e[[attrname]]==e$.alts[[attrname]])/2)
+    combine(tabulate(match(e[[attrname]],l,0), nbins=nl)*.exsum(e[[attrname]]==e$.alts[[attrname]])/2)
 
   .eval.h(egor, h,
           if(diff) paste("nodematch",attrname,l,sep=".")
@@ -222,7 +264,7 @@ EgoStat.nodemix <- function(egor, attrname, base=NULL){
   if (length(base) && !identical(as.integer(base),as.integer(0))) l <- l[-base]
   nl <- length(l)
   h <- function(e)
-    tabulate(match(paste(pmin(e[[attrname]],e$.alts[[attrname]]),
+    .extabulate(match(paste(pmin(e[[attrname]],e$.alts[[attrname]]),
                          pmax(e[[attrname]],e$.alts[[attrname]]),
                          sep="."),l,0), nbins=nl)/2
   .eval.h(egor, h,
@@ -236,7 +278,7 @@ EgoStat.absdiff <- function(egor, attrname, pow=1){
   if(nattr==0) .attrErr("absdiff", attrname, "both")
   
   h <- function(e)
-    sum(abs(e[[attrname]]-e$.alts[[attrname]])^pow)/2
+    .exsum(abs(e[[attrname]]-e$.alts[[attrname]])^pow)/2
 
   .eval.h(egor, h,
           if(pow==1) paste("absdiff",attrname,sep=".")
@@ -266,7 +308,7 @@ EgoStat.degree <- function(egor, d, by=NULL, homophily=FALSE){
     h <- function(e) as.numeric(nrow(e$.alts)==degs & e[[by]]==bys)
   }else if(homophily){
     cn <-  paste0("deg",d,".homophily.",by)
-    h <- function(e) as.numeric(sum(e[[by]]==e$.alts[[by]])==d)
+    h <- function(e) as.numeric(.exsum(e[[by]]==e$.alts[[by]])==d)
   }else{
     cn <-  paste0("degree",d)
     h <- function(e) as.numeric(nrow(e$.alts)==d)
@@ -311,7 +353,7 @@ EgoStat.degrange <- function(egor, from=NULL, to=Inf, by=NULL, homophily=FALSE){
     cn <- ifelse(to>=.Machine$integer.max,
                  paste0("deg", from,  "+",     ".homophily.", by),
                  paste0("deg", from, "to", to, ".homophily.", by))
-    h <- function(e) as.numeric(sum(e[[by]]==e$.alts[[by]])>=from & sum(e[[by]]==e$.alts[[by]])<to)
+    h <- function(e) as.numeric(.exsum(e[[by]]==e$.alts[[by]])>=from & .exsum(e[[by]]==e$.alts[[by]])<to)
   }else{
     cn <- ifelse(to>=.Machine$integer.max,
                  paste0("deg", from,  "+"),
@@ -389,8 +431,8 @@ EgoStat.transitiveties <- function(egor, attrname=NULL){
     if(nattr!=2) .attrErr("transitiveties and cyclicalties", attrname, "both")
     egor <- subset(egor,
                    function(r, attrname)
-                     r[[attrname]]==r$.alts[[attrname]][r$.aaties$.srcRow] &
-                     r[[attrname]]==r$.alts[[attrname]][r$.aaties$.tgtRow],
+                     .checkNA(r[[attrname]]==r$.alts[[attrname]][r$.aaties$.srcRow] &
+                     r[[attrname]]==r$.alts[[attrname]][r$.aaties$.tgtRow]),
                    attrname=attrname,
                    unit="aatie")
   }
