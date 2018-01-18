@@ -20,7 +20,7 @@
 
 .exsum(x)
 
-.extabulate(x, nbins = max(1, bin, na.rm = TRUE))
+.extabulate(bin, nbins = max(1, bin, na.rm = TRUE))
 
 .matchNA(x, table, nomatch = NA_integer_, incomparables = NULL)
 
@@ -31,7 +31,7 @@
 \arguments{
 \item{egor}{an \code{\link[=egor]{egor()}} object.}
 
-\item{x}{a vector.}
+\item{x, bin}{a vector.}
 
 \item{...}{Additional arguments to subroutines.}
 }

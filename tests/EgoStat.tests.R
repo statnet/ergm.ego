@@ -58,10 +58,8 @@ f <- (
     gwdegree(fix=FALSE) + gwdegree(0.5, fix=TRUE)
 )
 
-f.y <- nonsimp.update.formula(f, y~.)
-environment(f.y) <- globalenv()
-f.y.e <- nonsimp.update.formula(f, y.e~.)
-environment(f.y.e) <- globalenv()
+f.y <- nonsimp.update.formula(f, y~., from.new="y")
+f.y.e <- nonsimp.update.formula(f, y.e~., from.new="y.e")
 
 stopifnot(all.equal(as.vector(summary(f.y)),as.vector(summary(f.y.e))))
 

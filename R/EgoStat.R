@@ -39,7 +39,7 @@ NULL
 #' @describeIn EgoStat-internal
 #'
 #' Convert a factor to its "ordinary" vector representation.
-#' @param x a vector.
+#' @param x,bin a vector.
 .unfactor <- function(x){
   if(is.factor(x)){
     levels(x)[as.integer(x)]
@@ -56,8 +56,8 @@ NULL
 #' @describeIn EgoStat-internal
 #'
 #' As [tabulate()], but "extrapolating" the `NA`s.
-.extabulate <- function(x, nbins = max(1, bin, na.rm = TRUE)){
-  if(length(x)) tabulate(x, nbins)/mean(!is.na(x)) else rep(0, nbins)
+.extabulate <- function(bin, nbins = max(1, bin, na.rm = TRUE)){
+  if(length(bin)) tabulate(bin, nbins)/mean(!is.na(bin)) else rep(0, nbins)
 }
 
 #' @describeIn EgoStat-internal
@@ -323,7 +323,7 @@ EgoStat.degree <- function(egor, d, by=NULL, homophily=FALSE){
     h <- function(e) as.numeric(nrow(e$.alts)==degs & e[[by]]==bys)
   }else if(homophily){
     cn <-  paste0("deg",d,".homophily.",by)
-    h <- function(e) as.numeric(sum(.checkNA(e[[by]]==e$.alts[[by]]), "Degree distribution within group by attribute cannot be estimated when alter attributes are missing at this time.")==d)
+    h <- function(e) as.numeric(sum(.checkNA(e[[by]]==e$.alts[[by]], "Degree distribution within group by attribute cannot be estimated when alter attributes are missing at this time."))==d)
   }else{
     cn <-  paste0("degree",d)
     h <- function(e) as.numeric(nrow(e$.alts)==d)
@@ -368,7 +368,7 @@ EgoStat.degrange <- function(egor, from=NULL, to=Inf, by=NULL, homophily=FALSE){
     cn <- ifelse(to>=.Machine$integer.max,
                  paste0("deg", from,  "+",     ".homophily.", by),
                  paste0("deg", from, "to", to, ".homophily.", by))
-    h <- function(e) as.numeric(sum(.checkNA(e[[by]]==e$.alts[[by]]), "Degree distribution within group by attribute cannot be estimated when alter attributes are missing at this time.")>=from & sum(.checkNA(e[[by]]==e$.alts[[by]]), "Degree distribution within group by attribute cannot be estimated when alter attributes are missing at this time.")<to)
+    h <- function(e) as.numeric(sum(.checkNA(e[[by]]==e$.alts[[by]], "Degree distribution within group by attribute cannot be estimated when alter attributes are missing at this time."))>=from & sum(.checkNA(e[[by]]==e$.alts[[by]], "Degree distribution within group by attribute cannot be estimated when alter attributes are missing at this time."))<to)
   }else{
     cn <- ifelse(to>=.Machine$integer.max,
                  paste0("deg", from,  "+"),
