@@ -48,6 +48,12 @@ degreedist.egodata <- function(object, freq = FALSE, prob = !freq,
   if(!is.null(by)) ylabel <- paste(ylabel, "(within attr level)")
 
   egoIDcol <- egodata$egoIDcol
+  
+  egodata$egos[[egoIDcol]] <- factor(egodata$egos[[egoIDcol]])
+  egodata$alters[[egoIDcol]] <- factor(egodata$alters[[egoIDcol]], levels=levels(egodata$egos[[egoIDcol]])) 
+  egodata$egos[[egoIDcol]] <- as.integer(egodata$egos[[egoIDcol]])
+  egodata$alters[[egoIDcol]] <- as.integer(egodata$alters[[egoIDcol]])
+  
   degtable <- rep(0, nrow(egodata$egos))
   degtable[as.numeric(names(table(egodata$alters[egoIDcol])))] <- table(egodata$alters[egoIDcol])
   degtable.wt <- degtable * egodata$egoWt
