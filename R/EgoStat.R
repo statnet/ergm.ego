@@ -113,7 +113,7 @@ EgoStat.nodecov <- function(egodata, attrname){
 
 
 #' @export
-EgoStat.nodefactor <- function(egodata, attrname, base=1){
+EgoStat.nodefactor <- function(egodata, attrname, base=1, levels=NULL){
   egos <- egodata$egos
   alters <- egodata$alters
   egoIDcol <- egodata$egoIDcol
@@ -127,7 +127,7 @@ EgoStat.nodefactor <- function(egodata, attrname, base=1){
     attrname <- attrnamename
   }
   
-  levs <- sort(unique(c(egos[[attrname]],alters[[attrname]])))
+  levs <- NVL(levels, sort(unique(c(egos[[attrname]],alters[[attrname]]))))
   egos[[attrname]] <- match(egos[[attrname]], levs, 0)
   alters[[attrname]] <- match(alters[[attrname]], levs, 0)
   ties<-merge(egos[c(egoIDcol,attrname)],alters[c(egoIDcol,attrname)],by=egoIDcol,suffixes=c(".ego",".alter"))
@@ -248,7 +248,7 @@ EgoStat.absdiff <- function(egodata, attrname, pow=1){
 }
 
 #' @export
-EgoStat.degree <- function(egodata, d, by=NULL, homophily=FALSE){
+EgoStat.degree <- function(egodata, d, by=NULL, homophily=FALSE, levels=NULL){
   ## if(any(d==0)) warning("degree(0) (isolate) count statistic depends strongly on the specified population network size.")
   
   egos <- egodata$egos
@@ -256,7 +256,7 @@ EgoStat.degree <- function(egodata, d, by=NULL, homophily=FALSE){
   egoIDcol <- egodata$egoIDcol
   
   if(!is.null(by)){
-    levs <- sort(unique(c(egos[[by]],alters[[by]])))
+    levs <- NVL(levels, sort(unique(c(egos[[by]],alters[[by]]))))
   }
   
   ties<-merge(egos[c(egoIDcol,by)],alters[c(egoIDcol,by)],by=egoIDcol,suffixes=c(".ego",".alter"))
@@ -287,7 +287,7 @@ EgoStat.degree <- function(egodata, d, by=NULL, homophily=FALSE){
 }
 
 #' @export
-EgoStat.degrange <- function(egodata, from=NULL, to=Inf, by=NULL, homophily=FALSE){
+EgoStat.degrange <- function(egodata, from=NULL, to=Inf, by=NULL, homophily=FALSE, levels=NULL){
   ## if(any(from==0)) warning("degrange(0,...) (isolate) count depends strongly on the specified population network size.")
   
   egos <- egodata$egos
@@ -302,7 +302,7 @@ EgoStat.degrange <- function(egodata, from=NULL, to=Inf, by=NULL, homophily=FALS
   else if(any(from>=to)) stop("Term degrange must have from<to.")
 
   if(!is.null(by)){
-    levs <- sort(unique(c(egos[[by]],alters[[by]])))
+    levs <- NVL(levels, sort(unique(c(egos[[by]],alters[[by]]))))
   }
 
   ties<-merge(egos[c(egoIDcol,by)],alters[c(egoIDcol,by)],by=egoIDcol,suffixes=c(".ego",".alter"))
@@ -346,13 +346,13 @@ EgoStat.degrange <- function(egodata, from=NULL, to=Inf, by=NULL, homophily=FALS
 }
 
 #' @export
-EgoStat.concurrent <- function(egodata, by=NULL){
+EgoStat.concurrent <- function(egodata, by=NULL, levels=NULL){
   egos <- egodata$egos
   alters <- egodata$alters
   egoIDcol <- egodata$egoIDcol
 
   if(!is.null(by)){
-    levs <- sort(unique(c(egos[[by]],alters[[by]])))
+    levs <- NVL(levels, sort(unique(c(egos[[by]],alters[[by]]))))
   }
 
   ties<-merge(egos[c(egoIDcol,by)],alters[c(egoIDcol,by)],by=egoIDcol,suffixes=c(".ego",".alter"))
@@ -382,13 +382,13 @@ EgoStat.concurrent <- function(egodata, by=NULL){
 }
 
 #' @export
-EgoStat.concurrentties <- function(egodata, by=NULL){
+EgoStat.concurrentties <- function(egodata, by=NULL, levels=NULL){
   egos <- egodata$egos
   alters <- egodata$alters
   egoIDcol <- egodata$egoIDcol
 
   if(!is.null(by)){
-    levs <- sort(unique(c(egos[[by]],alters[[by]])))
+    levs <- NVL(levels, sort(unique(c(egos[[by]],alters[[by]]))))
   }
 
   ties<-merge(egos[c(egoIDcol,by)],alters[c(egoIDcol,by)],by=egoIDcol,suffixes=c(".ego",".alter"))
