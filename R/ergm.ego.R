@@ -130,9 +130,14 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.
               data=egodata$egoWt,
               ppop=tabulate(popnw %v% "ego.ind", nbins=nrow(egodata))
               )
+
+  deoffset <- function(f)
+    filter_rhs.formula(f, function(x)
+    (if(is.call(x)) x[[1]] else x)!="offset")
   
   # Get the sample h values.
-  stats <- try(summary(remove.offset.formula(formula), individual=TRUE))
+  stats <- try(summary(deoffset(formula),
+    individual=TRUE))
   if(!inherits(stats,"try-error")){
     # h is just a matrix, so this will do the sensible thing.
     tmp <- na.action(cbind(w,stats))
@@ -174,20 +179,20 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.
       warning("Non-scaling statistic detected when trying to fit a model: network-size invariant parametrization probably does not exist so pseudopopulation size should equal the population size.")
 
     n <- nrow(egodata)
-    m <- summary(remove.offset.formula(formula), basis=egodata, individual=FALSE, scaleto=ppopsize)
+    m <- summary(deoffset(formula), basis=egodata, individual=FALSE, scaleto=ppopsize)
       
     if(stats.est=="bootstrap"){
       m.b <- t(replicate(control$boot.R,{
                            i <- sample.int(length(w),replace=TRUE)
                            e <- egodata[i,]
-                           summary(remove.offset.formula(formula), basis=e, individual=FALSE, scaleto=ppopsize)
+                           summary(deoffset(formula), basis=e, individual=FALSE, scaleto=ppopsize)
                          }))
       m <- m - (colMeans(m.b)-m)
       
     }else if(stats.est=="jackknife"){
       m.j <- t(sapply(seq_len(n), function(i){
                         e <- egodata[-i,]
-                        summary(remove.offset.formula(formula), basis=e, individual=FALSE, scaleto=ppopsize)
+                        summary(deoffset(formula), basis=e, individual=FALSE, scaleto=ppopsize)
                       }))
       m <- n*m - (n-1)*colMeans(m.j)
     }
@@ -199,7 +204,7 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.
                 )
   }
   
-  ergm.formula <- ergm.update.formula(formula,popnw~offset(netsize.adj)+.,from.new="popnw")
+  ergm.formula <- nonsimp_update.formula(formula,popnw~offset(netsize.adj)+.,from.new="popnw")
   ergm.offset.coef <- c(-log(ppopsize/popsize),offset.coef)
   out <- list(v=v, m=m, formula=formula, ergm.formula=ergm.formula, offset.coef=offset.coef, ergm.offset.coef=ergm.offset.coef, egodata=egodata, ppopsize=ppopsize, popsize=popsize)
   
@@ -216,13 +221,13 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.
 
     coef <- coef(ergm.fit)
 
-    oi <- offset.info.formula(ergm.formula)
+    oi <- ergm.fit$etamap$offsettheta
 
-    DtDe <- -ergm.fit$hessian[!oi$theta,!oi$theta,drop=FALSE]
+    DtDe <- -ergm.fit$hessian[!oi,!oi,drop=FALSE]
 
     vcov <- matrix(NA, length(coef), length(coef))
   
-    vcov[!oi$theta,!oi$theta] <- solve(DtDe)%*%v%*%solve(DtDe)
+    vcov[!oi,!oi] <- solve(DtDe)%*%v%*%solve(DtDe)
     
     rownames(vcov) <- colnames(vcov) <- names(coef)
 
