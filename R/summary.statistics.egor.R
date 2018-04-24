@@ -74,7 +74,7 @@ summary_formula.egor <- function(object,..., basis=NULL, individual=FALSE, scale
   nonscaling.pos <- c(0)
   orders <- c()
   
-  for(trm in term.list.formula(object[[length(object)]])){
+  for(trm in list_rhs.formula(object)){
     if(is.call(trm)){
       init.call <- list(as.name(paste("EgoStat.", trm[[1]],sep="")),egor=egor)
       init.call <- c(init.call,as.list(trm[-1]))

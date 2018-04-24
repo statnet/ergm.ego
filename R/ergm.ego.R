@@ -144,9 +144,13 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
               ppop=tabulate(popnw %v% "ego.ind", nbins=nrow(egor))
               )
 
-  # Try to get the sample h values.
-  if(stats.est != "survey") stats <- try(summary(remove.offset.formula(formula), individual=TRUE))
+  deoffset <- function(f)
+    filter_rhs.formula(f, function(x)
+    (if(is.call(x)) x[[1]] else x)!="offset")
   
+  # Try to get the sample h values.
+  if(stats.est != "survey") stats <- try(summary(deoffset(formula), individual=TRUE))
+
   if(stats.est!="survey" && !inherits(stats,"try-error")){
     ord <- attr(stats, "order")  
     adj.update <- call("~",as.name("."),call("+", call("offset", call("netsize.adj", edges = +(1%in%ord), mutual = -(2%in%ord), transitiveties = -1/3*(3%in%ord))), as.name(".")))
@@ -185,7 +189,7 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
                 asymptotic = .asymptotic.var(stats, w)/length(w)
                 )
   }else{
-    m <- summary(remove.offset.formula(formula), basis=egor, na.rm=na.rm, individual=FALSE, scaleto=ppopsize)
+    m <- summary(deoffset(formula), basis=egor, na.rm=na.rm, individual=FALSE, scaleto=ppopsize)
     ord <- attr(m, "order")  
     adj.update <- call("~",as.name("."),call("+", call("offset", call("netsize.adj", edges = +(1%in%ord), mutual = -(2%in%ord), transitiveties = -1/3*(3%in%ord))), as.name(".")))
 
@@ -203,14 +207,14 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
       m.b <- t(replicate(control$boot.R,{
                            i <- sample.int(length(w),replace=TRUE)
                            e <- egor[i,]
-                           summary(remove.offset.formula(formula), basis=e, individual=FALSE, scaleto=ppopsize)
+                           summary(deoffset(formula), basis=e, individual=FALSE, scaleto=ppopsize)
                          }))
       m <- m - (colMeans(m.b)-m)
       
     }else if(stats.est=="jackknife"){
       m.j <- t(sapply(seq_len(n), function(i){
                         e <- egor[-i,]
-                        summary(remove.offset.formula(formula), basis=e, individual=FALSE, scaleto=ppopsize)
+                        summary(deoffset(formula), basis=e, individual=FALSE, scaleto=ppopsize)
                       }))
       m <- n*m - (n-1)*colMeans(m.j)
     }
@@ -223,8 +227,8 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
                 )
   }
 
-  ergm.formula <- ergm.update.formula(formula,popnw~.,from.new="popnw")
-  ergm.formula <- ergm.update.formula(ergm.formula,adj.update)
+  ergm.formula <- nonsimp_update.formula(formula,popnw~.,from.new="popnw")
+  ergm.formula <- nonsimp_update.formula(ergm.formula,adj.update)
 
   ergm.offset.coef <- c(-log(ppopsize/popsize),offset.coef)
 
@@ -252,13 +256,13 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
 
     coef <- coef(ergm.fit)
 
-    oi <- offset.info.formula(ergm.formula)
+    oi <- ergm.fit$etamap$offsettheta
 
-    DtDe <- -ergm.fit$hessian[!oi$theta,!oi$theta,drop=FALSE]
+    DtDe <- -ergm.fit$hessian[!oi,!oi,drop=FALSE]
 
     vcov <- matrix(NA, length(coef), length(coef))
   
-    vcov[!oi$theta,!oi$theta] <- solve(DtDe)%*%v%*%solve(DtDe)
+    vcov[!oi,!oi] <- solve(DtDe)%*%v%*%solve(DtDe)
     
     rownames(vcov) <- colnames(vcov) <- names(coef)
 

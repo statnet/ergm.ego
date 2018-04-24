@@ -182,7 +182,7 @@ NULL
 #' }
 #' }
 #'
-#' @param egor,attrname,base,diff,keep,pow,d,by,homophily,from,to,decay,fixed,cutoff,alpha,emptyval,nw,arglist,... arguments to terms. See \code{\link[ergm]{ergm-terms}}.
+#' @param egor,attrname,base,diff,keep,pow,d,by,homophily,from,to,decay,fixed,cutoff,alpha,emptyval,nw,arglist,levels,... arguments to terms. See \code{\link[ergm]{ergm-terms}}.
 #' @import zeallot
 #' @seealso \code{\link[ergm]{ergm-terms}}
 #' @keywords models
@@ -220,13 +220,13 @@ EgoStat.nodecov <- function(egor, attrname){
 
 #' @export
 #' @rdname ergm.ego-terms
-EgoStat.nodefactor <- function(egor, attrname, base=1){
+EgoStat.nodefactor <- function(egor, attrname, base=1, levels=NULL){
   c(egor, attrname) %<-% .preproc_factor(egor, attrname)
   
   nattr <- (attrname %in% names(egor)) + (attrname %in% names(egor$.alts[[1]]))
   if(nattr==0) .attrErr("nodefactor", attrname, "one")
   
-  l <- sort(unique(c(egor[[attrname]],.allAlters(egor)[[attrname]])))
+  l <- NVL(levels, sort(unique(c(egor[[attrname]],.allAlters(egor)[[attrname]]))))
   # Note that all "base" levels will be matched to 0 and therefore
   # excluded from the tabulation below.
   if(length(base)!=0 && !identical(as.integer(base),as.integer(0))) l <- l[-base]
@@ -302,7 +302,7 @@ EgoStat.absdiff <- function(egor, attrname, pow=1){
 
 #' @export
 #' @rdname ergm.ego-terms
-EgoStat.degree <- function(egor, d, by=NULL, homophily=FALSE){
+EgoStat.degree <- function(egor, d, by=NULL, homophily=FALSE, levels=NULL){
   ## if(any(d==0)) warning("degree(0) (isolate) count statistic depends strongly on the specified population network size.")
   c(egor, by) %<-% .preproc_factor(egor, by)
 
@@ -312,7 +312,7 @@ EgoStat.degree <- function(egor, d, by=NULL, homophily=FALSE){
   if(homophily && !alt) stop("For term ",sQuote("degree")," attribute ", sQuote(by), " must be observed on both egos and alters if homophily=TRUE.", call.=FALSE)
   
   if(!is.null(by)){
-    l <- sort(unique(c(egor[[by]],.allAlters(egor)[[by]])))
+    l <- NVL(levels, sort(unique(c(egor[[by]],.allAlters(egor)[[by]]))))
     nl <- length(l)
   }
 
@@ -334,7 +334,7 @@ EgoStat.degree <- function(egor, d, by=NULL, homophily=FALSE){
 
 #' @export
 #' @rdname ergm.ego-terms
-EgoStat.degrange <- function(egor, from=NULL, to=Inf, by=NULL, homophily=FALSE){
+EgoStat.degrange <- function(egor, from=NULL, to=Inf, by=NULL, homophily=FALSE, levels=NULL){
   ## if(any(from==0)) warning("degrange(0,...) (isolate) count depends strongly on the specified population network size.")
   c(egor, by) %<-% .preproc_factor(egor, by)
   
@@ -351,7 +351,7 @@ EgoStat.degrange <- function(egor, from=NULL, to=Inf, by=NULL, homophily=FALSE){
   if(homophily && !alt) stop("For term ",sQuote("degree")," attribute ", sQuote(by), " must be observed on both egos and alters if homophily=TRUE.", call.=FALSE)
   
   if(!is.null(by)){
-    l <- sort(unique(c(egor[[by]],.allAlters(egor)[[by]])))
+    l <- NVL(levels, sort(unique(c(egor[[by]],.allAlters(egor)[[by]]))))
     nl <- length(l)
   }
 
@@ -381,13 +381,13 @@ EgoStat.degrange <- function(egor, from=NULL, to=Inf, by=NULL, homophily=FALSE){
 
 #' @export
 #' @rdname ergm.ego-terms
-EgoStat.concurrent <- function(egor, by=NULL){
+EgoStat.concurrent <- function(egor, by=NULL, levels=NULL){
   c(egor, by) %<-% .preproc_factor(egor, by)
 
   if(!is.null(by) && !by %in% names(egor)) stop("For term ",sQuote("concurrent")," attribute ", sQuote(by), " must be observed on egos.", call.=FALSE)
   
   if(!is.null(by)){
-    l <- sort(unique(c(egor[[by]],.allAlters(egor)[[by]])))
+    l <- NVL(levels, sort(unique(c(egor[[by]],.allAlters(egor)[[by]]))))
     nl <- length(l)
   }  
 
@@ -405,13 +405,13 @@ EgoStat.concurrent <- function(egor, by=NULL){
 
 #' @export
 #' @rdname ergm.ego-terms
-EgoStat.concurrentties <- function(egor, by=NULL){
+EgoStat.concurrentties <- function(egor, by=NULL, levels=NULL){
   c(egor, by) %<-% .preproc_factor(egor, by)
 
   if(!is.null(by) && !by %in% names(egor)) stop("For term ",sQuote("concurrent")," attribute ", sQuote(by), " must be observed on egos.", call.=FALSE)
   
   if(!is.null(by)){
-    l <- sort(unique(c(egor[[by]],.allAlters(egor)[[by]])))
+    l <- NVL(levels, sort(unique(c(egor[[by]],.allAlters(egor)[[by]]))))
     nl <- length(l)
   }  
 

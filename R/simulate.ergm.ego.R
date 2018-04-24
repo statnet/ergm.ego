@@ -82,10 +82,13 @@ simulate.ergm.ego <- function(object, nsim = 1, seed = NULL, popsize=if(object$p
     network.size(popnw)
   }else popsize
 
-  ergm.formula <- ergm.update.formula(object$formula,popnw~.,from.new="popnw")
-  if(popsize != object$ppopsize) popnw <- san(ergm.formula, target.stats = object$target.stats/object$ppopsize*ppopsize,verbose=verbose, control=control$SAN.control, ...)
-  ergm.formula <- ergm.update.formula(object$formula,popnw~.,from.new="popnw")
-  ergm.formula <- ergm.update.formula(ergm.formula,object$netsize.adj)
+  ergm.formula <- nonsimp_update.formula(object$formula,popnw~.,from.new="popnw")
+  san.stats <-
+    if(length(object$target.stats)>nparam(object, offset=FALSE)) object$target.stats[!object$etamap$offsettheta]
+    else object$target.stats
+  if(popsize != object$ppopsize) popnw <- san(ergm.formula, target.stats = san.stats/object$ppopsize*ppopsize,verbose=verbose, control=control$SAN.control, ...)
+  ergm.formula <- nonsimp_update.formula(object$formula,popnw~.,from.new="popnw")
+  ergm.formula <- nonsimp_update.formula(ergm.formula,object$netsize.adj)
 
   out <- simulate(ergm.formula, nsim=nsim, seed=seed, verbose=verbose, coef=c(netsize.adj=-log(ppopsize/object$popsize),object$coef[-1]), control=control$simulate.control, ...)
   if(is.matrix(out)){

@@ -4,6 +4,8 @@ fmh.ego <- as.egor(faux.mesa.high)
 
 head(fmh.ego)
 
+set.seed(0)
+
 ## Two parameters
 egofit <- ergm.ego(fmh.ego~edges+nodematch("Sex"), 
                           popsize=network.size(faux.mesa.high))

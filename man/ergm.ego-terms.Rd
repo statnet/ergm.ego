@@ -37,7 +37,7 @@ EgoStat.edges(egor)
 
 EgoStat.nodecov(egor, attrname)
 
-EgoStat.nodefactor(egor, attrname, base = 1)
+EgoStat.nodefactor(egor, attrname, base = 1, levels = NULL)
 
 EgoStat.nodematch(egor, attrname, diff = FALSE, keep = NULL)
 
@@ -45,14 +45,14 @@ EgoStat.nodemix(egor, attrname, base = NULL)
 
 EgoStat.absdiff(egor, attrname, pow = 1)
 
-EgoStat.degree(egor, d, by = NULL, homophily = FALSE)
+EgoStat.degree(egor, d, by = NULL, homophily = FALSE, levels = NULL)
 
 EgoStat.degrange(egor, from = NULL, to = Inf, by = NULL,
-  homophily = FALSE)
+  homophily = FALSE, levels = NULL)
 
-EgoStat.concurrent(egor, by = NULL)
+EgoStat.concurrent(egor, by = NULL, levels = NULL)
 
-EgoStat.concurrentties(egor, by = NULL)
+EgoStat.concurrentties(egor, by = NULL, levels = NULL)
 
 EgoStat.degreepopularity(egor)
 
@@ -72,7 +72,7 @@ EgoStat.mean.age(egor, emptyval = 0)
 InitErgmTerm.netsize.adj(nw, arglist, ...)
 }
 \arguments{
-\item{egor, attrname, base, diff, keep, pow, d, by, homophily, from, to, decay, fixed, cutoff, alpha, emptyval, nw, arglist, ...}{arguments to terms. See \code{\link[ergm]{ergm-terms}}.}
+\item{egor, attrname, base, diff, keep, pow, d, by, homophily, from, to, decay, fixed, cutoff, alpha, emptyval, nw, arglist, levels, ...}{arguments to terms. See \code{\link[ergm]{ergm-terms}}.}
 }
 \description{
 This page describes the \code{\link[ergm]{ergm}} terms (and hence network
