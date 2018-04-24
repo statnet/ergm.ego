@@ -223,11 +223,11 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.
 
     oi <- ergm.fit$etamap$offsettheta
 
-    DtDe <- -ergm.fit$hessian[!oi$theta,!oi$theta,drop=FALSE]
+    DtDe <- -ergm.fit$hessian[!oi,!oi,drop=FALSE]
 
     vcov <- matrix(NA, length(coef), length(coef))
   
-    vcov[!oi$theta,!oi$theta] <- solve(DtDe)%*%v%*%solve(DtDe)
+    vcov[!oi,!oi] <- solve(DtDe)%*%v%*%solve(DtDe)
     
     rownames(vcov) <- colnames(vcov) <- names(coef)
 
