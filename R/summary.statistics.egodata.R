@@ -75,7 +75,7 @@ summary_formula.egodata <- function(object,..., basis=NULL, individual=FALSE, sc
   nonscaling.pos <- c(0)
   
   
-  for(trm in term.list.formula(object[[length(object)]])){
+  for(trm in list_rhs.formula(object)){
     if(is.call(trm)){
       init.call <- list(as.name(paste("EgoStat.", trm[[1]],sep="")),egodata=egodata)
       init.call <- c(init.call,as.list(trm[-1]))
