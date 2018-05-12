@@ -25,7 +25,14 @@
 #' according to a Bernoulli graph having the same expected density as the
 #' observed.
 #' @param main Main title of the plot.
+#' @param plot Whether to plot the histogram; if `FALSE`, graphical
+#'   parameters and `bgrmod` have no effect.
 #' @param ... Additional arguments to [simulate.ergm.ego()].
+#'
+#' @return Returns either a vector of degree frequencies/proportions
+#'   if `by=NULL` or a matrix with a row for each category if not. If
+#'   \code{plot==TRUE} returns invisibly.
+#' 
 #' @seealso \code{\link{degreedist}},
 #' \code{\link[ergm:summary.formula]{summary}}
 #' @examples
@@ -38,7 +45,7 @@
 #' @importFrom graphics arrows barplot legend points
 #' @export degreedist.egodata
 degreedist.egodata <- function(object, freq = FALSE, prob = !freq, 
-                               by = NULL, brgmod = FALSE, main = NULL, ...){
+                               by = NULL, brgmod = FALSE, main = NULL, plot = TRUE, ...){
   egodata <- object
   
   color <- "#83B6E1"
@@ -100,51 +107,54 @@ degreedist.egodata <- function(object, freq = FALSE, prob = !freq,
     }
   }
 
-
-  if(brgmod) {
-    brgdraws <- simulate.ergm.ego(suppressMessages(ergm.ego(egodata ~ edges)), nsim = 50, ...)
-    deg.brg <- summary(brgdraws ~ degree(0:maxdeg))
-    brgmeans <- apply(deg.brg, MARGIN = 2, FUN = mean)
-    brgsd <- apply(deg.brg, MARGIN = 2, FUN = sd)
-    upper <- brgmeans + 2 * brgsd
-    lower <- brgmeans - 2 * brgsd
-    
-    if(prob){
-      if(is.null(by)){
-        brgmeans <- brgmeans/scaledeg
-        upper <- upper/scaledeg
-        lower <- lower/scaledeg
-      } else {
-        upper <- upper/sum(brgmeans)
-        lower <- lower/sum(brgmeans)
-        brgmeans <- brgmeans/sum(brgmeans)
-      }
+  if(plot){
+    if(brgmod) {
+      brgdraws <- simulate.ergm.ego(suppressMessages(ergm.ego(egodata ~ edges)), nsim = 50, ...)
+      deg.brg <- summary(brgdraws ~ degree(0:maxdeg))
+      brgmeans <- apply(deg.brg, MARGIN = 2, FUN = mean)
+      brgsd <- apply(deg.brg, MARGIN = 2, FUN = sd)
+      upper <- brgmeans + 2 * brgsd
+      lower <- brgmeans - 2 * brgsd
       
+      if(prob){
+        if(is.null(by)){
+          brgmeans <- brgmeans/scaledeg
+          upper <- upper/scaledeg
+          lower <- lower/scaledeg
+        } else {
+          upper <- upper/sum(brgmeans)
+          lower <- lower/sum(brgmeans)
+          brgmeans <- brgmeans/sum(brgmeans)
+        }
+        
+      }
+      maxfreq <- max(maxfreq, upper, na.rm = TRUE)
     }
-    maxfreq <- max(maxfreq, upper, na.rm = TRUE)
+    
+    baraxis <- barplot(deg.ego, xlab = "Degree", ylab = ylabel,
+                       col = color, beside = beside, plot = TRUE,
+                       ylim = c(0, maxfreq), main = main)
+    
+    if(brgmod){
+      baraxis <- if(is.null(by)){
+                   baraxis - 0.15
+                 } else {
+                   colMeans(baraxis)
+                 }
+      points(x = baraxis, y = brgmeans, col = "firebrick",
+             lwd = 1, pch = 18, cex = 1.25)
+      suppressWarnings(arrows(x0 = baraxis, y0 = upper,
+                              x1 = baraxis, y1 = lower,
+                              code = 3, length = 0.1, 
+                              angle = 90, col = "firebrick"))
+    } 
+    if(!is.null(by)){
+      legend(x="topright", legend = ltext, title = ltitle, fill = lfill, 
+             border = lborder, bty = "n")
+    }
   }
   
-  baraxis <- barplot(deg.ego, xlab = "Degree", ylab = ylabel,
-                     col = color, beside = beside, plot = TRUE,
-                     ylim = c(0, maxfreq), main = main)
-  
-  if(brgmod){
-    baraxis <- if(is.null(by)){
-      baraxis - 0.15
-    } else {
-      colMeans(baraxis)
-    }
-    points(x = baraxis, y = brgmeans, col = "firebrick",
-           lwd = 1, pch = 18, cex = 1.25)
-    suppressWarnings(arrows(x0 = baraxis, y0 = upper,
-                            x1 = baraxis, y1 = lower,
-                            code = 3, length = 0.1, 
-                            angle = 90, col = "firebrick"))
-  } 
-  if(!is.null(by)){
-    legend(x="topright", legend = ltext, title = ltitle, fill = lfill, 
-           border = lborder, bty = "n")
-  }
+  if(plot) invisible(deg.ego) else deg.ego
 }
 
 
