@@ -16,6 +16,7 @@ ds <- c(10,15,5,20)
 
 y <- network.initialize(n, directed=FALSE)
 y %v% "a" <- sample(1:3+6,n,replace=TRUE)
+y %v% "b" <- sample(letters[1:4],n,replace=TRUE)
 y <- san(y~edges+degree(0:3), target.stats=c(e,ds))
 
 y.e <- as.egodata(y)
@@ -49,8 +50,9 @@ f <- ~ edges +
   
   degree1.5 +
   
-  nodemix("a") + nodemix("a", base=1) + nodemix("a", base=2) + nodemix("a", base=2:3)
-
+  nodemix("a") + nodemix("a", base=1) + nodemix("a", base=2) + nodemix("a", base=2:3) +
+  
+  mm("a") + mm("a", levels2=~-1) + mm("a", levels2=-2) + mm("a", levels2=-(2:3)) + mm(~a>7) + mm(a~b) + mm(.~a)
 
 f.y <- statnet.common::nonsimp_update.formula(f, y~.)
 environment(f.y) <- globalenv()
