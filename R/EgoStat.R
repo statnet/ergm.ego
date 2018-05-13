@@ -527,6 +527,9 @@ EgoStat.gwdegree <- function(egor, decay=NULL, fixed=FALSE, cutoff=30){
 #' @export
 #' @rdname ergm.ego-terms
 EgoStat.mm <- function(egor, attrs, levels=NULL, levels2=NULL){
+
+  aei <- rep(seq_len(nrow(egor)), map_int(egor$.alts, nrow))
+  
   # Some preprocessing steps are the same, so run together:
   #' @import purrr
   #' @importFrom utils relist
@@ -553,10 +556,10 @@ EgoStat.mm <- function(egor, attrs, levels=NULL, levels2=NULL){
                    sum(sapply(egor$.alts, nrow))*2
                    ),
              name = ".",
-             levels = NA,
+             levels = 0,
              levelcodes = 0,
              id = rep(merge(data.frame(i=seq_len(nrow(egor))),
-                            data.frame(i=rep(seq_len(nrow(egor)), sapply(egor$.alts, nrow))))$i,
+                            data.frame(i=aei))$i,
                       2)
              )
       }else{
@@ -564,17 +567,17 @@ EgoStat.mm <- function(egor, attrs, levels=NULL, levels2=NULL){
         xe <- ERRVL(ec <- try(ergm.ego_get_vattr(spec$attrs, egor), silent=TRUE), NULL)
         xa <- ERRVL(try(ergm.ego_get_vattr(spec$attrs, .allAlters(egor)), silent=TRUE), NULL)
         if(is.null(xe)&&is.null(xa)) stop(attr(ec, "condition"), call.=FALSE) # I.e., they were both errors. => propagate error message.
+        name <- NVL(attr(xe, "name"),attr(xa, "name"))
         xe <- NVL2(xe,
                    data.frame(i=seq_len(nrow(egor)), xe=xe, stringsAsFactors=FALSE),
                    data.frame(i=seq_len(nrow(egor)), stringsAsFactors=FALSE))
         xa <- NVL2(xa,
-                   data.frame(i=rep(seq_len(nrow(egor)), sapply(egor$.alts, nrow)), xa=xa, stringsAsFactors=FALSE),
-                   data.frame(i=rep(seq_len(nrow(egor)), sapply(egor$.alts, nrow)), stringsAsFactors=FALSE))
+                   data.frame(i=aei, xa=xa, stringsAsFactors=FALSE),
+                   data.frame(i=aei, stringsAsFactors=FALSE))
         xae <- merge(xe,xa)
         x <- switch(whose,
                     row = c(NVL(xae$xe,xae$xa),NVL(xae$xa,xae$xe)),
                     col = c(NVL(xae$xa,xae$xe),NVL(xae$xe,xae$xa)))
-        name <- attr(xe, "name")
         list(name=name, id=rep(xae$i,length.out=length(x)), val=x, levels=spec$levels, unique=sort(unique(x)))
       }
     })
@@ -592,7 +595,7 @@ EgoStat.mm <- function(egor, attrs, levels=NULL, levels2=NULL){
       if(is(levels, "formula")) environment(v$levels) <- environment(levels)
       v$levels <- ergm.ego_attr_levels(v$levels, v$val, egor, levels=v$unique)
       v$levelcodes <- seq_along(v$levels)
-      v$valcodes <- match(v$val, v$levels, nomatch=0)
+      v$valcodes <- .matchNA(v$val, v$levels, nomatch=0)
       v
     })
 
@@ -630,16 +633,17 @@ EgoStat.mm <- function(egor, attrs, levels=NULL, levels2=NULL){
   
   coef.names <- paste0("mm",levels2names)
 
-  h <- attrval %>%
+  h1 <- attrval %>%
     map("valcodes") %>%
     transpose() %>%
-    match(levels2codes) %>%
-    map(tabulate, length(levels2codes)) %>%
-    do.call(rbind,.) %>%
-    aggregate(by=list(i=attrval$row$id), FUN=sum)
+    map(~if(is.na(.$row) || is.na(.$col)) NA else .) %>%
+    .matchNA(levels2codes, 0L) %>%
+    tapply(., rep(aei, length.out=length(.)), identity, simplify=FALSE) %>%
+    map(.extabulate, length(levels2codes)) %>%
+    do.call(rbind,.)
 
-  i <- h$i
-  h <- as.matrix(h)[,-1,drop=FALSE]
+  h <- matrix(0, nrow(egor), ncol=ncol(h1))
+  h[sort(unique(aei)),] <- h1/2
   colnames(h) <- coef.names
 
   if(symm){
@@ -647,8 +651,6 @@ EgoStat.mm <- function(egor, attrs, levels=NULL, levels2=NULL){
     h <- sweep(h, 2, selff, `/`)
   }
  
-  h <- h[match(seq_len(nrow(egor)), i),,drop=FALSE]/2
-  h[is.na(h)] <- 0
   attr(h, "order") <- 1
   h
 }

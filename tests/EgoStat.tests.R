@@ -67,39 +67,40 @@ stopifnot(all.equal(as.vector(summary(f.y)),as.vector(summary(f.y.e))))
 
 
 
-f <- (
-  ~ edges +
-    nodecov("a") +
-    
-    nodefactor("a", 0) + nodefactor("a", 1) + nodefactor("a", 2) +
-    
-    nodematch("a") + nodematch("a", TRUE) + nodematch("a", TRUE, 2) +
-    
-    absdiff("a") + absdiff("a", 2) +
-    
-    degree(0) + degree(3) + degree(0:6) +
-    degree(0, by="a") + degree(3, by="a") + degree(0:6, by="a") +
-    
-    degrange(0) + degrange(3) + degrange(0:6) +
-    degrange(0) + degrange(3) + degrange(0:6) +
-    degrange(0, by="a") + degrange(3, by="a") + degrange(0:6, by="a") +
-    
-    degrange(0,2) + degrange(3,5) + degrange(0:6,7) +
-    degrange(0,2) + degrange(3,5) + degrange(0:6,7) +
-    degrange(0,2, by="a") + degrange(3,5, by="a") + degrange(0:6,7, by="a") +
-    
-    concurrent + concurrent("a") +
-    
-    concurrentties + concurrentties("a") +
-    
-    degree1.5 +
-    
-    nodemix("a") + nodemix("a", base=1) + nodemix("a", base=2) + nodemix("a", base=2:3) +
-    
-    transitiveties + esp(0:6) + gwesp(fix=FALSE) + gwesp(0.5, fix=TRUE) +
-    
-    gwdegree(fix=FALSE) + gwdegree(0.5, fix=TRUE)
-)
+f <- ~ edges +
+  nodecov("a") +
+  
+  nodefactor("a", 0) + nodefactor("a", 1) + nodefactor("a", 2) +
+  
+  nodematch("a") + nodematch("a", TRUE) + nodematch("a", TRUE, 2) +
+  
+  absdiff("a") + absdiff("a", 2) +
+  
+  degree(0) + degree(3) + degree(0:6) +
+  degree(0, by="a") + degree(3, by="a") + degree(0:6, by="a") +
+  
+  degrange(0) + degrange(3) + degrange(0:6) +
+  degrange(0) + degrange(3) + degrange(0:6) +
+  degrange(0, by="a") + degrange(3, by="a") + degrange(0:6, by="a") +
+  
+  degrange(0,2) + degrange(3,5) + degrange(0:6,7) +
+  degrange(0,2) + degrange(3,5) + degrange(0:6,7) +
+  degrange(0,2, by="a") + degrange(3,5, by="a") + degrange(0:6,7, by="a") +
+  
+  concurrent + concurrent("a") +
+  
+  concurrentties + concurrentties("a") +
+  
+  degree1.5 +
+  
+  nodemix("a") + nodemix("a", base=1) + nodemix("a", base=2) + nodemix("a", base=2:3) +
+  
+  transitiveties + esp(0:6) + gwesp(fix=FALSE) + gwesp(0.5, fix=TRUE) +
+  
+  mm("a") + mm("a", levels2=~-1) + mm("a", levels2=-2) + mm("a", levels2=-(2:3)) + mm(~a>7) + mm(a~b) + mm(.~a) +
+  
+  gwdegree(fix=FALSE) + gwdegree(0.5, fix=TRUE)
+
 
 replicate(30,{
 y.em <- y.e
