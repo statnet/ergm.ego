@@ -34,7 +34,7 @@
 #'   EgoStat.nodefactor EgoStat.nodematch EgoStat.nodemix
 #'   EgoStat.absdiff EgoStat.degree EgoStat.degrange
 #'   EgoStat.concurrent EgoStat.concurrentties
-#'   EgoStat.degreepopularity EgoStat.mean.age netsize.adj
+#'   EgoStat.degree1.5 EgoStat.mean.age netsize.adj
 #'   InitErgmTerm.netsize.adj
 #'
 #' @docType methods
@@ -52,7 +52,7 @@
 #' \item \code{nodecov} \item \code{nodefactor} \item \code{nodematch}
 #' \item \code{nodemix} \item \code{absdiff} \item \code{degree} \item
 #' \code{degrange} \item \code{concurrent} \item \code{concurrentties}
-#' \item \code{degreepopularity} } }
+#' \item \code{degree1.5} } }
 #' 
 #' \item{tergm:}{ \itemize{ \item \code{mean.age} } } }
 #' @seealso \code{\link[ergm]{ergm-terms}}
@@ -419,7 +419,7 @@ EgoStat.concurrentties <- function(egodata, by=NULL, levels=NULL){
 
 
 #' @export
-EgoStat.degreepopularity <- function(egodata){
+EgoStat.degree1.5 <- function(egodata){
   egos <- egodata$egos
   alters <- egodata$alters
   egoIDcol <- egodata$egoIDcol
@@ -433,7 +433,7 @@ EgoStat.degreepopularity <- function(egodata){
   egos$.degree[is.na(egos$.degree)]<-0
 
   h <- cbind(egos$.degree^(3/2))
-  colnames(h) <- "degreepopularity"
+  colnames(h) <- "degree1.5"
   rownames(h) <- egos[[egoIDcol]]
   
   h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]
