@@ -95,7 +95,7 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.
   
   stats.est <- control$stats.est
   stats.wt <- control$stats.wt
-  egodata <- get(as.character(formula[[2]]), envir=environment(formula))
+  egodata <- eval_lhs.formula(formula)
 
   sampsize <- dim(egodata)[1]
   ppopsize <-

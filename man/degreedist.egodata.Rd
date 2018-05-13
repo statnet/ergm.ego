@@ -6,7 +6,7 @@
 \title{Plotting the degree distribution of an egocentric dataset}
 \usage{
 \method{degreedist}{egodata}(object, freq = FALSE, prob = !freq,
-  by = NULL, brgmod = FALSE, main = NULL, ...)
+  by = NULL, brgmod = FALSE, main = NULL, plot = TRUE, ...)
 }
 \arguments{
 \item{object}{A \code{\link{egodata}} object.}
@@ -23,7 +23,15 @@ observed.}
 
 \item{main}{Main title of the plot.}
 
+\item{plot}{Whether to plot the histogram; if \code{FALSE}, graphical
+parameters and \code{bgrmod} have no effect.}
+
 \item{...}{Additional arguments to \code{\link[=simulate.ergm.ego]{simulate.ergm.ego()}}.}
+}
+\value{
+Returns either a vector of degree frequencies/proportions
+if \code{by=NULL} or a matrix with a row for each category if not. If
+\code{plot==TRUE} returns invisibly.
 }
 \description{
 A function to plot a histogram of the degree distribution of actors in the

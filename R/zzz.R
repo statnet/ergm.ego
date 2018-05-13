@@ -15,3 +15,8 @@
   }
   
 }
+
+.onLoad <- function(lib, pkg){
+  # . is used in purrr and elsewhere.
+  utils::globalVariables(".")
+}

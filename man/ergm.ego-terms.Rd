@@ -22,7 +22,8 @@
 \alias{EgoStat.degrange}
 \alias{EgoStat.concurrent}
 \alias{EgoStat.concurrentties}
-\alias{EgoStat.degreepopularity}
+\alias{EgoStat.degree1.5}
+\alias{EgoStat.mm}
 \alias{EgoStat.mean.age}
 \alias{netsize.adj}
 \alias{InitErgmTerm.netsize.adj}
@@ -55,7 +56,7 @@ formula directly.  } } }
 \item \code{nodecov} \item \code{nodefactor} \item \code{nodematch}
 \item \code{nodemix} \item \code{absdiff} \item \code{degree} \item
 \code{degrange} \item \code{concurrent} \item \code{concurrentties}
-\item \code{degreepopularity} } }
+\item \code{degree1.5} \item \code{mm} } }
 
 \item{tergm:}{ \itemize{ \item \code{mean.age} } } }
 }
