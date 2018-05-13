@@ -109,7 +109,7 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
   
   stats.est <- control$stats.est
   stats.wt <- control$stats.wt
-  egor <- get(as.character(formula[[2]]), envir=environment(formula))
+  egor <- eval_lhs.formula(formula)
 
   sampsize <- nrow(egor)
   ppopsize <-

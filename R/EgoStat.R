@@ -169,12 +169,13 @@ NULL
 #' * `degrange`
 #' * `concurrent`
 #' * `concurrentties`
-#' * `degreepopularity`
+#' * `degree1.5`
 #' * `transitiveties`
 #' * `cyclicalties`
 #' * `esp`
 #' * `gwesp`
 #' * `gwdegree`
+#' * `mm`
 #' }
 #' 
 #' \item{tergm:}{
@@ -182,7 +183,7 @@ NULL
 #' }
 #' }
 #'
-#' @param egor,attrname,base,diff,keep,pow,d,by,homophily,from,to,decay,fixed,cutoff,alpha,emptyval,nw,arglist,levels,... arguments to terms. See \code{\link[ergm]{ergm-terms}}.
+#' @param egor,attrname,base,diff,keep,pow,d,by,homophily,from,to,decay,fixed,cutoff,alpha,emptyval,nw,arglist,levels,levels2,attrs,... arguments to terms. See \code{\link[ergm]{ergm-terms}}.
 #' @import zeallot
 #' @seealso \code{\link[ergm]{ergm-terms}}
 #' @keywords models
@@ -429,11 +430,9 @@ EgoStat.concurrentties <- function(egor, by=NULL, levels=NULL){
 
 #' @export
 #' @rdname ergm.ego-terms
-EgoStat.degreepopularity <- function(egor){
-
+EgoStat.degree1.5 <- function(egor){
   h <- function(e) nrow(e$.alts)^(3/2)
-
-  .eval.h(egor, h, "degreepopularity")
+  .eval.h(egor, h, "degree1.5")
 }
 
 #' @export
@@ -525,3 +524,131 @@ EgoStat.gwdegree <- function(egor, decay=NULL, fixed=FALSE, cutoff=30){
   hv
 }
 
+#' @export
+#' @rdname ergm.ego-terms
+EgoStat.mm <- function(egor, attrs, levels=NULL, levels2=NULL){
+  # Some preprocessing steps are the same, so run together:
+  #' @import purrr
+  #' @importFrom utils relist
+  #' @importFrom methods is
+  spec <-
+    list(attrs = attrs, levels = levels) %>%
+    map_if(~!is(., "formula"), ~call("~", .)) %>% # Embed into RHS of formula.
+    map_if(~length(.)==2, ~call("~", .[[2]], .[[2]])) %>% # Convert ~X to X~X.
+    map(as.list) %>% map(~.[-1]) %>% # Convert to list(X,X).
+    map(set_names, c("row", "col")) %>% # Name elements rowspec and colspec.
+    transpose() %>%
+    unlist(recursive=FALSE) %>% # Convert into a flat list.
+    map_if(~is.name(.)&&.==".", ~NULL) %>% # If it's just a dot, convert to NULL.
+    map_if(~is.call(.)||(is.name(.)&&.!="."), ~as.formula(call("~", .))) %>% # If it's a call or a symbol, embed in formula.
+    relist(skeleton=list(row=c(attrs=NA, levels=NA), col=c(attrs=NA, levels=NA))) # Reconstruct list.
+
+  # Extract attribute values.
+  attrval <-
+    spec %>%
+    imap(function(spec, whose){
+      if(is.null(spec$attrs)){
+        list(valcodes =
+               rep(0L,
+                   sum(sapply(egor$.alts, nrow))*2
+                   ),
+             name = ".",
+             levels = NA,
+             levelcodes = 0,
+             id = rep(merge(data.frame(i=seq_len(nrow(egor))),
+                            data.frame(i=rep(seq_len(nrow(egor)), sapply(egor$.alts, nrow))))$i,
+                      2)
+             )
+      }else{
+        if(is(attrs, "formula")) environment(spec$attrs) <- environment(attrs)
+        xe <- ERRVL(ec <- try(ergm.ego_get_vattr(spec$attrs, egor), silent=TRUE), NULL)
+        xa <- ERRVL(try(ergm.ego_get_vattr(spec$attrs, .allAlters(egor)), silent=TRUE), NULL)
+        if(is.null(xe)&&is.null(xa)) stop(attr(ec, "condition"), call.=FALSE) # I.e., they were both errors. => propagate error message.
+        xe <- NVL2(xe,
+                   data.frame(i=seq_len(nrow(egor)), xe=xe, stringsAsFactors=FALSE),
+                   data.frame(i=seq_len(nrow(egor)), stringsAsFactors=FALSE))
+        xa <- NVL2(xa,
+                   data.frame(i=rep(seq_len(nrow(egor)), sapply(egor$.alts, nrow)), xa=xa, stringsAsFactors=FALSE),
+                   data.frame(i=rep(seq_len(nrow(egor)), sapply(egor$.alts, nrow)), stringsAsFactors=FALSE))
+        xae <- merge(xe,xa)
+        x <- switch(whose,
+                    row = c(NVL(xae$xe,xae$xa),NVL(xae$xa,xae$xe)),
+                    col = c(NVL(xae$xa,xae$xe),NVL(xae$xe,xae$xa)))
+        name <- attr(xe, "name")
+        list(name=name, id=rep(xae$i,length.out=length(x)), val=x, levels=spec$levels, unique=sort(unique(x)))
+      }
+    })
+
+  # Undirected unipartite networks with identical attribute
+  # specification produce square, symmetric mixing matrices. All
+  # others do not.
+  symm <- identical(spec$row$attrs, spec$col$attrs)
+  # Are we evaluating the margin?
+  marg <- length(attrval$row$unique)==0 || length(attrval$col$unique)==0
+  
+  # Filter the final level set and encode the attribute values.
+  attrval <- attrval %>%
+    map_if(~is.null(.$levelcodes), function(v){
+      if(is(levels, "formula")) environment(v$levels) <- environment(levels)
+      v$levels <- ergm.ego_attr_levels(v$levels, v$val, egor, levels=v$unique)
+      v$levelcodes <- seq_along(v$levels)
+      v$valcodes <- match(v$val, v$levels, nomatch=0)
+      v
+    })
+
+  # Construct all pairwise level combinations (table cells) and their numeric codes.
+  levels2codes <- expand.grid(row=attrval$row$levelcodes, col=attrval$col$levelcodes) %>% transpose()
+  levels2vals <- expand.grid(row=attrval$row$levels, col=attrval$col$levels, stringsAsFactors=FALSE) %>% transpose()
+
+  # Drop redundant table cells if symmetrising.
+  if(symm){
+    levels2keep <- levels2codes %>% map_lgl(with, row <= col)
+    levels2codes <- levels2codes[levels2keep]
+    levels2vals <- levels2vals[levels2keep]
+  }
+
+  # Run the table cell list through the cell filter.
+  levels2sel <- ergm.ego_attr_levels(levels2, list(row=attrval$row$val, col=attrval$col$val), egor, levels=levels2vals)
+  levels2codes <- levels2codes[match(levels2sel,levels2vals, NA)]
+  levels2vals <- levels2sel; rm(levels2sel)
+
+  # Construct the level names
+  levels2names <-
+    levels2vals %>%
+    transpose() %>%
+    map(unlist) %>%
+    with(paste0(
+      "[",
+      if(length(attrval$row$levels)>1)
+        paste0(attrval$row$name, "=", .$row)
+      else ".",
+      ",",
+      if(length(attrval$col$levels)>1)
+        paste0(attrval$col$name, "=", .$col)
+      else ".",
+      "]"))
+  
+  coef.names <- paste0("mm",levels2names)
+
+  h <- attrval %>%
+    map("valcodes") %>%
+    transpose() %>%
+    match(levels2codes) %>%
+    map(tabulate, length(levels2codes)) %>%
+    do.call(rbind,.) %>%
+    aggregate(by=list(i=attrval$row$id), FUN=sum)
+
+  i <- h$i
+  h <- as.matrix(h)[,-1,drop=FALSE]
+  colnames(h) <- coef.names
+
+  if(symm){
+    selff <- 1+map_lgl(levels2codes, all_identical)
+    h <- sweep(h, 2, selff, `/`)
+  }
+ 
+  h <- h[match(seq_len(nrow(egor)), i),,drop=FALSE]/2
+  h[is.na(h)] <- 0
+  attr(h, "order") <- 1
+  h
+}

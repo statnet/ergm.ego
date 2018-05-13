@@ -22,12 +22,13 @@
 \alias{EgoStat.degrange}
 \alias{EgoStat.concurrent}
 \alias{EgoStat.concurrentties}
-\alias{EgoStat.degreepopularity}
+\alias{EgoStat.degree1.5}
 \alias{EgoStat.transitiveties}
 \alias{EgoStat.cyclicalties}
 \alias{EgoStat.esp}
 \alias{EgoStat.gwesp}
 \alias{EgoStat.gwdegree}
+\alias{EgoStat.mm}
 \alias{EgoStat.mean.age}
 \alias{InitErgmTerm.netsize.adj}
 \title{\code{\link[ergm]{ergm}} Terms Implemented for
@@ -54,7 +55,7 @@ EgoStat.concurrent(egor, by = NULL, levels = NULL)
 
 EgoStat.concurrentties(egor, by = NULL, levels = NULL)
 
-EgoStat.degreepopularity(egor)
+EgoStat.degree1.5(egor)
 
 EgoStat.transitiveties(egor, attrname = NULL)
 
@@ -67,12 +68,14 @@ EgoStat.gwesp(egor, decay = NULL, fixed = FALSE, cutoff = 30,
 
 EgoStat.gwdegree(egor, decay = NULL, fixed = FALSE, cutoff = 30)
 
+EgoStat.mm(egor, attrs, levels = NULL, levels2 = NULL)
+
 EgoStat.mean.age(egor, emptyval = 0)
 
 InitErgmTerm.netsize.adj(nw, arglist, ...)
 }
 \arguments{
-\item{egor, attrname, base, diff, keep, pow, d, by, homophily, from, to, decay, fixed, cutoff, alpha, emptyval, nw, arglist, levels, ...}{arguments to terms. See \code{\link[ergm]{ergm-terms}}.}
+\item{egor, attrname, base, diff, keep, pow, d, by, homophily, from, to, decay, fixed, cutoff, alpha, emptyval, nw, arglist, levels, levels2, attrs, ...}{arguments to terms. See \code{\link[ergm]{ergm-terms}}.}
 }
 \description{
 This page describes the \code{\link[ergm]{ergm}} terms (and hence network
@@ -113,12 +116,13 @@ and should not be used in the model formula directly.  } } }
 \item \code{degrange}
 \item \code{concurrent}
 \item \code{concurrentties}
-\item \code{degreepopularity}
+\item \code{degree1.5}
 \item \code{transitiveties}
 \item \code{cyclicalties}
 \item \code{esp}
 \item \code{gwesp}
 \item \code{gwdegree}
+\item \code{mm}
 }
 }
 
