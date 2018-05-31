@@ -458,8 +458,15 @@ EgoStat.mm <- function(egodata, attrs, levels=NULL, levels2=NULL){
     unlist(recursive=FALSE) %>% # Convert into a flat list.
     map_if(~is.name(.)&&.==".", ~NULL) %>% # If it's just a dot, convert to NULL.
     map_if(~is.call(.)||(is.name(.)&&.!="."), ~as.formula(call("~", .))) %>% # If it's a call or a symbol, embed in formula.
-    relist(skeleton=list(row=c(attrs=NA, levels=NA), col=c(attrs=NA, levels=NA))) # Reconstruct list.
+    relist(skeleton=list(row=c(attrs=NA, levels=NA), col=c(attrs=NA, levels=NA))) %>% # Reconstruct list.
+    transpose()
 
+  if(is(attrs, "formula"))
+    spec[["attrs"]] <- lapply(spec[["attrs"]], function(x){if(is(x,"formula")) environment(x) <- environment(attrs); x})
+  if(is(levels, "formula"))
+    spec[["levels"]] <- lapply(spec[["levels"]], function(x){if(is(x,"formula")) environment(x) <- environment(levels); x})
+  spec <- transpose(spec)
+  
   # Extract attribute values.
   attrval <-
     spec %>%
@@ -477,7 +484,6 @@ EgoStat.mm <- function(egodata, attrs, levels=NULL, levels2=NULL){
                       2)
              )
       }else{
-        if(is(attrs, "formula")) environment(spec$attrs) <- environment(attrs)
         xe <- ergm.ego_get_vattr(spec$attrs, egos)
         xa <- ergm.ego_get_vattr(spec$attrs, alters)
         xae <- merge(data.frame(i=egos[[egoIDcol]],xe=xe, stringsAsFactors=FALSE),
@@ -500,7 +506,6 @@ EgoStat.mm <- function(egodata, attrs, levels=NULL, levels2=NULL){
   # Filter the final level set and encode the attribute values.
   attrval <- attrval %>%
     map_if(~is.null(.$levelcodes), function(v){
-      if(is(levels, "formula")) environment(v$levels) <- environment(levels)
       v$levels <- ergm.ego_attr_levels(v$levels, v$val, egodata, levels=v$unique)
       v$levelcodes <- seq_along(v$levels)
       v$valcodes <- match(v$val, v$levels, nomatch=0)
