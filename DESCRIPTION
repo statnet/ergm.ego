@@ -11,7 +11,9 @@ Authors@R: c(
 	    person("Michał", "Bojanowski", role=c("ctb"), email="m.bojanowski@uw.edu.pl"))
 Depends: ergm (>= 3.5), network (>= 1.14)
 Imports: statnet.common, coda, RColorBrewer, stats, purrr, rlang, tibble, methods
-Suggests: testthat
+Suggests: 
+    testthat,
+    covr
 Description: Utilities for managing egocentrically sampled network data and a wrapper around the 'ergm' package to facilitate ERGM inference and simulation from such data.
 License: GPL-3 + file LICENSE
 URL: http://www.statnet.org
