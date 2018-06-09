@@ -12,6 +12,7 @@
 \alias{terms-ergm}
 \alias{terms.ergm}
 \alias{EgoStat}
+\alias{EgoStat.offset}
 \alias{EgoStat.edges}
 \alias{EgoStat.nodecov}
 \alias{EgoStat.nodefactor}
@@ -34,6 +35,8 @@
 \title{\code{\link[ergm]{ergm}} Terms Implemented for
 \code{\link{egor}}}
 \usage{
+EgoStat.offset(egor, trm)
+
 EgoStat.edges(egor)
 
 EgoStat.nodecov(egor, attrname)

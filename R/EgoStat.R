@@ -190,6 +190,7 @@ NULL
 NULL
 
 #' @export
+#' @rdname ergm.ego-terms
 EgoStat.offset <- function(egor, trm){
   trm <- substitute(trm)
   if(is.call(trm)){
