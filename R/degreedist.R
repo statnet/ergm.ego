@@ -63,21 +63,15 @@ degreedist.egodata <- function(object, freq = FALSE, prob = !freq,
   
   degtable <- rep(0, nrow(egodata$egos))
   degtable[as.numeric(names(table(egodata$alters[egoIDcol])))] <- table(egodata$alters[egoIDcol])
-  degtable.wt <- degtable * egodata$egoWt
-  maxdeg <- max(degtable.wt)
-  deg.ego <- summary(egodata ~ degree(0:maxdeg, by = by))
-  names(deg.ego) <- 0:maxdeg
-  maxfreq <- max(deg.ego)
-  if(!is.null(by)){
-    levs <- sort(unique(c(egodata$egos[[by]], egodata$alters[[by]])))
-    deg.ego <- matrix(0, nrow = length(levs), ncol = maxdeg + 1)
-    rownames(deg.ego) <- levs
-    colnames(deg.ego) <- 0:maxdeg
-    for(i in 1:length(levs)){
-      vals <- table(degtable.wt[egodata$egos[by] == levs[i]])
-      toreplace <- as.numeric(names(vals)) + 1
-      deg.ego[i, toreplace] <- vals
-    }
+  maxdeg <- max(degtable)
+  
+  if(is.null(by)){
+    deg.ego <- xtabs(egodata$egoWt~degtable)
+    names(dimnames(deg.ego)) <- "degree"
+  }else{
+    deg.ego <- xtabs(egodata$egoWt~egodata$egos[[by]]+degtable)
+    names(dimnames(deg.ego)) <- c(by, "degree")
+    levs <- rownames(deg.ego)
     ncolors <- dim(deg.ego)[1]
     if(ncolors == 2){
       color <- c("#eff3ff", "#377FBC")
