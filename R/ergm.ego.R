@@ -238,7 +238,7 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
     if(constraints==~.)
       newterm
     else
-      append.rhs.formula(constraints, term.list.formula(newterm))
+      append_rhs.formula(constraints, list_rhs.formula(newterm))
   }else constraints
   
   out <- list(v=v, m=m, formula=formula, ergm.formula=ergm.formula, offset.coef=offset.coef, ergm.offset.coef=ergm.offset.coef, egor=egor, ppopsize=ppopsize, popsize=popsize, constraints=constraints, netsize.adj=adj.update)
