@@ -15,3 +15,5 @@ r_github_packages:
 - statnet/statnet.common
 - statnet/network
 - statnet/ergm
+after_success:
+- Rscript -e 'covr::codecov(type="all")'
