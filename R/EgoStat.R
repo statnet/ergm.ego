@@ -572,6 +572,7 @@ EgoStat.mm <- function(egor, attrs, levels=NULL, levels2=NULL){
       }else{
         xe <- ERRVL(ec <- try(ergm.ego_get_vattr(spec$attrs, egor), silent=TRUE), NULL)
         xa <- ERRVL(try(ergm.ego_get_vattr(spec$attrs, .allAlters(egor)), silent=TRUE), NULL)
+        name <- attr(NVL(xe,xa), "name")
         if(is.null(xe)&&is.null(xa)) stop(attr(ec, "condition"), call.=FALSE) # I.e., they were both errors. => propagate error message.
         name <- NVL(attr(xe, "name"),attr(xa, "name"))
         xe <- NVL2(xe,

@@ -27,9 +27,6 @@ test_that("degreedist() works on data based on faux.mesa.high with `by=Sex`", {
 })
 
 
-
-
-
 if(FALSE) {
   debugonce(degreedist)
   
@@ -53,3 +50,29 @@ if(FALSE) {
   degreedist(w.ego)
   degreedist(w.ego, by="Location")
 }
+
+## |----|--------|---|----------|-----------|
+## | id | weight | x | # alters | alter a's |
+## |----|--------|---|----------|-----------|
+## | 1  | 2      | a | 1        | a         |
+## | 2  | 1      | a | 2        | b, a      |
+## | 3  | 1      | b | 1        | b         |
+## | 4  | 2      | b | 2        | a, b      |
+## |----|--------|---|----------|-----------|
+
+library(tibble)
+e <- egor(list(tibble(x="a"),
+               tibble(x=c("b","a")),
+               tibble(x="b"),
+               tibble(x=c("a","b"))),
+          tibble(x=letters[c(1,1,2,2)]),
+          ego.design=list(~1,weights=c(2,1,1,2)))
+
+test_that("weighted degreedist", {
+  expect_equivalent(unclass(degreedist(e, plot=FALSE)), c(1/2,1/2))
+})
+
+test_that("weighted degreedist by attribute", {
+  expect_equivalent(unclass(degreedist(e, plot=FALSE, by="x")), rbind(c(2/3,1/3),
+                                                                      c(1/3,2/3)))
+})

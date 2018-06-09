@@ -28,7 +28,7 @@ the diagonal of \code{mixingmatrix.egor} will be twice that returned by
 }
 \description{
 A \code{\link[network]{mixingmatrix}} method for
-\code{\link{egodata}} objects, to return counts of how often a ego
+\code{\link{egor}} objects, to return counts of how often a ego
 of each group nominates an alter of each group.
 }
 \examples{

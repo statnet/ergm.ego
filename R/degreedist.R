@@ -58,21 +58,17 @@ degreedist.egor <- function(object, freq = FALSE, prob = !freq,
   if(!is.null(by)) ylabel <- paste(ylabel, "(within attr level)")
 
   degtable <- sapply(egor$.alts, nrow)
-  degtable.wt <- degtable * weights(egor)
-  maxdeg <- max(degtable.wt)
-  deg.ego <- as.vector( summary(egor ~ degree(0:maxdeg, by = by)) )
-  names(deg.ego) <- 0:maxdeg
-  maxfreq <- max(deg.ego)
-  if(!is.null(by)){
-    levs <- sort(unique(c(egor[[by]], .allAlters(egor)[[by]])))
-    deg.ego <- matrix(0, nrow = length(levs), ncol = maxdeg + 1)
-    rownames(deg.ego) <- levs
-    colnames(deg.ego) <- 0:maxdeg
-    for(i in 1:length(levs)){
-      vals <- table(degtable.wt[egor[[by]] == levs[i]])
-      toreplace <- as.numeric(names(vals)) + 1
-      deg.ego[i, toreplace] <- vals
-    }
+  maxdeg <- max(degtable)
+  
+  if(is.null(by)){
+    deg.ego <- xtabs(weights(egor)~degtable)
+    names(dimnames(deg.ego)) <- "degree"
+    degrees <- as.integer(names(deg.ego))
+  }else{
+    deg.ego <- xtabs(weights(egor)~egor[[by]]+degtable)
+    names(dimnames(deg.ego)) <- c(by, "degree")
+    levs <- rownames(deg.ego)
+    degrees <- as.integer(colnames(deg.ego))
     ncolors <- dim(deg.ego)[1]
     if(ncolors == 2){
       color <- c("#eff3ff", "#377FBC")
@@ -84,7 +80,6 @@ degreedist.egor <- function(object, freq = FALSE, prob = !freq,
     
     ltext <- levs
     lfill <- c(color, 0)
-    lborder <- c(rep("black", times = ncolors), 0)
     ltitle <- by
     maxfreq <- max(colSums(deg.ego))
   }
@@ -104,8 +99,8 @@ degreedist.egor <- function(object, freq = FALSE, prob = !freq,
   
   if(plot){
     if(brgmod) {
-      brgdraws <- simulate.ergm.ego(suppressMessages(ergm.ego(egor ~ edges)), nsim = 50, ...)
-      deg.brg <- summary(brgdraws ~ degree(0:maxdeg))
+      brgdraws <- simulate(suppressMessages(ergm.ego(egor ~ edges, control=control.ergm.ego(ppopsize=nrow(egor)*max(weights(egor))/min(weights(egor))))), nsim = 50, ...)
+      deg.brg <- summary(brgdraws ~ degree(degrees))
       brgmeans <- apply(deg.brg, MARGIN = 2, FUN = mean)
       brgsd <- apply(deg.brg, MARGIN = 2, FUN = sd)
       upper <- brgmeans + 2 * brgsd
@@ -155,8 +150,7 @@ degreedist.egor <- function(object, freq = FALSE, prob = !freq,
                                 angle = 90, col = "firebrick"))
       } 
       if(!is.null(by)){
-        legend(x="topright", legend = ltext, title = ltitle, fill = lfill, 
-               border = lborder, bty = "n")
+        legend(x="top", legend = ltext, title = ltitle, fill = lfill, bg="white")
       }
     }
   }
@@ -170,7 +164,7 @@ degreedist.egor <- function(object, freq = FALSE, prob = !freq,
 #' Summarizing the mixing among groups in an egocentric dataset
 #' 
 #' A \code{\link[network]{mixingmatrix}} method for
-#' \code{\link{egodata}} objects, to return counts of how often a ego
+#' \code{\link{egor}} objects, to return counts of how often a ego
 #' of each group nominates an alter of each group.
 #' 
 #' 
