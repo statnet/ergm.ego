@@ -10,7 +10,7 @@ Authors@R: c(
 	    person("Emily N.", "Beylerian", role=c("ctb"), email="ebey@uw.edu"),
 	    person("Michał", "Bojanowski", role=c("ctb"), email="m.bojanowski@uw.edu.pl"))
 Depends: ergm (>= 3.5), network (>= 1.14)
-Imports: statnet.common, coda, RColorBrewer, stats, purrr, rlang, tibble, methods
+Imports: statnet.common (>= 4.1.2), coda, RColorBrewer, stats, purrr, rlang, tibble, methods
 Suggests: 
     testthat,
     covr
