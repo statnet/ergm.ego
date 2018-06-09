@@ -2,3 +2,7 @@
 ^\.Rproj\.user$
 .travis.yml
 appveyor.yml
+.RData
+.RSession
+.Rhistory
+^codecov\.yml$
