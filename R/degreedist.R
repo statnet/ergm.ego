@@ -64,21 +64,17 @@ degreedist.egodata <- function(object, freq = FALSE, prob = !freq,
   
   degtable <- rep(0, nrow(egodata$egos))
   degtable[as.numeric(names(table(egodata$alters[egoIDcol])))] <- table(egodata$alters[egoIDcol])
-  degtable.wt <- degtable * egodata$egoWt
-  maxdeg <- max(degtable.wt)
-  deg.ego <- summary(egodata ~ degree(0:maxdeg, by = by))
-  names(deg.ego) <- 0:maxdeg
-  maxfreq <- max(deg.ego)
-  if(!is.null(by)){
-    levs <- sort(unique(c(egodata$egos[[by]], egodata$alters[[by]])))
-    deg.ego <- matrix(0, nrow = length(levs), ncol = maxdeg + 1)
-    rownames(deg.ego) <- levs
-    colnames(deg.ego) <- 0:maxdeg
-    for(i in 1:length(levs)){
-      vals <- table(degtable.wt[egodata$egos[by] == levs[i]])
-      toreplace <- as.numeric(names(vals)) + 1
-      deg.ego[i, toreplace] <- vals
-    }
+  maxdeg <- max(degtable)
+  
+  if(is.null(by)){
+    deg.ego <- xtabs(egodata$egoWt~degtable)
+    names(dimnames(deg.ego)) <- "degree"
+    degrees <- as.integer(names(deg.ego))
+  }else{
+    deg.ego <- xtabs(egodata$egoWt~egodata$egos[[by]]+degtable)
+    names(dimnames(deg.ego)) <- c(by, "degree")
+    levs <- rownames(deg.ego)
+    degrees <- as.integer(colnames(deg.ego))
     ncolors <- dim(deg.ego)[1]
     if(ncolors == 2){
       color <- c("#eff3ff", "#377FBC")
@@ -90,7 +86,6 @@ degreedist.egodata <- function(object, freq = FALSE, prob = !freq,
     
     ltext <- levs
     lfill <- c(color, 0)
-    lborder <- c(rep("black", times = ncolors), 0)
     ltitle <- by
     maxfreq <- max(colSums(deg.ego))
   }
@@ -110,8 +105,8 @@ degreedist.egodata <- function(object, freq = FALSE, prob = !freq,
 
   if(plot){
     if(brgmod) {
-      brgdraws <- simulate.ergm.ego(suppressMessages(ergm.ego(egodata ~ edges)), nsim = 50, ...)
-      deg.brg <- summary(brgdraws ~ degree(0:maxdeg))
+      brgdraws <- simulate(suppressMessages(ergm.ego(egodata ~ edges, control=control.ergm.ego(ppopsize=nrow(egodata$egos)*max(egodata$egoWt)/min(egodata$egoWt)))), nsim = 50, ...)
+      deg.brg <- summary(brgdraws ~ degree(degrees))
       brgmeans <- apply(deg.brg, MARGIN = 2, FUN = mean)
       brgsd <- apply(deg.brg, MARGIN = 2, FUN = sd)
       upper <- brgmeans + 2 * brgsd
@@ -150,8 +145,7 @@ degreedist.egodata <- function(object, freq = FALSE, prob = !freq,
                               angle = 90, col = "firebrick"))
     } 
     if(!is.null(by)){
-      legend(x="topright", legend = ltext, title = ltitle, fill = lfill, 
-             border = lborder, bty = "n")
+      legend(x="top", legend = ltext, title = ltitle, fill = lfill, bg="white")
     }
   }
   
