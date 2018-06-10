@@ -63,7 +63,6 @@ degreedist.egodata <- function(object, freq = FALSE, prob = !freq,
   
   degtable <- rep(0, nrow(egodata$egos))
   degtable[as.numeric(names(table(egodata$alters[egoIDcol])))] <- table(egodata$alters[egoIDcol])
-  maxdeg <- max(degtable)
   
   if(is.null(by)){
     deg.ego <- xtabs(egodata$egoWt~degtable)
@@ -104,8 +103,9 @@ degreedist.egodata <- function(object, freq = FALSE, prob = !freq,
 
   if(plot){
     if(brgmod) {
-      brgdraws <- simulate(suppressMessages(ergm.ego(egodata ~ edges, control=control.ergm.ego(ppopsize=nrow(egodata$egos)*max(egodata$egoWt)/min(egodata$egoWt)))), nsim = 50, ...)
-      deg.brg <- summary(brgdraws ~ degree(degrees))
+      ppopsize.mul <- max(egodata$egoWt)/min(egodata$egoWt)
+      brgdraws <- simulate(suppressMessages(ergm.ego(egodata ~ edges, control=control.ergm.ego(ppopsize=nrow(egodata$egos)*ppopsize.mul))), nsim = 50, ...)
+      deg.brg <- summary(brgdraws ~ degree(degrees))/ppopsize.mul
       brgmeans <- apply(deg.brg, MARGIN = 2, FUN = mean)
       brgsd <- apply(deg.brg, MARGIN = 2, FUN = sd)
       upper <- brgmeans + 2 * brgsd
