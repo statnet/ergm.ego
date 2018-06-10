@@ -116,42 +116,29 @@ degreedist.egor <- function(object, freq = FALSE, prob = !freq,
           lower <- lower/sum(brgmeans)
           brgmeans <- brgmeans/sum(brgmeans)
         }
-        
-        if(prob){
-          if(is.null(by)){
-            brgmeans <- brgmeans/scaledeg
-            upper <- upper/scaledeg
-            lower <- lower/scaledeg
-          } else {
-            upper <- upper/sum(brgmeans)
-            lower <- lower/sum(brgmeans)
-            brgmeans <- brgmeans/sum(brgmeans)
-          }
-          
-        }
-        maxfreq <- max(maxfreq, upper, na.rm = TRUE)
       }
-      
-      baraxis <- barplot(deg.ego, xlab = "Degree", ylab = ylabel,
-                         col = color, beside = beside, plot = TRUE,
-                         ylim = c(0, maxfreq), main = main)
-      
-      if(brgmod){
-        baraxis <- if(is.null(by)){
-                     baraxis - 0.15
-                   } else {
-                     colMeans(baraxis)
-                   }
-        points(x = baraxis, y = brgmeans, col = "firebrick",
-               lwd = 1, pch = 18, cex = 1.25)
-        suppressWarnings(arrows(x0 = baraxis, y0 = upper,
-                                x1 = baraxis, y1 = lower,
-                                code = 3, length = 0.1, 
-                                angle = 90, col = "firebrick"))
-      } 
-      if(!is.null(by)){
-        legend(x="top", legend = ltext, title = ltitle, fill = lfill, bg="white")
-      }
+      maxfreq <- max(maxfreq, upper, na.rm = TRUE)
+    }
+    
+    baraxis <- barplot(deg.ego, xlab = "Degree", ylab = ylabel,
+                       col = color, beside = beside, plot = TRUE,
+                       ylim = c(0, maxfreq), main = main)
+    
+    if(brgmod){
+      baraxis <- if(is.null(by)){
+                   baraxis - 0.15
+                 } else {
+                   colMeans(baraxis)
+                 }
+      points(x = baraxis, y = brgmeans, col = "firebrick",
+             lwd = 1, pch = 18, cex = 1.25)
+      suppressWarnings(arrows(x0 = baraxis, y0 = upper,
+                              x1 = baraxis, y1 = lower,
+                              code = 3, length = 0.1, 
+                              angle = 90, col = "firebrick"))
+    } 
+    if(!is.null(by)){
+      legend(x="top", legend = ltext, title = ltitle, fill = lfill, bg="white")
     }
   }
   
