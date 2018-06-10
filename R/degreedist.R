@@ -58,7 +58,6 @@ degreedist.egor <- function(object, freq = FALSE, prob = !freq,
   if(!is.null(by)) ylabel <- paste(ylabel, "(within attr level)")
 
   degtable <- sapply(egor$.alts, nrow)
-  maxdeg <- max(degtable)
   
   if(is.null(by)){
     deg.ego <- xtabs(weights(egor)~degtable)
@@ -99,8 +98,9 @@ degreedist.egor <- function(object, freq = FALSE, prob = !freq,
   
   if(plot){
     if(brgmod) {
-      brgdraws <- simulate(suppressMessages(ergm.ego(egor ~ edges, control=control.ergm.ego(ppopsize=nrow(egor)*max(weights(egor))/min(weights(egor))))), nsim = 50, ...)
-      deg.brg <- summary(brgdraws ~ degree(degrees))
+      ppopsize.mul <- max(weights(egor))/min(weights(egor))
+      brgdraws <- simulate(suppressMessages(ergm.ego(egor ~ edges, control=control.ergm.ego(ppopsize=nrow(egor)*ppopsize.mul))), nsim = 50, ...)
+      deg.brg <- summary(brgdraws ~ degree(degrees))/ppopsize.mul
       brgmeans <- apply(deg.brg, MARGIN = 2, FUN = mean)
       brgsd <- apply(deg.brg, MARGIN = 2, FUN = sd)
       upper <- brgmeans + 2 * brgsd
