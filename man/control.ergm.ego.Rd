@@ -6,8 +6,8 @@
 \usage{
 control.ergm.ego(ppopsize = c("auto", "samp", "pop"), ppopsize.mul = 1,
   ppop.wt = c("round", "sample"), stats.wt = c("data", "ppop"),
-  stats.est = c("survey", "asymptotic", "bootstrap", "jackknife", "naive"),
-  boot.R = 10000, ignore.max.alters = FALSE,
+  stats.est = c("survey", "asymptotic", "bootstrap", "jackknife",
+  "naive"), boot.R = 10000, ignore.max.alters = FALSE,
   ergm.control = control.ergm(), ...)
 }
 \arguments{

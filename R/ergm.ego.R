@@ -233,8 +233,8 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
   ergm.offset.coef <- c(-log(ppopsize/popsize),offset.coef)
 
   # If nominations were limited, represent the cap a degree bound.
-  constraints <- if(!control$ignore.max.alters && alter.design(egor)$max<Inf){
-    newterm <- as.formula(substitute(~bd(maxout=.max), eval(list(.max=alter.design(egor,"max")))))
+  constraints <- if(!control$ignore.max.alters && alter_design(egor)$max<Inf){
+    newterm <- as.formula(substitute(~bd(maxout=.max), eval(list(.max=alter_design(egor,"max")))))
     if(constraints==~.)
       newterm
     else

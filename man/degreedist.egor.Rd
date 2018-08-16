@@ -5,8 +5,8 @@
 \alias{degreedist}
 \title{Plotting the degree distribution of an egocentric dataset}
 \usage{
-\method{degreedist}{egor}(object, freq = FALSE, prob = !freq, by = NULL,
-  brgmod = FALSE, main = NULL, plot = TRUE, ...)
+\method{degreedist}{egor}(object, freq = FALSE, prob = !freq,
+  by = NULL, brgmod = FALSE, main = NULL, plot = TRUE, ...)
 }
 \arguments{
 \item{object}{A \code{\link{egor}} object.}

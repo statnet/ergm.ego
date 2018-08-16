@@ -24,8 +24,8 @@
 #' @import egor
 #' @export
 as.egor.egodata <- function(x, ...){
-  ego.design <- list(~1, weights = rep(x$egoWt, length.out=nrow(x$egos)))
-  egor(egos.df=x$egos, alters.df=x$alters, ID.vars = list(ego = x$egoIDcol), ego.design=ego.design)
+  ego_design <- list(~1, weights = rep(x$egoWt, length.out=nrow(x$egos)))
+  egor(egos.df=x$egos, alters.df=x$alters, ID.vars = list(ego = x$egoIDcol), ego_design=ego_design)
 }
 
 #' Construct an Egocentric View of a \code{\link{network}} Object
@@ -77,7 +77,7 @@ as.egor.network<-function(x,special.cols=c("na"),...){
   
   egor(egos.df=egos, alters.df=alters, aaties.df=aaties,
        ID.vars=list(alter=".alterID", source=".Source", target=".Target"),
-       ego.design=list(~1, weights=~1))
+       ego_design=list(~1, weights=~1))
 }
 
 
@@ -197,7 +197,7 @@ na.omit.egor <- function(object, relevant=TRUE, ...){
 #'   data-frame-alikes as arguments.
 #'
 #' @return An [egor::egor()] object whose egos have been resampled in
-#'   accordance with the arguments. Note that its [egor::ego.design()]
+#'   accordance with the arguments. Note that its [egor::ego_design()]
 #'   information is overwritten in favor of the selection
 #'   probabilities used in the sampling.
 #'
@@ -248,7 +248,7 @@ sample.egor <- function(x, size, replace=FALSE, prob=NULL, ...){
   is <- sample.int(nrow(x), size, replace, prob)
 
   x <- x[is, ,aspect="egos"]
-  ego.design(x) <- list(~1, weights=(w/prob)[is])
+  ego_design(x) <- list(~1, weights=(w/prob)[is])
   x
 }
 

@@ -97,7 +97,7 @@ summary_formula.egor <- function(object,..., basis=NULL, individual=FALSE, scale
     if(!individual){
       if(length(scaling.stats)){
         scaleto <- if(is.null(scaleto)) nrow(egor) else scaleto
-        scaling.stats <- svymean(scaling.stats, ego.design(egor), ...)
+        scaling.stats <- svymean(scaling.stats, ego_design(egor), ...)
         scaling.stats <- scaling.stats*scaleto
       }
       

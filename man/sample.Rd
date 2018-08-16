@@ -19,7 +19,7 @@ sample(x, size, replace = FALSE, prob = NULL, ...)
 }
 \value{
 An \code{\link[egor:egor]{egor::egor()}} object whose egos have been resampled in
-accordance with the arguments. Note that its \code{\link[egor:ego.design]{egor::ego.design()}}
+accordance with the arguments. Note that its \code{\link[egor:ego_design]{egor::ego_design()}}
 information is overwritten in favor of the selection
 probabilities used in the sampling.
 }

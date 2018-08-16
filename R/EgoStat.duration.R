@@ -10,7 +10,7 @@
 #' @export
 #' @rdname ergm.ego-terms
 EgoStat.mean.age <- function(egor, emptyval=0){
-  startcol <- attr(egor,"alter.design")$startcol
+  startcol <- attr(egor,"alter_design")$startcol
   if(is.null(startcol)) stop("Egocentric dataset does not appear to contain durational information.")
 
   nedges <- summary(egor~edges, individual=FALSE, scaleto=1)
