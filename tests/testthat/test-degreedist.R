@@ -66,7 +66,7 @@ e <- egor(list(tibble(x="a"),
                tibble(x="b"),
                tibble(x=c("a","b"))),
           tibble(x=letters[c(1,1,2,2)]),
-          ego.design=list(~1,weights=c(2,1,1,2)))
+          ego_design=list(~1,weights=c(2,1,1,2)))
 
 test_that("weighted degreedist", {
   expect_equivalent(unclass(degreedist(e, plot=FALSE)), c(1/2,1/2))
