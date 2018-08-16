@@ -132,7 +132,7 @@ NULL
 #' This page describes the \code{\link[ergm]{ergm}} terms (and hence network
 #' statistics) for which inference based on egocentrically sampled data is
 #' implemented in \code{ergm.ego} package. Other packages may add their own
-#' terms.
+#' terms. These functions should not be called by the end-user.
 #' 
 #' The current recommendation for any package implementing additional
 #' egocentric calculator terms is to create a help file with a name or alias
@@ -183,13 +183,15 @@ NULL
 #' }
 #' }
 #'
-#' @param egor,attrname,base,diff,keep,pow,d,by,homophily,from,to,decay,fixed,cutoff,alpha,emptyval,nw,arglist,levels,levels2,attrs,... arguments to terms. See \code{\link[ergm]{ergm-terms}}.
+#' @param egor The [`egor`] object whose statistics are to be evaluated.
+#' @param attrname,base,diff,keep,pow,d,by,homophily,from,to,decay,fixed,cutoff,alpha,emptyval,nw,arglist,levels,levels2,attrs,... arguments to terms. See \code{\link[ergm]{ergm-terms}}.
 #' @import zeallot
 #' @seealso \code{\link[ergm]{ergm-terms}}
 #' @keywords models
 NULL
 
 #' @export
+#' @param trm [`ergm`] terms to be offset.
 #' @rdname ergm.ego-terms
 EgoStat.offset <- function(egor, trm){
   trm <- substitute(trm)

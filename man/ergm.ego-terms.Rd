@@ -78,13 +78,17 @@ EgoStat.mean.age(egor, emptyval = 0)
 InitErgmTerm.netsize.adj(nw, arglist, ...)
 }
 \arguments{
-\item{egor, attrname, base, diff, keep, pow, d, by, homophily, from, to, decay, fixed, cutoff, alpha, emptyval, nw, arglist, levels, levels2, attrs, ...}{arguments to terms. See \code{\link[ergm]{ergm-terms}}.}
+\item{egor}{The \code{\link{egor}} object whose statistics are to be evaluated.}
+
+\item{trm}{\code{\link{ergm}} terms to be offset.}
+
+\item{attrname, base, diff, keep, pow, d, by, homophily, from, to, decay, fixed, cutoff, alpha, emptyval, nw, arglist, levels, levels2, attrs, ...}{arguments to terms. See \code{\link[ergm]{ergm-terms}}.}
 }
 \description{
 This page describes the \code{\link[ergm]{ergm}} terms (and hence network
 statistics) for which inference based on egocentrically sampled data is
 implemented in \code{ergm.ego} package. Other packages may add their own
-terms.
+terms. These functions should not be called by the end-user.
 }
 \details{
 The current recommendation for any package implementing additional
