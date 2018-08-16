@@ -127,9 +127,7 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
   message("Constructing pseudopopulation network.")
   popnw <-
     if(is.data.frame(control$ppopsize)){ # If pseudopoluation composition is given in popsize, use that.
-      pegos <- control$ppopsize
-      pdata <- egor(alters.df=rep(list(data.frame()), nrow(pegos)), egos.df=pegos)
-      template_network(pdata, ppopsize)
+      template_network(control$ppopsize, ppopsize)
     }else{
       template_network(egor, ppopsize, scaling=control$ppop.wt)
     }

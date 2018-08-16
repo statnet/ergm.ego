@@ -67,10 +67,8 @@ simulate.ergm.ego <- function(object, nsim = 1, seed = NULL, popsize=if(object$p
   statnet.common::check.control.class("simulate.ergm.ego", "simulate.ergm.ego")
   
   if(is.data.frame(popsize)){ # If pseudopoluation composition is given in popsize, use that.
-    pegos <- popsize
-    pdata <- egor(alters.df=rep(list(data.frame()), nrow(pegos)), egos.df=pegos)
+    popnw <- template_network(popsize, nrow(popsize))
     popsize <- nrow(popsize)
-    popnw <- template_network(pdata, popsize)
   }else{
     popnw <-
       if(popsize == object$ppopsize) object$newnetwork
