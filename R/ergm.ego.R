@@ -129,9 +129,9 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
     if(is.data.frame(control$ppopsize)){ # If pseudopoluation composition is given in popsize, use that.
       pegos <- control$ppopsize
       pdata <- egor(alters.df=rep(list(data.frame()), nrow(pegos)), egos.df=pegos)
-      as.network(pdata, ppopsize)
+      template_network(pdata, ppopsize)
     }else{
-      as.network(egor, ppopsize, scaling=control$ppop.wt)
+      template_network(egor, ppopsize, scaling=control$ppop.wt)
     }
 
   if(network.size(popnw)!=ppopsize){

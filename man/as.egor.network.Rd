@@ -25,10 +25,10 @@ network. Used mainly for testing.
 }
 \examples{
 
-# See example(ergm.ego) and example(as.network.egor).
+# See example(ergm.ego) and example(template_network).
 }
 \seealso{
-\code{\link{as.network.egor}}, which performs the inverse
+\code{\link{template_network}}, which performs the inverse
 operation (though drops the ties).
 }
 \author{

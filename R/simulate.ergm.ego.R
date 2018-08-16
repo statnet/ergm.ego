@@ -70,11 +70,11 @@ simulate.ergm.ego <- function(object, nsim = 1, seed = NULL, popsize=if(object$p
     pegos <- popsize
     pdata <- egor(alters.df=rep(list(data.frame()), nrow(pegos)), egos.df=pegos)
     popsize <- nrow(popsize)
-    popnw <- as.network(pdata, popsize)
+    popnw <- template_network(pdata, popsize)
   }else{
     popnw <-
       if(popsize == object$ppopsize) object$newnetwork
-      else as.network(object$egor, popsize, scaling=control$ppop.wt)
+      else template_network(object$egor, popsize, scaling=control$ppop.wt)
   }
 
   ppopsize <- if(network.size(popnw)!=popsize){

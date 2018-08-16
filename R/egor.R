@@ -42,12 +42,12 @@ as.egor.egodata <- function(x, ...){
 #' @param ... Additional arguments, currently unused.
 #' @return An \code{\link{egor}} object.
 #' @author Pavel N. Krivitsky
-#' @seealso \code{\link{as.network.egor}}, which performs the inverse
+#' @seealso \code{\link{template_network}}, which performs the inverse
 #' operation (though drops the ties).
 #' @keywords datagen manip
 #' @examples
 #' 
-#' # See example(ergm.ego) and example(as.network.egor).
+#' # See example(ergm.ego) and example(template_network).
 #' @import tibble
 #' @export
 as.egor.network<-function(x,special.cols=c("na"),...){
@@ -115,16 +115,16 @@ as.egor.network<-function(x,special.cols=c("na"),...){
 #' fmh.ego <- as.egor(faux.mesa.high)
 #' 
 #' # Same actor attributes
-#' fmh.template <- as.network(fmh.ego, N=network.size(faux.mesa.high))
+#' fmh.template <- template_network(fmh.ego, N=network.size(faux.mesa.high))
 #' summary(fmh.template, print.adj = FALSE)
 #' 
 #' # Twice the actors, same distribution
-#' fmh2.template <- as.network(fmh.ego, N=2*network.size(faux.mesa.high))
+#' fmh2.template <- template_network(fmh.ego, N=2*network.size(faux.mesa.high))
 #' summary(fmh2.template, print.adj = FALSE)
 #'
 #' @import network
 #' @export
-as.network.egor<-function(x, N, scaling=c("round","sample"), ...){
+template_network<-function(x, N, scaling=c("round","sample"), ...){
   scaling <- match.arg(scaling)
   w <- weights(x)
   egoinds <- switch(scaling,
