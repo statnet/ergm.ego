@@ -5,7 +5,7 @@
 #  open source, and has the attribution requirements (GPL Section 7) at
 #  http://statnet.org/attribution
 #
-#  Copyright 2015-2016 Statnet Commons
+#  Copyright 2015-2018 Statnet Commons
 #######################################################################
 # This is just an alias for the number of edges, to distinguish it in the summary tables.
 
