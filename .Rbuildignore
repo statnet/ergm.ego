@@ -6,6 +6,6 @@ appveyor.yml
 .RSession
 .Rhistory
 ^codecov\.yml$
-*.orig
-*.bak
-*~
+.*\.orig$
+.*\.bak$
+.*~$
