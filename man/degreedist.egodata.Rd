@@ -34,9 +34,10 @@ if \code{by=NULL} or a matrix with a row for each category if not. If
 \code{plot==TRUE} returns invisibly.
 }
 \description{
-A function to plot a histogram of the degree distribution of actors in the
-egocentric dataset, optionally broken down by group and/or compared with a
-Bernoulli graph.
+A \code{\link[=degreedist]{degreedist()}} method for \code{\link{egodata}} objects: plot a histogram
+of the degree distribution of actors in the egocentric dataset,
+optionally broken down by group and/or compared with a Bernoulli
+graph.
 }
 \examples{
 
