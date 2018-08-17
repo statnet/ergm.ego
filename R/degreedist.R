@@ -5,15 +5,16 @@
 #  open source, and has the attribution requirements (GPL Section 7) at
 #  http://statnet.org/attribution
 #
-#  Copyright 2015-2016 Statnet Commons
+#  Copyright 2015-2018 Statnet Commons
 #######################################################################
 
 
 #' Plotting the degree distribution of an egocentric dataset
 #' 
-#' A function to plot a histogram of the degree distribution of actors in the
-#' egocentric dataset, optionally broken down by group and/or compared with a
-#' Bernoulli graph.
+#' A [degreedist()] method for [`egodata`] objects: plot a histogram
+#' of the degree distribution of actors in the egocentric dataset,
+#' optionally broken down by group and/or compared with a Bernoulli
+#' graph.
 #' 
 #' @aliases degreedist
 #' @param object A \code{\link{egor}} object.
