@@ -62,10 +62,14 @@
    }
 
   
-   %% \subsection{OTHER USER-VISIBLE CHANGES}{
-   %%   \itemize{
-   %%   }
-   %% }
+   \subsection{OTHER USER-VISIBLE CHANGES}{
+     \itemize{
+       
+       \item \code{\link{degreedist.egodata}} is now an
+       \code{\link{egodata}} method of \code{\link[ergm]{degreedist}}.
+       
+     }
+   }
 
   % \subsection{C-LEVEL FACILITIES}{
   %   \itemize{
