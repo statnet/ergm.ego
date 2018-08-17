@@ -5,7 +5,8 @@
 \title{Control parameters for \code{\link{simulate.ergm.ego}}.}
 \usage{
 control.simulate.ergm.ego(ppop.wt = c("round", "sample"),
-  SAN.control = control.san(), simulate.control = control.simulate(), ...)
+  SAN.control = control.san(), simulate.control = control.simulate(),
+  ...)
 }
 \arguments{
 \item{ppop.wt}{Because each ego must be represented in the pseuodopopulation
