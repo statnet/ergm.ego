@@ -11,9 +11,10 @@
 
 #' Plotting the degree distribution of an egocentric dataset
 #' 
-#' A function to plot a histogram of the degree distribution of actors in the
-#' egocentric dataset, optionally broken down by group and/or compared with a
-#' Bernoulli graph.
+#' A [degreedist()] method for [`egodata`] objects: plot a histogram
+#' of the degree distribution of actors in the egocentric dataset,
+#' optionally broken down by group and/or compared with a Bernoulli
+#' graph.
 #' 
 #' 
 #' @param object A \code{\link{egodata}} object.
@@ -40,10 +41,10 @@
 #' data(faux.mesa.high)
 #' fmh.ego <- as.egodata(faux.mesa.high)
 #' 
-#' degreedist.egodata(fmh.ego,by="Grade",brgmod=TRUE)
+#' degreedist(fmh.ego,by="Grade",brgmod=TRUE)
 #'
 #' @importFrom graphics arrows barplot legend points
-#' @export degreedist.egodata
+#' @export
 degreedist.egodata <- function(object, freq = FALSE, prob = !freq, 
                                by = NULL, brgmod = FALSE, main = NULL, plot = TRUE, ...){
   egodata <- object
