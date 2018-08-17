@@ -16,7 +16,7 @@
 #' \code{\link{egodata}} object.
 #' 
 #' 
-#' @aliases summary_formula.egodata summary summary.formula
+#' @aliases summary_formula.egodata summary summary_formula
 #' @param object An \code{\link[ergm]{ergm}}-style formula with a
 #' \code{\link{egodata}} object as the LHS.
 #' 
