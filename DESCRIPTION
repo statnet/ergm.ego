@@ -9,7 +9,7 @@ Authors@R: c(
 	    person("Kirk", "Li", role=c("ctb"), email="kirkli@uw.edu"),
 	    person("Emily N.", "Beylerian", role=c("ctb"), email="ebey@uw.edu"),
 	    person("Michał", "Bojanowski", role=c("ctb"), email="m.bojanowski@uw.edu.pl"))
-Depends: ergm (>= 3.9), network (>= 1.14)
+Depends: ergm (>= 3.9), network (>= 1.13)
 Imports: statnet.common (>= 4.1.2), coda, RColorBrewer, stats, purrr, rlang, tibble, methods
 Suggests: 
     testthat,

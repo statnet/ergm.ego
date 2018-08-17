@@ -4,7 +4,7 @@
 \alias{mixingmatrix.egodata}
 \title{Summarizing the mixing among groups in an egocentric dataset}
 \usage{
-\method{mixingmatrix}{egodata}(object, attrname, rowprob = FALSE, ...)
+mixingmatrix.egodata(object, attrname, rowprob = FALSE, ...)
 }
 \arguments{
 \item{object}{A \code{\link{egodata}} object.}
@@ -26,9 +26,14 @@ the diagonal of \code{mixingmatrix.egodata} will be twice that returned by
 \code{\link[network]{mixingmatrix}} for the original undirected network.
 }
 \description{
-A \code{\link[network]{mixingmatrix}} method for
+A \code{\link[network]{mixingmatrix}} "method" for
 \code{\link{egodata}} objects, to return counts of how often a ego
 of each group nominates an alter of each group.
+}
+\note{
+As of the \code{ergm.ego} 0.4 release, \code{network}
+package's \code{\link[=mixingmatrix]{mixingmatrix()}} is not a generic, so this function is
+not a method. A future release of \code{network} will make it so.
 }
 \examples{
 
@@ -36,7 +41,7 @@ data(faux.mesa.high)
 fmh.ego <- as.egodata(faux.mesa.high)
 
 (mm <- mixingmatrix(faux.mesa.high,"Grade"))
-(mm.ego <- mixingmatrix(fmh.ego,"Grade"))
+(mm.ego <- mixingmatrix.egodata(fmh.ego,"Grade"))
 
 stopifnot(isTRUE(all.equal({tmp<-unclass(mm$matrix); diag(tmp) <- diag(tmp)*2;
 tmp}, mm.ego, check.attributes=FALSE)))
