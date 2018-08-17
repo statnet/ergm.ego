@@ -18,13 +18,17 @@
 \usage{
 ergm.ego_get_vattr(object, df, accept = "character", ...)
 
-\method{ergm.ego_get_vattr}{character}(object, df, accept = "character", ...)
+\method{ergm.ego_get_vattr}{character}(object, df, accept = "character",
+  ...)
 
-\method{ergm.ego_get_vattr}{function}(object, df, accept = "character", ...)
+\method{ergm.ego_get_vattr}{function}(object, df, accept = "character",
+  ...)
 
-\method{ergm.ego_get_vattr}{formula}(object, df, accept = "character", ...)
+\method{ergm.ego_get_vattr}{formula}(object, df, accept = "character",
+  ...)
 
-ergm.ego_attr_levels(object, attr, egodata, levels = sort(unique(attr)), ...)
+ergm.ego_attr_levels(object, attr, egodata, levels = sort(unique(attr)),
+  ...)
 
 \method{ergm.ego_attr_levels}{numeric}(object, attr, egodata,
   levels = sort(unique(attr)), ...)

@@ -4,8 +4,8 @@
 \alias{simulate.ergm.ego}
 \title{Simulate from a \code{\link{ergm.ego}} fit.}
 \usage{
-\method{simulate}{ergm.ego}(object, nsim = 1, seed = NULL, popsize = if
-  (object$popsize == 1) object$ppopsize else object$popsize,
+\method{simulate}{ergm.ego}(object, nsim = 1, seed = NULL,
+  popsize = if (object$popsize == 1) object$ppopsize else object$popsize,
   control = control.simulate.ergm.ego(), ..., verbose = FALSE)
 }
 \arguments{
