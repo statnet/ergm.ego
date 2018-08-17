@@ -7,7 +7,7 @@
 #
 #  Copyright 2015-2018 Statnet Commons
 #######################################################################
-#' @import statnet.common
+#' @importFrom statnet.common statnetStartupMessage ERRVL NVL NVL3 all_identical despace eval_lhs.formula filter_rhs.formula list_rhs.formula nonsimp_update.formula paste.and set.control.class
 .onAttach <- function(lib, pkg){
   sm <- statnetStartupMessage("ergm.ego", c("statnet"), TRUE)
   if(!is.null(sm)){
