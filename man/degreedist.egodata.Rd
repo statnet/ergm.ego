@@ -51,5 +51,5 @@ degreedist(faux.mesa.high)
 }
 \seealso{
 \code{\link{degreedist}},
-\code{\link[ergm:summary.formula]{summary}}
+\code{\link[ergm:summary_formula]{summary}}
 }

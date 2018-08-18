@@ -3,7 +3,7 @@
 \name{summary_formula.egodata}
 \alias{summary_formula.egodata}
 \alias{summary}
-\alias{summary.formula}
+\alias{summary_formula}
 \title{Calculation of ERGM-style summary statistics for \code{\link{egodata}}
 objects.}
 \usage{

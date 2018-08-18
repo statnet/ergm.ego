@@ -35,7 +35,7 @@
 #'   \code{plot==TRUE} returns invisibly.
 #' 
 #' @seealso \code{\link{degreedist}},
-#' \code{\link[ergm:summary.formula]{summary}}
+#' \code{\link[ergm:summary_formula]{summary}}
 #' @examples
 #' 
 #' data(faux.mesa.high)
