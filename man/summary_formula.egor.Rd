@@ -2,8 +2,9 @@
 % Please edit documentation in R/summary.statistics.egor.R
 \name{summary_formula.egor}
 \alias{summary_formula.egor}
+\alias{summary_formula.egodata}
 \alias{summary}
-\alias{summary.formula}
+\alias{summary_formula}
 \title{Calculation of ERGM-style summary statistics for \code{\link{egor}}
 objects.}
 \usage{

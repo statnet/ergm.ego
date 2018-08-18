@@ -44,14 +44,14 @@ from an ERGM fit using \code{\link{ergm.ego}}.
 data(faux.mesa.high)
 fmh.ego <- as.egor(faux.mesa.high)
 egofit <- ergm.ego(fmh.ego~edges+degree(0:3)+nodefactor("Race")+nodematch("Race")
-                         +nodefactor("Sex")+nodematch("Sex")+absdiff("Grade"), 
-                          popsize=network.size(faux.mesa.high))
-colMeans(egosim <- simulate(egofit, popsize=500,nsim=200,
-statsonly=TRUE, control=control.simulate.ergm.ego(
-                    simulate.control=control.simulate.formula(MCMC.burnin=2e6))))
+               +nodefactor("Sex")+nodematch("Sex")+absdiff("Grade"), 
+               popsize=network.size(faux.mesa.high))
+colMeans(egosim <- simulate(egofit, popsize=300,nsim=50,
+                       statsonly=TRUE, control=control.simulate.ergm.ego(
+                       simulate.control=control.simulate.formula(MCMC.burnin=2e6))))
 colMeans(egosim)/attr(egosim,"ppopsize")*network.size(faux.mesa.high)
 summary(faux.mesa.high~edges+degree(0:3)+nodefactor("Race")+nodematch("Race")
-                         +nodefactor("Sex")+nodematch("Sex")+absdiff("Grade"))
+           +nodefactor("Sex")+nodematch("Sex")+absdiff("Grade"))
 
 }
 \references{

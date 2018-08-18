@@ -14,7 +14,7 @@
 #' \code{\link{egor}} object.
 #' 
 #' 
-#' @aliases summary summary.formula
+#' @aliases summary_formula.egodata summary summary_formula
 #' @param object An \code{\link[ergm]{ergm}}-style formula with a
 #' \code{\link{egor}} object as the LHS.
 #' 
