@@ -29,7 +29,7 @@ of actors.}
 }
 \value{
 The ouput has the same format (with the same options) as
-\code{\link[ergm]{simulate.formula}}. If \code{statsonly=TRUE} is passed, an
+\code{\link[ergm]{simulate.formula}}. If \code{output="stats"} is passed, an
 additional attribute, \code{"ppopsize"} is set, giving the actual size of
 the network reconstructed, when the \code{pop.wt} control parameter is set
 to \code{"round"} and \code{"popsize"} is not a multiple of the egocentric
@@ -47,7 +47,7 @@ egofit <- ergm.ego(fmh.ego~edges+degree(0:3)+nodefactor("Race")+nodematch("Race"
                +nodefactor("Sex")+nodematch("Sex")+absdiff("Grade"), 
                popsize=network.size(faux.mesa.high))
 colMeans(egosim <- simulate(egofit, popsize=300,nsim=50,
-                       statsonly=TRUE, control=control.simulate.ergm.ego(
+                       output="stats", control=control.simulate.ergm.ego(
                        simulate.control=control.simulate.formula(MCMC.burnin=2e6))))
 colMeans(egosim)/attr(egosim,"ppopsize")*network.size(faux.mesa.high)
 summary(faux.mesa.high~edges+degree(0:3)+nodefactor("Race")+nodematch("Race")
