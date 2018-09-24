@@ -134,6 +134,9 @@ gof.ergm.ego <- function (object, ...,
   if(is.null(GOF)){
     GOF<- ~degree
   }
+
+  .gof.egor <- object$egor
+  formula <- nonsimp_update.formula(object$formula, .gof.egor~., from.new=".gof.egor")
   
   ## If a different constraint was specified, use it; otherwise, copy
   ## from the ERGM.
@@ -159,7 +162,7 @@ gof.ergm.ego <- function (object, ...,
   n <- network.size(object$newnetwork)
   
   if ('model' %in% GOF) {
-    obs.model <- summary(object$formula, scaleto=1)
+    obs.model <- summary(formula, scaleto=1)
     sim.model <- simulate(object, nsim=control$nsim, seed=control$seed, popsize=object$ppopsize, control=control.simulate.ergm.ego(simulate.control=set.control.class("control.simulate.formula",control)),...,verbose=verbose, statsonly=TRUE)/n
   }
 
