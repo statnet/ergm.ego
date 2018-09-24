@@ -163,12 +163,11 @@ gof.ergm.ego <- function (object, ...,
   
   if ('model' %in% GOF) {
     obs.model <- summary(formula, scaleto=1)
-    sim.model <- simulate(object, nsim=control$nsim, seed=control$seed, popsize=object$ppopsize, control=control.simulate.ergm.ego(simulate.control=set.control.class("control.simulate.formula",control)),...,verbose=verbose, statsonly=TRUE)/n
+    sim.model <- simulate(object, nsim=control$nsim, seed=control$seed, popsize=object$ppopsize, control=control.simulate.ergm.ego(simulate.control=set.control.class("control.simulate.formula",control)),...,verbose=verbose, output="stats")/n
   }
 
   if ('degree' %in% GOF) {
     egor <- object$egor
-    s <- 
     obs.deg <- summary(as.formula(paste0("egor~degree(0:",n-1,")")), scaleto=1)
     sim.deg <- simulate(object, nsim=control$nsim, seed=control$seed, popsize=object$ppopsize, control=control.simulate.ergm.ego(simulate.control=set.control.class("control.simulate.formula",control)),...,verbose=verbose, statsonly=TRUE, monitor=as.formula(paste0("~degree(0:",n-1,")")))
     sim.deg <- sim.deg[, ncol(sim.deg)-((n-1):0), drop=FALSE]/n
