@@ -170,7 +170,7 @@ gof.ergm.ego <- function (object, ...,
     egor <- object$egor
     maxdeg <- max(sapply(egor$.alts,nrow),3)*2
     obs.deg <- summary(as.formula(paste0("egor~degree(0:",maxdeg-1,")+degrange(",maxdeg,")")), scaleto=1)
-    sim.deg <- simulate(object, nsim=control$nsim, seed=control$seed, popsize=object$ppopsize, control=control.simulate.ergm.ego(simulate.control=set.control.class("control.simulate.formula",control)),...,verbose=verbose, statsonly=TRUE, monitor=as.formula(paste0("~degree(0:",maxdeg-1,")+degrange(",maxdeg,")")))
+    sim.deg <- simulate(object, nsim=control$nsim, seed=control$seed, popsize=object$ppopsize, control=control.simulate.ergm.ego(simulate.control=set.control.class("control.simulate.formula",control)),...,verbose=verbose, output="stats", monitor=as.formula(paste0("~degree(0:",maxdeg-1,")+degrange(",maxdeg,")")))
     sim.deg <- sim.deg[, ncol(sim.deg)-(maxdeg:0), drop=FALSE]/n
   }
 
