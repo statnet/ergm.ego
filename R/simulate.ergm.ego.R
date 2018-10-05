@@ -23,6 +23,11 @@
 #'   required to estimate the model, to simulate over a specific set
 #'   of actors.
 #' @param control A \code{\link{control.simulate.ergm.ego}} control list.
+#' 
+#' @param output one of `"network"`, `"stats"`, `"edgelist"`, or
+#'   `"pending_update_network"`. See help for [simulate.ergm()] for
+#'   explanation.
+#' 
 #' @param \dots Additional arguments passed to \code{\link[ergm]{san}} and
 #' \code{\link[ergm]{simulate.formula}}.
 #' @param verbose Verbosity of output.
@@ -63,7 +68,7 @@
 #'
 #' @importFrom stats simulate
 #' @export
-simulate.ergm.ego <- function(object, nsim = 1, seed = NULL, popsize=if(object$popsize==1) object$ppopsize else object$popsize, control=control.simulate.ergm.ego(), ..., verbose=FALSE){
+simulate.ergm.ego <- function(object, nsim = 1, seed = NULL, popsize=if(object$popsize==1) object$ppopsize else object$popsize, control=control.simulate.ergm.ego(), output=c("network","stats","edgelist","pending_update_network"), ..., verbose=FALSE){
   statnet.common::check.control.class("simulate.ergm.ego", "simulate.ergm.ego")
   
   if(is.data.frame(popsize)){ # If pseudopoluation composition is given in popsize, use that.
@@ -84,11 +89,11 @@ simulate.ergm.ego <- function(object, nsim = 1, seed = NULL, popsize=if(object$p
   san.stats <-
     if(length(object$target.stats)>nparam(object, offset=FALSE)) object$target.stats[!object$etamap$offsettheta]
     else object$target.stats
-  if(popsize != object$ppopsize) popnw <- san(ergm.formula, target.stats = san.stats/object$ppopsize*ppopsize,verbose=verbose, control=control$SAN.control, ...)
+  if(popsize != object$ppopsize) popnw <- san(ergm.formula, target.stats = san.stats/object$ppopsize*ppopsize,verbose=verbose, control=control$SAN.control, ..., output="pending_update_network")
   ergm.formula <- nonsimp_update.formula(object$formula,popnw~.,from.new="popnw")
   ergm.formula <- nonsimp_update.formula(ergm.formula,object$netsize.adj)
 
-  out <- simulate(ergm.formula, nsim=nsim, seed=seed, verbose=verbose, coef=c(netsize.adj=-log(ppopsize/object$popsize),object$coef[-1]), control=control$simulate.control, ...)
+  out <- simulate(ergm.formula, nsim=nsim, seed=seed, verbose=verbose, coef=c(netsize.adj=-log(ppopsize/object$popsize),object$coef[-1]), control=control$simulate.control, ..., output=output)
   if(is.matrix(out)){
     out <- out[,-1,drop=FALSE]
     attr(out, "ppopsize") <- ppopsize

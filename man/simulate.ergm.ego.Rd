@@ -6,7 +6,8 @@
 \usage{
 \method{simulate}{ergm.ego}(object, nsim = 1, seed = NULL,
   popsize = if (object$popsize == 1) object$ppopsize else object$popsize,
-  control = control.simulate.ergm.ego(), ..., verbose = FALSE)
+  control = control.simulate.ergm.ego(), output = c("network", "stats",
+  "edgelist", "pending_update_network"), ..., verbose = FALSE)
 }
 \arguments{
 \item{object}{An \code{\link{ergm.ego}} fit.}
@@ -21,6 +22,10 @@ required to estimate the model, to simulate over a specific set
 of actors.}
 
 \item{control}{A \code{\link{control.simulate.ergm.ego}} control list.}
+
+\item{output}{one of \code{"network"}, \code{"stats"}, \code{"edgelist"}, or
+\code{"pending_update_network"}. See help for \code{\link[=simulate.ergm]{simulate.ergm()}} for
+explanation.}
 
 \item{\dots}{Additional arguments passed to \code{\link[ergm]{san}} and
 \code{\link[ergm]{simulate.formula}}.}
