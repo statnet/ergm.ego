@@ -16,5 +16,5 @@ r_github_packages:
 - statnet/statnet.common
 - statnet/network
 - statnet/ergm-private@dev
-after_success:
-- Rscript -e 'covr::codecov(type="all")'
+## after_success:
+## - Rscript -e 'covr::codecov(type="all")'
