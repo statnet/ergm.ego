@@ -258,12 +258,18 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
     coef <- coef(ergm.fit)
 
     oi <- ergm.fit$etamap$offsettheta
-
+    
     DtDe <- -ergm.fit$hessian[!oi,!oi,drop=FALSE]
 
+    novar <- diag(DtDe)<sqrt(.Machine$double.eps)
+
+    if(any(novar)) warning("Unable to estimate standard errors for parameters ",paste.and(names(novar)[novar],oq="'",cq="'"),". Try increasing MCMC sample size and interval.")
+    oi[!oi][novar] <- TRUE
+    
     vcov <- matrix(NA, length(coef), length(coef))
-  
-    vcov[!oi,!oi] <- solve(DtDe)%*%v%*%solve(DtDe)
+
+    iDtDe <- solve(DtDe[!novar,!novar,drop=FALSE])
+    vcov[!oi,!oi] <- iDtDe%*%v[!novar,!novar,drop=FALSE]%*%iDtDe
     
     rownames(vcov) <- colnames(vcov) <- names(coef)
 
