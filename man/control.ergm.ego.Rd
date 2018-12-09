@@ -27,8 +27,11 @@ as \code{"samp"}.}
 \item{a number}{set \eqn{|N'|} directly (\code{popsize.mul}
 ignored)}
 
+\item{a \code{\link{network}} object}{use the specified network as the
+pseudo-population network directly; use at your own risk}
+
 \item{a data frame}{use the specified data frame as the
-pseudo-population; use at your own risk.}}
+pseudo-population; use at your own risk}}
 
 The default is to use the same pseudopopulation size as the sample size,
 but, particularly if there are sampling weights in the data, it should be
