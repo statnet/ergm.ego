@@ -99,7 +99,8 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.
 
   sampsize <- dim(egodata)[1]
   ppopsize <-
-    if(is.data.frame(control$ppopsize)) nrow(control$ppopsize)
+    if(is.network(control$ppopsize)) network.size(control$ppopsize)
+    else if(is.data.frame(control$ppopsize)) nrow(control$ppopsize)
     else if(is.numeric(control$ppopsize)) control$ppopsize
     else switch(control$ppopsize,
                 auto = if(missing(popsize) || popsize==1) sampsize*control$ppopsize.mul else popsize*control$ppopsize.mul,  
@@ -112,7 +113,9 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.
   
   message("Constructing pseudopopulation network.")
   popnw <-
-    if(is.data.frame(control$ppopsize)){ # If pseudopoluation composition is given in popsize, use that.
+    if(is.network(control$ppopsize)){  # If pseudopopulation network is given in popsize, use that.
+      control$ppopsize
+    }else if(is.data.frame(control$ppopsize)){ # If pseudopoluation composition is given in popsize, use that.
       pegos <- control$ppopsize
       pegos[[".pegoID"]] <- 1:nrow(pegos)
       pdata <- egodata(pegos, data.frame(.pegoID=c()), egoIDcol = ".pegoID")
