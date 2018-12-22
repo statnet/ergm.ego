@@ -66,7 +66,7 @@
 summary_formula.egor <- function(object,..., basis=NULL, individual=FALSE, scaleto=NULL){
   egor <-
     if(!is.null(basis)) basis
-    else get(as.character(object[[2]]), envir=environment(object))
+    else eval_lhs.formula(object)
 
   scaling.stats <- NULL
   scaling.pos <- c(0)
