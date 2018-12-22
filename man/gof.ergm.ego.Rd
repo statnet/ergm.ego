@@ -2,11 +2,14 @@
 % Please edit documentation in R/gof.ergm.ego.R
 \name{gof.ergm.ego}
 \alias{gof.ergm.ego}
+\alias{plot.gof.ergm.ego}
 \title{Conduct Goodness-of-Fit Diagnostics on a Exponential Family Random Graph
 Model fit to Egocentrically Sampled Data}
 \usage{
 \method{gof}{ergm.ego}(object, ..., GOF = c("model", "degree"),
   control = control.gof.ergm(), verbose = FALSE)
+
+\method{plot}{gof.ergm.ego}(x, ..., ego.conf.level = 0.95)
 }
 \arguments{
 \item{object}{An \code{\link{ergm.ego}} fit.}
@@ -23,13 +26,21 @@ have different defaults).}
 
 \item{verbose}{Provide verbose information on the progress of the
 simulation.}
+
+\item{x}{an object returned by \code{\link[=gof.ergm.ego]{gof.ergm.ego()}}.}
+
+\item{ego.conf.level}{confidence level for the observed statistic estimates as well.}
+
+\item{...}{additional arguments to \code{\link[=plot.gof]{plot.gof()}}.}
 }
 \value{
-An object of class \code{\link[ergm:gof]{gofobject}}.
+An object of class \code{\link{gof.ergm.ego}}, inheriting from \code{\link[ergm:gof.ergm]{gof.ergm}}.
 }
 \description{
 \code{\link{gof.ergm.ego}} implements the \code{\link[ergm]{gof}} method for
 \code{\link{ergm.ego}} fit objects.
+
+An enhanced plotting method is also provided, giving uncertainty bars for the observed statistics as well.
 }
 \examples{
 

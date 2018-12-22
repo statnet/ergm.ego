@@ -98,7 +98,7 @@
 #' have different defaults).
 #' @param verbose Provide verbose information on the progress of the
 #' simulation.
-#' @return An object of class \code{\link[ergm:gof]{gofobject}}.
+#' @return An object of class [`gof.ergm.ego`], inheriting from \code{\link[ergm:gof.ergm]{gof.ergm}}.
 #' @author Pavel N. Krivitsky
 #' @seealso For examples, see \code{\link{ergm.ego}}.
 #' @keywords models
@@ -218,6 +218,26 @@ gof.ergm.ego <- function (object, ...,
     returnlist$sim.deg <- sim.deg
   }
 
-  class(returnlist) <- "gof"
+  class(returnlist) <- c("gof.ergm.ego", "gof.ergm", "gof")
   returnlist
+}
+
+#' @rdname gof.ergm.ego
+#' @description An enhanced plotting method is also provided, giving uncertainty bars for the observed statistics as well.
+#' @param x an object returned by [gof.ergm.ego()].
+#' @param ... additional arguments to [plot.gof()].
+#' @param ego.conf.level confidence level for the observed statistic estimates as well.
+#' @method plot gof.ergm.ego
+#' @export
+plot.gof.ergm.ego <- function(x, ..., ego.conf.level=0.95){
+  # Call the plotting method for gof objects in general.
+  NextMethod()
+  # Now, overplot with our statistics if degrees.
+  if(!is.null(x$obs.deg)){
+    obs.CI <- confint(x$obs.deg, level=ego.conf.level) # svydesign() summary objects have the necessary components for a confint() method.
+    xvals <- seq_len(nrow(obs.CI))
+    lines(xvals, obs.CI[,1], lty=3)
+    lines(xvals, obs.CI[,2], lty=3)
+    invisible(obs.CI)
+  }else invisible()
 }
