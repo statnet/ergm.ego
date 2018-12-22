@@ -89,14 +89,13 @@ simulate.ergm.ego <- function(object, nsim = 1, seed = NULL, constraints=object$
     network.size(popnw)
   }else popsize
 
-  ergm.formula <- nonsimp_update.formula(object$formula,popnw~.,from.new="popnw")
   san.stats <-
     if(length(object$target.stats)>nparam(object, offset=FALSE)) object$target.stats[!object$etamap$offsettheta]
     else object$target.stats
-  if(popsize != object$ppopsize) popnw <- san(ergm.formula, target.stats = san.stats/object$ppopsize*ppopsize,verbose=verbose, constraints=constraints, control=control$SAN.control, ..., output="pending_update_network")
-  ergm.formula <- nonsimp_update.formula(object$formula,popnw~offset(netsize.adj)+.,from.new="popnw")
+  if(popsize != object$ppopsize) popnw <- san(object$formula, target.stats = san.stats/object$ppopsize*ppopsize,verbose=verbose, constraints=constraints, basis=popnw, control=control$SAN.control, ..., output="pending_update_network")
+  ergm.formula <- nonsimp_update.formula(object$formula,.~offset(netsize.adj)+.)
 
-  out <- simulate(ergm.formula, nsim=nsim, seed=seed, verbose=verbose, coef=c(netsize.adj=-log(ppopsize/object$popsize),object$coef[-1]), constraints=constraints, control=control$simulate.control, ..., output=output)
+  out <- simulate(ergm.formula, nsim=nsim, seed=seed, verbose=verbose, coef=c(netsize.adj=-log(ppopsize/object$popsize),object$coef[-1]), constraints=constraints, control=control$simulate.control, basis=popnw, ..., output=output)
   if(is.matrix(out)){
     out <- out[,-1,drop=FALSE]
     attr(out, "ppopsize") <- ppopsize
