@@ -28,7 +28,7 @@
 #'   `"pending_update_network"`. See help for [simulate.ergm()] for
 #'   explanation.
 #' 
-#' @param \dots Additional arguments passed to \code{\link[ergm]{san}} and
+#' @param constraints,\dots Additional arguments passed to \code{\link[ergm]{san}} and
 #' \code{\link[ergm]{simulate.formula}}.
 #' @param verbose Verbosity of output.
 #' @return The ouput has the same format (with the same options) as
@@ -68,7 +68,7 @@
 #'
 #' @importFrom stats simulate
 #' @export
-simulate.ergm.ego <- function(object, nsim = 1, seed = NULL, popsize=if(object$popsize==1) object$ppopsize else object$popsize, control=control.simulate.ergm.ego(), output=c("network","stats","edgelist","pending_update_network"), ..., verbose=FALSE){
+simulate.ergm.ego <- function(object, nsim = 1, seed = NULL, constraints=object$constraints, popsize=if(object$popsize==1) object$ppopsize else object$popsize, control=control.simulate.ergm.ego(), output=c("network","stats","edgelist","pending_update_network"), ..., verbose=FALSE){
   statnet.common::check.control.class("simulate.ergm.ego", "simulate.ergm.ego")
   
   egodata <- object$egodata
@@ -89,14 +89,13 @@ simulate.ergm.ego <- function(object, nsim = 1, seed = NULL, popsize=if(object$p
     network.size(popnw)
   }else popsize
 
-  ergm.formula <- nonsimp_update.formula(object$formula,popnw~.,from.new="popnw")
   san.stats <-
     if(length(object$target.stats)>nparam(object, offset=FALSE)) object$target.stats[!object$etamap$offsettheta]
     else object$target.stats
-  if(popsize != object$ppopsize) popnw <- san(ergm.formula, target.stats = san.stats/object$ppopsize*ppopsize,verbose=verbose, control=control$SAN.control, ..., output="pending_update_network")
-  ergm.formula <- nonsimp_update.formula(object$formula,popnw~offset(netsize.adj)+.,from.new="popnw")
+  if(popsize != object$ppopsize) popnw <- san(object$formula, target.stats = san.stats/object$ppopsize*ppopsize,verbose=verbose, constraints=constraints, basis=popnw, control=control$SAN.control, ..., output="pending_update_network")
+  ergm.formula <- nonsimp_update.formula(object$formula,.~offset(netsize.adj)+.)
 
-  out <- simulate(ergm.formula, nsim=nsim, seed=seed, verbose=verbose, coef=c(netsize.adj=-log(ppopsize/object$popsize),object$coef[-1]), control=control$simulate.control, ..., output=output)
+  out <- simulate(ergm.formula, nsim=nsim, seed=seed, verbose=verbose, coef=c(netsize.adj=-log(ppopsize/object$popsize),object$coef[-1]), constraints=constraints, control=control$simulate.control, basis=popnw, ..., output=output)
   if(is.matrix(out)){
     out <- out[,-1,drop=FALSE]
     attr(out, "ppopsize") <- ppopsize

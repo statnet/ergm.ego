@@ -5,7 +5,8 @@
 \title{Simulate from a \code{\link{ergm.ego}} fit.}
 \usage{
 \method{simulate}{ergm.ego}(object, nsim = 1, seed = NULL,
-  popsize = if (object$popsize == 1) object$ppopsize else object$popsize,
+  constraints = object$constraints, popsize = if (object$popsize == 1)
+  object$ppopsize else object$popsize,
   control = control.simulate.ergm.ego(), output = c("network", "stats",
   "edgelist", "pending_update_network"), ..., verbose = FALSE)
 }
@@ -15,6 +16,9 @@
 \item{nsim}{Number of realizations to simulate.}
 
 \item{seed}{Random seed.}
+
+\item{constraints, \dots}{Additional arguments passed to \code{\link[ergm]{san}} and
+\code{\link[ergm]{simulate.formula}}.}
 
 \item{popsize}{Either network size to which to scale the model for
 simulation or a \code{\link{data.frame}} with at least those ego attributes
@@ -26,9 +30,6 @@ of actors.}
 \item{output}{one of \code{"network"}, \code{"stats"}, \code{"edgelist"}, or
 \code{"pending_update_network"}. See help for \code{\link[=simulate.ergm]{simulate.ergm()}} for
 explanation.}
-
-\item{\dots}{Additional arguments passed to \code{\link[ergm]{san}} and
-\code{\link[ergm]{simulate.formula}}.}
 
 \item{verbose}{Verbosity of output.}
 }
