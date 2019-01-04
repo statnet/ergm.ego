@@ -179,9 +179,10 @@ gof.ergm.ego <- function (object, ...,
     # Maximum esp. Perhaps can be smarter.
     maxdeg <- max(sapply(egor$.alts,nrow),3)*2
     maxesp <- maxdeg - 2
-    obs.esp <- summary(as.formula(
-      paste0("egor ~ esp(0:", maxesp - 2, ")")
-    ))
+    obs.esp <- summary(
+      as.formula(paste0("egor ~ esp(0:", maxesp - 2, ")")),
+      scaleto = 1
+    )
     sim.esp <- simulate(
       object, 
       nsim=control$nsim, 
@@ -193,7 +194,7 @@ gof.ergm.ego <- function (object, ...,
       output="stats", 
       monitor=as.formula(paste0("~ esp(0:",maxesp-2,")"))
     )
-    sim.esp <- sim.esp[, grep("^esp[0-9]+$", colnames(sim.esp))]
+    sim.esp <- sim.esp[, grep("^esp[0-9]+$", colnames(sim.esp))]/n
   }
 
   if(verbose)
@@ -279,12 +280,20 @@ gof.ergm.ego <- function (object, ...,
 plot.gof.ergm.ego <- function(x, ..., ego.conf.level=0.95){
   # Call the plotting method for gof objects in general.
   NextMethod()
-  # Now, overplot with our statistics if degrees.
-  if(!is.null(x$obs.deg)){
-    obs.CI <- confint(x$obs.deg, level=ego.conf.level) # svydesign() summary objects have the necessary components for a confint() method.
+  # Add confidence intervals based on some `obs` stats
+  add_obs_ci <- function(obs, conf.level) {
+    obs.CI <- confint(obs, level=conf.level) # svydesign() summary objects have the necessary components for a confint() method.
     xvals <- seq_len(nrow(obs.CI))
     lines(xvals, obs.CI[,1], lty=3)
     lines(xvals, obs.CI[,2], lty=3)
-    invisible(obs.CI)
-  }else invisible()
+    obs.CI
+  }
+  # Now, overplot with our statistics if degrees.
+  if(!is.null(x$obs.deg)) {
+    invisible(add_obs_ci(x$obs.deg, conf.level = ego.conf.level))
+  } 
+  if(!is.null(x$obs.espart)) {
+    invisible(add_obs_ci(x$obs.espart, conf.level = ego.conf.level))
+  }
+  invisible()
 }
