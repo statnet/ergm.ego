@@ -14,7 +14,8 @@ Model fit to Egocentrically Sampled Data}
 \arguments{
 \item{object}{An \code{\link{ergm.ego}} fit.}
 
-\item{\dots}{Additional arguments, currently unused.}
+\item{...}{Additional arguments. Unused by \code{\link[=gof.ergm.ego]{gof.ergm.ego()}}, passed to
+\code{\link[ergm:plot.gof]{ergm::plot.gof()}} by \code{\link[=plot.gof.ergm.ego]{plot.gof.ergm.ego()}}}
 
 \item{GOF}{A string specifying the statistics whose goodness of fit is to be
 evaluated. Currently, only \dQuote{degree}, \dQuote{espartners} and \dQuote{model} are
@@ -30,8 +31,6 @@ simulation.}
 \item{x}{an object returned by \code{\link[=gof.ergm.ego]{gof.ergm.ego()}}.}
 
 \item{ego.conf.level}{confidence level for the observed statistic estimates as well.}
-
-\item{...}{additional arguments to \code{\link[=plot.gof]{plot.gof()}}.}
 }
 \value{
 An object of class \code{\link{gof.ergm.ego}}, inheriting from \code{\link[ergm:gof.ergm]{gof.ergm}}.
