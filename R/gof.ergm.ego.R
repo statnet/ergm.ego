@@ -276,6 +276,7 @@ gof.ergm.ego <- function (object, ...,
 #' @param x an object returned by [gof.ergm.ego()].
 #' @param ego.conf.level confidence level for the observed statistic estimates as well.
 #' @method plot gof.ergm.ego
+#' @importFrom graphics lines
 #' @export
 plot.gof.ergm.ego <- function(x, ..., ego.conf.level=0.95){
   # Call the plotting method for gof objects in general.
