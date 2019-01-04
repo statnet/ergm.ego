@@ -125,7 +125,7 @@
 #' @method gof ergm.ego
 #' @export
 gof.ergm.ego <- function (object, ..., 
-                          GOF=c("model","degree"), 
+                          GOF=c("model","degree", "espartners"), 
                           control=control.gof.ergm(),
                           verbose=FALSE) {
   statnet.common::check.control.class(c("gof.ergm","gof.formula"), "gof.ergm.ego")
@@ -173,6 +173,28 @@ gof.ergm.ego <- function (object, ...,
     sim.deg <- simulate(object, nsim=control$nsim, seed=control$seed, popsize=object$ppopsize, control=control.simulate.ergm.ego(simulate.control=set.control.class("control.simulate.formula",control)),...,verbose=verbose, output="stats", monitor=as.formula(paste0("~degree(0:",maxdeg-1,")+degrange(",maxdeg,")")))
     sim.deg <- sim.deg[, ncol(sim.deg)-(maxdeg:0), drop=FALSE]/n
   }
+  
+  if("espartners" %in% GOF) {
+    egor <- object$egor
+    # Maximum esp. Perhaps can be smarter.
+    maxdeg <- max(sapply(egor$.alts,nrow),3)*2
+    maxesp <- maxdeg - 2
+    obs.esp <- summary(as.formula(
+      paste0("egor ~ esp(0:", maxesp - 2, ")")
+    ))
+    sim.esp <- simulate(
+      object, 
+      nsim=control$nsim, 
+      seed=control$seed, 
+      popsize=object$ppopsize, 
+      control=control.simulate.ergm.ego(simulate.control=set.control.class("control.simulate.formula",control)),
+      ...,
+      verbose=verbose, 
+      output="stats", 
+      monitor=as.formula(paste0("~ esp(0:",maxesp-2,")"))
+    )
+    sim.esp <- sim.esp[, grep("^esp[0-9]+$", colnames(sim.esp))]
+  }
 
   if(verbose)
     cat("Starting simulations.\n")
@@ -216,6 +238,31 @@ gof.ergm.ego <- function (object, ...,
     returnlist$bds.deg <- bds.deg
     returnlist$obs.deg <- obs.deg
     returnlist$sim.deg <- sim.deg
+  }
+  
+  if("espartners" %in% GOF) {
+    pval.esp <- apply(sim.esp <= obs.esp[col(sim.esp)], 2, mean)
+    pval.esp.top <- apply(sim.esp >= obs.esp[col(sim.esp)], 2, mean)
+    pval.esp <- cbind(
+      obs.esp,
+      apply(sim.esp, 2, min), 
+      apply(sim.esp, 2, mean),
+      apply(sim.esp, 2, max), 
+      pmin(1, 2*pmin(pval.esp, pval.esp.top))
+    )
+    dimnames(pval.esp)[[2]] <- c("obs","min","mean","max","MC p-value")
+    pobs.esp <- obs.esp / sum(obs.esp)
+    psim.esp <- sweep(sim.esp, 1 ,apply(sim.esp, 1, sum), "/")
+    psim.esp[is.na(psim.esp)] <- 1
+    bds.esp <- apply(psim.esp, 2, quantile,probs=c(0.025,0.975))
+    
+    returnlist$summary.espart <- returnlist$pval.espart <- pval.esp
+    returnlist$pobs.espart <- pobs.esp
+    returnlist$psim.espart <- psim.esp
+    returnlist$bds.espart <- bds.esp
+    returnlist$obs.espart <- obs.esp
+    returnlist$sim.espart <- sim.esp
+    
   }
 
   class(returnlist) <- c("gof.ergm.ego", "gof.ergm", "gof")
