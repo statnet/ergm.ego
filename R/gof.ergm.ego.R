@@ -89,7 +89,8 @@
 #' 
 #' 
 #' @param object An \code{\link{ergm.ego}} fit.
-#' @param \dots Additional arguments, currently unused.
+#' @param ... Additional arguments. Unused by [gof.ergm.ego()], passed to
+#'   [ergm::plot.gof()] by [plot.gof.ergm.ego()]
 #' @param GOF A string specifying the statistics whose goodness of fit is to be
 #' evaluated. Currently, only \dQuote{degree}, \dQuote{espartners} and \dQuote{model} are
 #' implemented; see \code{\link[ergm]{gof}} documentation for details.
@@ -273,7 +274,6 @@ gof.ergm.ego <- function (object, ...,
 #' @rdname gof.ergm.ego
 #' @description An enhanced plotting method is also provided, giving uncertainty bars for the observed statistics as well.
 #' @param x an object returned by [gof.ergm.ego()].
-#' @param ... additional arguments to [plot.gof()].
 #' @param ego.conf.level confidence level for the observed statistic estimates as well.
 #' @method plot gof.ergm.ego
 #' @export
