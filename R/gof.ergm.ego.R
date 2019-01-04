@@ -91,7 +91,7 @@
 #' @param object An \code{\link{ergm.ego}} fit.
 #' @param \dots Additional arguments, currently unused.
 #' @param GOF A string specifying the statistics whose goodness of fit is to be
-#' evaluated. Currently, only \dQuote{degree} and \dQuote{model} are
+#' evaluated. Currently, only \dQuote{degree}, \dQuote{espartners} and \dQuote{model} are
 #' implemented; see \code{\link[ergm]{gof}} documentation for details.
 #' @param control A list to control parameters, constructed using
 #' \code{\link{control.gof.formula}} or \code{\link{control.gof.ergm}} (which
