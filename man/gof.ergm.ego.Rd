@@ -6,8 +6,8 @@
 \title{Conduct Goodness-of-Fit Diagnostics on a Exponential Family Random Graph
 Model fit to Egocentrically Sampled Data}
 \usage{
-\method{gof}{ergm.ego}(object, ..., GOF = c("model", "degree"),
-  control = control.gof.ergm(), verbose = FALSE)
+\method{gof}{ergm.ego}(object, ..., GOF = c("model", "degree",
+  "espartners"), control = control.gof.ergm(), verbose = FALSE)
 
 \method{plot}{gof.ergm.ego}(x, ..., ego.conf.level = 0.95)
 }
@@ -17,7 +17,7 @@ Model fit to Egocentrically Sampled Data}
 \item{\dots}{Additional arguments, currently unused.}
 
 \item{GOF}{A string specifying the statistics whose goodness of fit is to be
-evaluated. Currently, only \dQuote{degree} and \dQuote{model} are
+evaluated. Currently, only \dQuote{degree}, \dQuote{espartners} and \dQuote{model} are
 implemented; see \code{\link[ergm]{gof}} documentation for details.}
 
 \item{control}{A list to control parameters, constructed using
