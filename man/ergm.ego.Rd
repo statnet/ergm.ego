@@ -82,24 +82,6 @@ mcmc.diagnostics(egofit)
 summary(egofit)
 }
 
-# Note that we recover the ergm() parameters
-\dontrun{
-z <- coef(ergm(faux.mesa.high~edges+degree(0:3)+nodefactor("Race")+nodematch("Race")
-                         +nodefactor("Sex")+nodematch("Sex")+absdiff("Grade")+transitiveties,
-          eval.loglik=FALSE))
-}
-
-rbind(c(0, -2.9868, -0.154, 0.1162, -0.1869, 0.1431, -1.1494, -0.8786,
-           -2.2698, -0.6101, 0.7227, -0.1537, 0.5557, -1.0783, 1.5875),
-      coef(egofit))
-
-\dontshow{
-data(fmhfit)
-stopifnot(isTRUE(all.equal(c(0, -2.9868, -0.154, 0.1162, -0.1869,
-0.1431, -1.1494, -0.8786,-2.2698, -0.6101, 0.7227, -0.1537, 0.5557,
--1.0783, 1.5875), coef(fmhfit), tolerance=.05,
-check.attributes=FALSE)))
-}
 }
 \references{
 Pavel N. Krivitsky and Martina Morris. Inference for Social Network Models
