@@ -1,7 +1,5 @@
 library(ergm.ego)
 
-sessioninfo::session_info()
-
 data(faux.mesa.high)
 fmh.ego <- egor::as.egor(faux.mesa.high)
 fmhfit <- ergm.ego(
