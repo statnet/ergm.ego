@@ -78,7 +78,10 @@ test_that("complete network stats are equal to egostats", {
 
 
 
-test_that("not sure what", {
+test_that("testing not exactly sure what", {
+  
+  skip("takes ~12s, skipping for now")
+  
   # Test data
   set.seed(0)
   n <- 100
