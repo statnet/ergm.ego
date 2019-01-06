@@ -66,7 +66,7 @@
 #' \url{http://niasra.uow.edu.au/publications/UOW190187.html}
 #' @keywords models
 #' @examples
-#' 
+#' \dontrun{
 #' data(faux.mesa.high)
 #' fmh.ego <- as.egor(faux.mesa.high)
 #' 
@@ -81,6 +81,7 @@
 #' 
 #' # Estimates and standard errors
 #' summary(egofit)
+#' }
 #' 
 #' # Note that we recover the ergm() parameters
 #' \dontrun{
