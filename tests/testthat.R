@@ -10,4 +10,4 @@
 library(testthat)
 library(ergm.ego)
 
-test_check("testthat")
+test_check("ergm.ego")
