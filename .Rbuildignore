@@ -5,6 +5,7 @@ appveyor.yml
 .RData
 .RSession
 .Rhistory
+^data-raw$
 ^codecov\.yml$
 .*\.orig$
 .*\.bak$
