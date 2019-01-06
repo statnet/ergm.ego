@@ -7,44 +7,83 @@
 #
 #  Copyright 2015-2018 Statnet Commons
 #######################################################################
-library(ergm.ego)
+
+context("Test if bootstrap and jackknife methods of suffstat estimation give same results")
+
 data(faux.mesa.high)
 fmh.ego <- as.egor(faux.mesa.high)
 
-head(fmh.ego)
 
-set.seed(0)
+test_that("equality of results for a two-parameter model", {
+  set.seed(0)
+  
+    egofit <- ergm.ego(fmh.ego ~ edges+nodematch("Sex"), 
+                       popsize=network.size(faux.mesa.high))
+    egofit.boot <- ergm.ego(fmh.ego~edges+nodematch("Sex"), 
+                            popsize=network.size(faux.mesa.high), control=control.ergm.ego(stats.est="bootstrap"))
+    egofit.jack <- ergm.ego(fmh.ego~edges+nodematch("Sex"), 
+                            popsize=network.size(faux.mesa.high), control=control.ergm.ego(stats.est="jackknife"))
 
-## Two parameters
-egofit <- ergm.ego(fmh.ego~edges+nodematch("Sex"), 
-                          popsize=network.size(faux.mesa.high))
+  expect_equivalent(
+    coef(egofit),
+    coef(egofit.boot),
+    tolerance = 0.02
+  )
 
-egofit.boot <- ergm.ego(fmh.ego~edges+nodematch("Sex"), 
+  expect_equivalent(
+    coef(egofit),
+    coef(egofit.jack),
+    tolerance = 0.02
+  )
+
+  expect_equivalent(
+    vcov(egofit),
+    vcov(egofit.boot),
+    tolerance = 0.05
+  )
+  
+  expect_equivalent(
+    vcov(egofit),
+    vcov(egofit.jack),
+    tolerance = 0.05
+  )
+})
+
+
+
+
+
+test_that("equality of results for a one-parameter model", {
+  egofit <- ergm.ego(fmh.ego~edges, 
+                     popsize=network.size(faux.mesa.high))
+  
+  egofit.boot <- ergm.ego(fmh.ego~edges, 
                           popsize=network.size(faux.mesa.high), control=control.ergm.ego(stats.est="bootstrap"))
-
-egofit.jack <- ergm.ego(fmh.ego~edges+nodematch("Sex"), 
+  
+  egofit.jack <- ergm.ego(fmh.ego~edges, 
                           popsize=network.size(faux.mesa.high), control=control.ergm.ego(stats.est="jackknife"))
-
-stopifnot(isTRUE(all.equal(coef(egofit),coef(egofit.boot), tolerance=0.02)))
-stopifnot(isTRUE(all.equal(coef(egofit),coef(egofit.jack), tolerance=0.02)))
-
-stopifnot(isTRUE(all.equal(vcov(egofit),vcov(egofit.boot), tolerance=0.05)))
-stopifnot(isTRUE(all.equal(vcov(egofit),vcov(egofit.jack), tolerance=0.05)))
-
-
-## One parameter
-egofit <- ergm.ego(fmh.ego~edges, 
-                          popsize=network.size(faux.mesa.high))
-
-egofit.boot <- ergm.ego(fmh.ego~edges, 
-                          popsize=network.size(faux.mesa.high), control=control.ergm.ego(stats.est="bootstrap"))
-
-egofit.jack <- ergm.ego(fmh.ego~edges, 
-                          popsize=network.size(faux.mesa.high), control=control.ergm.ego(stats.est="jackknife"))
-
-stopifnot(isTRUE(all.equal(coef(egofit),coef(egofit.boot), tolerance=0.02)))
-stopifnot(isTRUE(all.equal(coef(egofit),coef(egofit.jack), tolerance=0.02)))
-
-stopifnot(isTRUE(all.equal(vcov(egofit),vcov(egofit.boot), tolerance=0.05)))
-stopifnot(isTRUE(all.equal(vcov(egofit),vcov(egofit.jack), tolerance=0.05)))
-
+  
+  expect_equivalent(
+    coef(egofit),
+    coef(egofit.boot),
+    tolerance = 0.02
+  )
+  
+  expect_equivalent(
+    coef(egofit),
+    coef(egofit.jack),
+    tolerance = 0.02
+  )
+  
+  expect_equivalent(
+    vcov(egofit),
+    vcov(egofit.boot),
+    tolerance = 0.05
+  )
+  
+  expect_equivalent(
+    vcov(egofit),
+    vcov(egofit.jack),
+    tolerance = 0.05
+  )
+})
