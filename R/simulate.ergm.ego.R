@@ -56,10 +56,8 @@
 #' 
 #' data(faux.mesa.high)
 #' fmh.ego <- as.egor(faux.mesa.high)
-#' egofit <- ergm.ego(fmh.ego~edges+degree(0:3)+nodefactor("Race")+nodematch("Race")
-#'                +nodefactor("Sex")+nodematch("Sex")+absdiff("Grade"), 
-#'                popsize=network.size(faux.mesa.high))
-#' colMeans(egosim <- simulate(egofit, popsize=300,nsim=50,
+#' data(fmhfit)
+#' colMeans(egosim <- simulate(fmhfit, popsize=300,nsim=50,
 #'                        output="stats", control=control.simulate.ergm.ego(
 #'                        simulate.control=control.simulate.formula(MCMC.burnin=2e6))))
 #' colMeans(egosim)/attr(egosim,"ppopsize")*network.size(faux.mesa.high)
