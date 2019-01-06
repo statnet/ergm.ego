@@ -1,9 +1,9 @@
 library(ergm.ego)
 
-options(error=sessioninfo::session_info)
+sessioninfo::session_info()
 
 data(faux.mesa.high)
-fmh.ego <- as.egor(faux.mesa.high)
+fmh.ego <- egor::as.egor(faux.mesa.high)
 fmhfit <- ergm.ego(
   fmh.ego ~ edges + degree(0:3) + 
     nodefactor("Race") + nodematch("Race")
@@ -16,19 +16,8 @@ fmhfit <- ergm.ego(
 )
 
 
-
-
-
-
-
-
 # save
-save(fmhfit, file="../data/fmhfit.rda")
-
-
-
-
-
+usethis::use_data(fmhfit, overwrite=TRUE)
 
 
 
