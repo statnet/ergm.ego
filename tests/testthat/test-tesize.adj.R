@@ -6,26 +6,42 @@ fmla <- samplike ~ netsize.adj(edges=ec, mutual=mc, transitiveties=tc, cyclicalt
   edges + mutual + transitiveties + cyclicalties
 
 set.seed(0)
-for(i in 1:10) {
+for(i in 1:2) {
   a <- rnorm(4)
   a[rbinom(4,1,.7)==0] <- 0 
   
   fmla <- as.formula(do.call(substitute, list(fmla, list(ec=a[1], mc=a[2], tc=a[3], cc=a[4]))))
   
   test_that(
-    paste("it works for", format(frmla)),
+    paste("it works for `a` = ", deparse(a) ),
     {
       expect_equivalent(
         0,
-        as.vector(crossprod(c(-1,a),summary(fmla)))
+        as.vector( crossprod( c(-1, a), summary(fmla) ) )
       )
     }
   )
+  
+  test_that("it works", {
+    expect_true(all.equal(
+      0, as.vector(crossprod(c(-1,a),summary(fmla)))
+    ))
+  })
 }
 
 
-
-
+if(FALSE) {
+  set.seed(1)
+  replicate(10, {
+    a <- rnorm(4)
+    a[rbinom(4,1,.7)==0] <- 0
+    
+    fmla <- samplike~netsize.adj(edges=ec, mutual=mc, transitiveties=tc, cyclicalties=cc) + edges + mutual + transitiveties + cyclicalties
+    fmla <- as.formula(do.call(substitute, list(fmla, list(ec=a[1], mc=a[2], tc=a[3], cc=a[4]))))
+    stopifnot(isTRUE(all.equal(0, as.vector(crossprod(c(-1,a),summary(fmla))))))
+  })
+  
+}
 
 
 
