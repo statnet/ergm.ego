@@ -1,6 +1,5 @@
 context("Testing mixingmatrix() with egor::egor32 data")
 
-library(ergm.ego)
 data(egor32, package="egor")
 
 varnames <- c("sex", "age")
