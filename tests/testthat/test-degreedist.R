@@ -52,11 +52,15 @@ data("egor32", package="egor")
 
 
 test_that("degreedist() works on egor::egor32 data", {
+  pdf(NULL)
   expect_silent(degreedist(egor32))
+  dev.off()
 })
 
 test_that("degreedist() works on egor::egor32 data with `by=sex` (a factor)", {
+  pdf(NULL)
   expect_silent(degreedist(egor32, by="sex"))
+  dev.off()
 })
 
 
@@ -67,9 +71,13 @@ data(faux.mesa.high, package="ergm")
 fmh.ego <- as.egor(faux.mesa.high)
 
 test_that("degreedist() works on data based on faux.mesa.high", {
+  pdf(NULL)
   expect_silent(degreedist(fmh.ego))
+  dev.off()
 })
 
 test_that("degreedist() works on data based on faux.mesa.high with `by=Sex`", {
+  pdf(NULL)
   expect_silent(degreedist(fmh.ego, by="Sex"))
+  dev.off()
 })
