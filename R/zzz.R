@@ -20,3 +20,19 @@
   # . is used in purrr and elsewhere.
   utils::globalVariables(".")
 }
+
+
+
+
+
+# To be used inside testthat tests, i.e. within test code of test_that(). Checks
+# environment variable SKIP_ERGM_EGO_LONG_TEST. If it is set to 1 the test is
+# skipped.
+long_test <- function() {
+  # check envar
+  v <- Sys.getenv("SKIP_ERGM_EGO_LONG_TEST")
+  do_skip <- isTRUE( as.numeric(v) == 1 )
+  if(do_skip) {
+    testthat::skip("Not running this lengthy test because SKIP_ERGM_EGO_LONG_TEST=1")
+  }
+}
