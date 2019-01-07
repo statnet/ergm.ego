@@ -47,3 +47,26 @@ test_that("GOF='espartners' works", {
     dev.off()
   })
 })
+
+
+
+
+
+
+context("Temporary testing gof.ergm.ego() using model fit to GSS data")
+
+model_path <- "~/Projects/statnet/ergm.ego-papers/sn-work/estimation/main-10k-cd.rds"
+
+test_that("computing and plotting gof(GOF='espartners') works", {
+  testthat::skip_if_not(file.exists(model_path), "Can't find the model file, skipping.")
+  model <- readRDS(model_path)
+  expect_silent(
+    gobject <- gof(model, GOF="espartners")
+  )
+  
+  expect_silent({
+    pdf(NULL)
+    plot(gobject)
+    dev.off()
+  })
+})

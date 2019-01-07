@@ -177,11 +177,11 @@ gof.ergm.ego <- function (object, ...,
   
   if("espartners" %in% GOF) {
     egor <- object$egor
-    # Maximum esp. Perhaps can be smarter.
-    maxdeg <- max(sapply(egor$.alts,nrow),3)*2
-    maxesp <- maxdeg - 2
+    # Maximum esp = max(egodegree) + 1 - 2
+    maxdeg <- max(sapply(egor$.alts, nrow), 3)
+    maxesp <- (maxdeg - 1)*2
     obs.esp <- summary(
-      as.formula(paste0("egor ~ esp(0:", maxesp - 2, ")")),
+      as.formula(paste0("egor ~ esp(0:", maxesp, ")")),
       scaleto = 1
     )
     sim.esp <- simulate(
@@ -193,7 +193,7 @@ gof.ergm.ego <- function (object, ...,
       ...,
       verbose=verbose, 
       output="stats", 
-      monitor=as.formula(paste0("~ esp(0:",maxesp-2,")"))
+      monitor=as.formula(paste0("~ esp(0:",maxesp,")"))
     )
     sim.esp <- sim.esp[, grep("^esp[0-9]+$", colnames(sim.esp))]/n
   }
