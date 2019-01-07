@@ -1,8 +1,8 @@
 context("Test if ergm.ego() recovers complete ERGM parameters")
 
 
-test_that("complete ERGM and ego.ergm() give similar coef estimates",{
-  skip("Needs too much time now")
+test_that("complete ERGM and ergm.ego() give similar coef estimates",{
+  long_test()
 
   data(faux.mesa.high)
   fmh.ego <- egor::as.egor(faux.mesa.high)

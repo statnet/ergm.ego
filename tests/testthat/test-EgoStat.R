@@ -14,7 +14,7 @@ context("Testing EgoStat")
 library(ergm)
 
 
-test_that("complete network stats are equal to egostats", {
+test_that("egostats are close to complete network stats", {
   # Test data
   set.seed(0)
   n <- 100
@@ -78,9 +78,9 @@ test_that("complete network stats are equal to egostats", {
 
 
 
-test_that("testing not exactly sure what", {
+test_that("egostats with alter missing data are close to complete network stats", {
   
-  skip("takes ~12s, skipping for now")
+  long_test()
   
   # Test data
   set.seed(0)

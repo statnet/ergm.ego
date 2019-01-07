@@ -15,6 +15,7 @@ fmh.ego <- as.egor(faux.mesa.high)
 
 
 test_that("equality of results for a two-parameter model", {
+  
   set.seed(0)
   
     egofit <- ergm.ego(fmh.ego ~ edges+nodematch("Sex"), 
