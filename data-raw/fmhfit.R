@@ -8,6 +8,7 @@ fmhfit <- ergm.ego(
   + nodefactor("Sex")+nodematch("Sex")
   + absdiff("Grade") + transitiveties, 
   popsize = network.size(faux.mesa.high),
+  verbose = 3,
   control = control.ergm.ego(
     ergm.control = control.ergm(
       parallel=2,
