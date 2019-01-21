@@ -9,7 +9,10 @@ fmhfit <- ergm.ego(
   + absdiff("Grade") + transitiveties, 
   popsize = network.size(faux.mesa.high),
   control = control.ergm.ego(
-    ergm.control = control.ergm(parallel=2)
+    ergm.control = control.ergm(
+      parallel=2,
+      seed = 666
+      )
   )
 )
 
