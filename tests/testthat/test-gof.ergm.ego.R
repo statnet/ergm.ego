@@ -50,6 +50,21 @@ test_that("GOF='espartners' works", {
 
 
 
+test_that("GOF='espartners' works if `esp` term is in the model", {
+  data("faux.mesa.high", package="ergm")
+  edata <- as.egor(faux.mesa.high)
+  fit <- ergm.ego(
+    edata ~ edges + esp(1), 
+    control = control.ergm.ego(
+      ergm.control=control.ergm(MCMLE.maxit=2)
+    )
+  )
+  
+  expect_silent(
+    gofobj <- gof(fit, GOF="espartners")
+  )
+})
+
 
 
 

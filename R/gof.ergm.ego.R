@@ -189,13 +189,16 @@ gof.ergm.ego <- function (object, ...,
       nsim=control$nsim, 
       seed=control$seed, 
       popsize=object$ppopsize, 
-      control=control.simulate.ergm.ego(simulate.control=set.control.class("control.simulate.formula",control)),
+      control = control.simulate.ergm.ego(
+        simulate.control = set.control.class("control.simulate.formula",control)
+      ),
       ...,
       verbose=verbose, 
       output="stats", 
       monitor=as.formula(paste0("~ esp(0:",maxesp,")"))
     )
-    sim.esp <- sim.esp[, grep("^esp[0-9]+$", colnames(sim.esp))]/n
+    nams <- sort(unique(grep("^esp[0-9]+$", colnames(sim.esp), value = TRUE)))
+    sim.esp <- sim.esp[ , nams] / n
   }
 
   if(verbose)
