@@ -21,3 +21,8 @@ URL: http://www.statnet.org
 RoxygenNote: 6.1.1
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8
+Remotes:
+    statnet/network,
+    statnet/statnet.common,
+    statnet/ergm-private@dev,
+    tilltnet/egor
