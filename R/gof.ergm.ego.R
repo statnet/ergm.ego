@@ -184,10 +184,11 @@ gof.ergm.ego <- function (object, ...,
   if ('model' %in% GOF) {
     pval.model <- apply(sim.model <= obs.model[col(sim.model)],2,mean)
     pval.model.top <- apply(sim.model >= obs.model[col(sim.model)],2,mean)
+    q.model <- (pval.model+1-pval.model.top)/2 # Handle ties by averaging.
     pval.model <- cbind(obs.model,apply(sim.model, 2,min), apply(sim.model, 2,mean),
                         apply(sim.model, 2,max), pmin(1,2*pmin(pval.model,pval.model.top)))
     dimnames(pval.model)[[2]] <- c("obs","min","mean","max","MC p-value")
-    pobs.model <- pval.model.top
+    pobs.model <- q.model
     psim.model <- apply(sim.model,2,rank)/nrow(sim.model)
     bds.model <- apply(psim.model,2,quantile,probs=c(0.025,0.975))
 
