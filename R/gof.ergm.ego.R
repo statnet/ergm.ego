@@ -139,13 +139,13 @@ gof.ergm.ego <- function (object, ...,
   .gof.egor <- object$egor
   formula <- nonsimp_update.formula(object$formula, .gof.egor~., from.new=".gof.egor")
   
-  ## If a different constraint was specified, use it; otherwise, copy
-  ## from the ERGM.
-
-  control.transfer <- c("MCMC.burnin", "MCMC.interval", "MCMC.prop.weights", "MCMC.prop.args", "MCMC.packagenames", "MCMC.init.maxedges")
+  control.transfer <- c("MCMC.burnin", "MCMC.prop.weights", "MCMC.prop.args", "MCMC.packagenames", "MCMC.init.maxedges")
   for(arg in control.transfer)
     if(is.null(control[[arg]]))
       control[arg] <- list(object$control[[arg]])
+
+  # Rescale the interval by the ratio between the estimation sample size and the GOF sample size so that the total number of MCMC iterations would be about the same.
+  NVL(control$MCMC.interval) <- max(ceiling(object$control$MCMC.interval*object$control$MCMC.samplesize/control$nsim),1)
 
   constraints <- object$constraints
   
