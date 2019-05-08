@@ -27,7 +27,7 @@
 
 # To be used inside testthat tests, i.e. within test code of test_that(). Checks
 # environment variable SKIP_ERGM_EGO_LONG_TEST. If it is set to 1 the test is
-# skipped.
+# skipped. Not exported, so should be called as `ergm.ego:::long_test()`.
 long_test <- function() {
   # check envar
   v <- Sys.getenv("SKIP_ERGM_EGO_LONG_TEST")

@@ -11,9 +11,6 @@
 
 context("Testing EgoStat")
 
-library(ergm)
-
-
 test_that("egostats are close to complete network stats", {
   # Test data
   set.seed(0)
@@ -80,7 +77,7 @@ test_that("egostats are close to complete network stats", {
 
 test_that("egostats with alter missing data are close to complete network stats", {
   
-  long_test()
+  ergm.ego:::long_test()
   
   # Test data
   set.seed(0)
