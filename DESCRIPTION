@@ -1,5 +1,5 @@
 Package: ergm.ego
-Version: 0.5-438
+Version: 0.5-439
 Date: 2019-05-16
 Title: Fit, Simulate and Diagnose Exponential-Family Random Graph Models to Egocentrically Sampled Network Data
 Authors@R: c(
@@ -20,3 +20,7 @@ URL: http://www.statnet.org
 RoxygenNote: 6.1.1
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8
+Remotes: 
+    statnet/network,
+    statnet/statnet.common,
+    statnet/ergm-private@dev

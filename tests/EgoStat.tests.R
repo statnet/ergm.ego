@@ -60,4 +60,4 @@ f.y.e <- statnet.common::nonsimp_update.formula(f, y.e~.)
 environment(f.y.e) <- globalenv()
 
 stopifnot(all.equal(summary(f.y),summary(f.y.e)))
-        
+

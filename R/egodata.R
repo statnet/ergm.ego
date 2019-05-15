@@ -26,7 +26,36 @@
 #' \code{\link{egodata}} itself, a data frame containing at least the column
 #' named in \code{egoIDcol}, whose values must all be unique. Other columns
 #' contain information about the egos.
-#' @param alters A data frame containing at least the column named in
+#'
+#' For the \code{\link{data.frame}} method, it may also contain the
+#' information about the alters in a \sQuote{wide} format, in the form
+#' of additional columns with names like \code{ATTRNAME1},
+#' \code{ATTRNAME2}, etc. for attribute \code{ATTRNAME} of alter 1, 2,
+#' etc., as well as a column containing the number of alters nominated
+#' by that ego.
+#'
+#' @param alters     The \code{\link{data.frame}} containing at least the column
+#'    named in \code{egoIDcol}, whose values do not have to be unique, and
+#'    not every ego has to be represented. Other columns contain information
+#'    about the alters.
+#'
+#'    For the \code{\link{data.frame}} method in which the \code{object}
+#'    argument also contains alter information in \sQuote{wide} format, a
+#'    \code{\link{list}} with the following information:
+#'    \describe{
+#'      \item{\code{columns}}{A character, integer, or logical vector
+#'	identifying which columns contain the alters' information.}
+#'      \item{\code{count}}{The name of the column containing the number
+#'	of alters nominated by that ego.}
+#'      \item{\code{name.sep}}{A one-character string or an empty string
+#'	(defaulting to \code{"."}) specifying the character, if any,
+#'	used to separate alter attribute name from alter's index within
+#'	the ego. If an empty string (\code{""}), attribute name is
+#'	assumed to be made of letters, with any numbers being the alter
+#'	index.}
+#'      
+#'    }
+#'    
 #' \code{egoIDcol}, whose values do not have to be unique, and not every ego
 #' must be represented. Other columns contain information about the alters.
 #' @param egoWt A vector of the same length as number of rows in \code{egos} or
@@ -34,6 +63,11 @@
 #' @param \dots Additional arguments; currently unused.
 #' @param egoIDcol Name of the column in the ego table containing the unique
 #' ego identifier.
+#' @param alterIcol Column name to use for the within-ego index of the alter.
+#' @param alterIDcol Column name to use for the unique ID of each alter,
+#'    constructed by concatenating the ID of the ego that nominated them
+#'    and their index within that ego.
+#'
 #' @return An \code{\link{egodata}} object. The object is a list containing the
 #' following elements:
 #' 
@@ -82,6 +116,10 @@
 #' @keywords manip methods
 #' @export
 egodata <- function(egos, alters, egoWt=1, ..., egoIDcol="egoID"){
+  if(is.character(egoWt)){
+    egoWt <- egos[[egoWt]]
+    egos[[egoWt]] <- NULL
+  }
   egoWt <- rep(egoWt, length.out=nrow(egos))
   out <- list(egos=egos, alters=.prune.alters(egos, alters, egoIDcol), egoWt = egoWt, egoIDcol=egoIDcol)  
   class(out) <- "egodata"
@@ -96,8 +134,54 @@ as.egodata <- function(object, ..., egoIDcol="egoID"){
 
 #' @rdname egodata
 #' @export
-as.egodata.data.frame <- function(object, alters, egoWt = 1, ..., egoIDcol="egoID"){
-  egodata(egos=object, alters=alters, egoWt=egoWt, ..., egoIDcol=egoIDcol)
+as.egodata.data.frame <- function(object, alters, egoWt = 1, ..., egoIDcol="egoID", alterIcol="alterInd", alterIDcol="alterID"){
+  if(!is.data.frame(alters)){
+    cols <- alters$columns
+    ct <- alters$count
+    name.sep <- NVL(alters$name.sep,".")
+    
+    if(is.logical(cols)) cols <- which(cols)
+    if(is.numeric(cols)) cols <- names(object)[cols]
+    
+    # alters is now a character vector of variable names corresponding to alter information
+    alters.w <-  object[c(egoIDcol, ct,  cols)]
+    
+    alterpat <- if(name.sep=="") "^(?<var>[a-zA-Z]+)(?<ind>[0-9]+)$" else paste0("^(?<var>[^",name.sep,"]+)",name.sep,"(?<ind>[0-9]+?)$")
+
+    nm <- names(alters.w)[-(1:2)]
+
+    m <- regexpr(alterpat, nm, perl=TRUE)
+    cs <- attr(m, "capture.start")
+    cl <- attr(m, "capture.length")
+    varying <- list()
+    for(i in seq_along(nm)){
+      if(cs[i,1]==-1 || cs[i,2]==-1) next
+      var <- substr(nm[i], cs[i,1], cs[i,1]+cl[i,1]-1)
+      ind <- substr(nm[i], cs[i,2], cs[i,2]+cl[i,2]-1)
+      varying[[var]] <- c(varying[[var]], nm[i])
+    }
+
+    varylen <- sapply(varying, length)
+    for(name in names(varylen)){
+      if(varylen[name]!=max(varylen)){
+        warning("Variable ",sQuote(name)," has fewer IDs than others. It has been dropped.")
+        varying[[name]]<-NULL
+      }
+    }
+    alters <- reshape(alters.w, varying=varying, v.names=names(varying), timevar=alterIcol, idvar=c(egoIDcol,ct), direction="long", sep=name.sep)
+    alters[[alterIDcol]] <- paste(alters[[egoIDcol]], alters[[alterIcol]], sep=".")
+    
+    alters <- subset(alters, alters[[alterIcol]]<=pmax(alters[[ct]], 0))
+    egos <- object[!(names(object)%in%cols)]
+    
+    alters[[ct]] <- NULL
+    egos[[ct]] <- NULL
+
+    egos <- egos[order(egos[[egoIDcol]]),]
+    alters <- alters[order(alters[[egoIDcol]], alters[[alterIcol]], alters[[alterIDcol]]),]
+  }else egos <- object
+
+  egodata(egos=egos, alters=alters, egoWt=egoWt, ..., egoIDcol=egoIDcol)
 }
 
 # Conduct an egocentric census from the undirected network y=,

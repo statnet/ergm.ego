@@ -2,6 +2,7 @@
 % Please edit documentation in R/degreedist.R
 \name{mixingmatrix.egodata}
 \alias{mixingmatrix.egodata}
+\alias{mixingmatrix}
 \title{Summarizing the mixing among groups in an egocentric dataset}
 \usage{
 \method{mixingmatrix}{egodata}(object, attrname, rowprob = FALSE, ...)

@@ -16,7 +16,7 @@
 #' optionally broken down by group and/or compared with a Bernoulli
 #' graph.
 #' 
-#' 
+#' @aliases degreedist
 #' @param object A \code{\link{egodata}} object.
 #' @param freq,prob Whether to plot the raw frequencies or the conditional
 #' proportions of the degree values. Defaults to the latter.
@@ -42,13 +42,14 @@
 #' fmh.ego <- as.egodata(faux.mesa.high)
 #' 
 #' degreedist(fmh.ego,by="Grade",brgmod=TRUE)
-#'
+#' # Compare:
+#' degreedist(faux.mesa.high)
+#' 
 #' @importFrom graphics arrows barplot legend points
 #' @export
 degreedist.egodata <- function(object, freq = FALSE, prob = !freq, 
                                by = NULL, brgmod = FALSE, main = NULL, plot = TRUE, ...){
   egodata <- object
-  
   color <- "#83B6E1"
   beside <- TRUE
 
@@ -162,6 +163,7 @@ degreedist.egodata <- function(object, freq = FALSE, prob = !freq,
 #' of each group nominates an alter of each group.
 #' 
 #' 
+#' @aliases mixingmatrix
 #' @param object A \code{\link{egodata}} object.
 #' @param attrname A character vector containing the name of the network
 #' attribute whose mixing matrix is wanted.
@@ -189,9 +191,10 @@ degreedist.egodata <- function(object, freq = FALSE, prob = !freq,
 #' 
 #' @export
 mixingmatrix.egodata <- function(object, attrname, rowprob = FALSE, ...){
-  egos <- object$egos
-  alters <- object$alters
-  egoIDcol <- object$egoIDcol
+  egodata <- object
+  egos <- egodata$egos
+  alters <- egodata$alters
+  egoIDcol <- egodata$egoIDcol
   
   levs <- sort(unique(c(egos[[attrname]], alters[[attrname]])))
   egos[[attrname]] <- match(egos[[attrname]], levs, 0)

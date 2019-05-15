@@ -2,6 +2,7 @@
 % Please edit documentation in R/degreedist.R
 \name{degreedist.egodata}
 \alias{degreedist.egodata}
+\alias{degreedist}
 \title{Plotting the degree distribution of an egocentric dataset}
 \usage{
 \method{degreedist}{egodata}(object, freq = FALSE, prob = !freq,
@@ -44,6 +45,8 @@ data(faux.mesa.high)
 fmh.ego <- as.egodata(faux.mesa.high)
 
 degreedist(fmh.ego,by="Grade",brgmod=TRUE)
+# Compare:
+degreedist(faux.mesa.high)
 
 }
 \seealso{

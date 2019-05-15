@@ -19,10 +19,31 @@ egodata(egos, alters, egoWt = 1, ..., egoIDcol = "egoID")
 as.egodata(object, ..., egoIDcol = "egoID")
 
 \method{as.egodata}{data.frame}(object, alters, egoWt = 1, ...,
-  egoIDcol = "egoID")
+  egoIDcol = "egoID", alterIcol = "alterInd", alterIDcol = "alterID")
 }
 \arguments{
-\item{alters}{A data frame containing at least the column named in
+\item{alters}{The \code{\link{data.frame}} containing at least the column
+named in \code{egoIDcol}, whose values do not have to be unique, and
+not every ego has to be represented. Other columns contain information
+about the alters.
+
+For the \code{\link{data.frame}} method in which the \code{object}
+argument also contains alter information in \sQuote{wide} format, a
+\code{\link{list}} with the following information:
+\describe{
+\item{\code{columns}}{A character, integer, or logical vector
+identifying which columns contain the alters' information.}
+\item{\code{count}}{The name of the column containing the number
+of alters nominated by that ego.}
+\item{\code{name.sep}}{A one-character string or an empty string
+(defaulting to \code{"."}) specifying the character, if any,
+used to separate alter attribute name from alter's index within
+the ego. If an empty string (\code{""}), attribute name is
+assumed to be made of letters, with any numbers being the alter
+index.}
+
+}
+
 \code{egoIDcol}, whose values do not have to be unique, and not every ego
 must be represented. Other columns contain information about the alters.}
 
@@ -38,7 +59,20 @@ ego identifier.}
 constructed. For the \code{\link{data.frame}} methods and
 \code{\link{egodata}} itself, a data frame containing at least the column
 named in \code{egoIDcol}, whose values must all be unique. Other columns
-contain information about the egos.}
+contain information about the egos.
+
+For the \code{\link{data.frame}} method, it may also contain the
+information about the alters in a \sQuote{wide} format, in the form
+of additional columns with names like \code{ATTRNAME1},
+\code{ATTRNAME2}, etc. for attribute \code{ATTRNAME} of alter 1, 2,
+etc., as well as a column containing the number of alters nominated
+by that ego.}
+
+\item{alterIcol}{Column name to use for the within-ego index of the alter.}
+
+\item{alterIDcol}{Column name to use for the unique ID of each alter,
+constructed by concatenating the ID of the ego that nominated them
+and their index within that ego.}
 }
 \value{
 An \code{\link{egodata}} object. The object is a list containing the
