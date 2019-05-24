@@ -23,6 +23,8 @@
 #'   specifying the attribute vector.
 #' @param levels Starting set of levels to use; defaults to the sorted
 #'   list of unique attributes.
+#' @param multiple Handling of multiple attributes or matrix or data
+#'   frame output. See the Details section for the specification.
 #' @param accept A character vector listing permitted data types for
 #'   the output. See the Details section for the specification.
 #' @param ... Additional argument to the functions of network or to
@@ -52,6 +54,16 @@
 #' \item{`"nonnegative"`}{Accept a nonnegative number or logical.}
 #'
 #' \item{`"positive"`}{Accept a strictly positive number or logical.}
+#' }
+#'
+#' \describe{
+#' 
+#' \item{`"paste"`}{Paste together with dot as the separator.}
+#' 
+#' \item{`"stop"`}{Fail with an error message.}
+#'
+#' \item{`"matrix"`}{Construct and/or return a matrix whose rows correspond to vertices.}
+#'
 #' }
 #'
 #'
