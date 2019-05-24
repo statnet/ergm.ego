@@ -79,14 +79,26 @@ NULL
 #' ergm.ego_get_vattr(~priorates>30, flomego$alters)
 #' (a <- ergm.ego_get_vattr(~cut(priorates,c(-Inf,0,20,40,60,Inf),label=FALSE)-1, flomego$egos))
 #' @export
-ergm.ego_get_vattr <- function(object, df, accept="character", ...){
+ergm.ego_get_vattr <- function(object, df, accept="character", multiple=if(accept=="character") "paste" else "stop", ...){
+  multiple <- match.arg(multiple, ERGM_GET_VATTR_MULTIPLE_TYPES)
   UseMethod("ergm.ego_get_vattr")
+}
+
+.handle_multiple <- function(a, multiple){
+  if(!is.list(a)) a <- list(a)
+  a <- do.call(cbind, a)
+  if(ncol(a)>1)
+    switch(multiple,
+           paste =  apply(a, 1, paste, collapse="."),
+           matrix = a,
+           stop = ergm_Init_abort("This term does not accept multiple vertex attributes or matrix vertex attribute functions."))
+  else c(a)
 }
 
 .rightsize_vattr <- function(a, df){
   rep_len_warn <- function(x, length.out){
-    if(length.out%%length(x)) ergm_Init_warn("Length of vertex attribute vector is not a multiple of network size.")
-    rep_len(x, length.out)
+    if(length.out%%NVL(nrow(x), length(x))) ergm_Init_warn("Length of vertex attribute vector is not a multiple of network size.")
+    if(is.null(nrow(x))) rep_len(x, length.out) else apply(x, 2, rep_len, length.out)
   }
   rep_len_warn(a, nrow(df))
 }
@@ -122,14 +134,15 @@ ergm.ego_get_vattr <- function(object, df, accept="character", ...){
 #' @importFrom purrr "%>%" "map" "pmap_chr"
 #' @importFrom rlang set_attrs
 #' @export
-ergm.ego_get_vattr.character <- function(object, df, accept="character", ...){
+ergm.ego_get_vattr.character <- function(object, df, accept="character", multiple=if(accept=="character") "paste" else "stop", ...){
+  multiple <- match.arg(multiple, ERGM_GET_VATTR_MULTIPLE_TYPES)
+
   missing_attr <- setdiff(object, names(df))
   if(length(missing_attr)){
     ergm_Init_abort(paste.and(sQuote(missing_attr)), " is/are not valid nodal attribute(s).")
   }
 
-  (if(length(object)==1) df[[object]]
-   else object %>% map(~df[[.]]) %>% pmap_chr(paste, sep=".")) %>%
+  object %>% map(~df[[.]]) %>% set_names(object) %>% .handle_multiple(multiple=multiple) %>%
     .rightsize_vattr(df) %>% set_attrs(name=paste(object, collapse=".")) %>%
     .check_acceptable(accept=accept, xspec=object)
 }
@@ -137,9 +150,12 @@ ergm.ego_get_vattr.character <- function(object, df, accept="character", ...){
 
 #' @rdname node-attr-api
 #' @export
-ergm.ego_get_vattr.function <- function(object, df, accept="character", ...){
+ergm.ego_get_vattr.function <- function(object, df, accept="character", multiple=if(accept=="character") "paste" else "stop", ...){
+  multiple <- match.arg(multiple, ERGM_GET_VATTR_MULTIPLE_TYPES)
+
   ERRVL(try(object(df, ...) %>%
-            .rightsize_vattr(df),
+            .rightsize_vattr(df) %>% .handle_multiple(multiple=multiple) %>%
+            set_attrs(name=strtrim(despace(paste(deparse(body(object)),collapse="\n")),80)),
             silent=TRUE),
         ergm_Init_abort(.)) %>%
     .check_acceptable(accept=accept)
@@ -150,7 +166,9 @@ ergm.ego_get_vattr.function <- function(object, df, accept="character", ...){
 #' @importFrom purrr "%>%" map set_names when
 #' @importFrom tibble lst
 #' @export
-ergm.ego_get_vattr.formula <- function(object, df, accept="character", ...){
+ergm.ego_get_vattr.formula <- function(object, df, accept="character", multiple=if(accept=="character") "paste" else "stop", ...){
+  multiple <- match.arg(multiple, ERGM_GET_VATTR_MULTIPLE_TYPES)
+
   a <- names(df)
   vlist <- c(a %>% map(~df[[.]]) %>% set_names(a),
              lst(`.`=df, .df=df, ...))
@@ -158,7 +176,7 @@ ergm.ego_get_vattr.formula <- function(object, df, accept="character", ...){
   e <- object[[length(object)]]
   ERRVL(try({
     eval(e, envir=vlist, enclos=environment(object)) %>%
-      .rightsize_vattr(df) %>%
+      .rightsize_vattr(df) %>% .handle_multiple(multiple=multiple) %>%
       set_attrs(name=if(length(object)>2) eval_lhs.formula(object) else despace(paste(deparse(e),collapse="\n")))
   }, silent=TRUE),
   ergm_Init_abort(.)) %>%
