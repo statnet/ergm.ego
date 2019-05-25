@@ -26,35 +26,47 @@ y.e <- as.egodata(y)
 f <- ~ edges +
   nodecov("a") + nodecov(c("a", "c")) + nodecov(c("a", "c", "d")) + nodecov(~c^2 + sin(d)) + offset(nodecov(~c^2 + sin(d))) + 
   
-  nodefactor("a", levels=NULL) + nodefactor("a", levels=-1) + nodefactor("a", levels=-2) + nodefactor(~a, levels = 2:3) + nodefactor(c("b", "c"), levels = -(5:10)) + offset(nodefactor(c("b", "c"), levels = -(5:10))) + 
+  nodefactor("a", levels=NULL) + nodefactor("a", levels=-1) + nodefactor("a", levels=1) + nodefactor("a", levels=-2) + nodefactor("b", levels=c("c")) + 
+  nodefactor("b", levels=c("c", "a")) + nodefactor("b", levels=c("c", "e", "a")) + nodefactor("b", levels=c("c", "e")) + nodefactor(~a, levels = 2:3) + 
+  nodefactor(c("b", "c"), levels = -(5:10)) + offset(nodefactor(c("b", "c"), levels = -(5:10))) + 
   
-  nodematch("a") + nodematch("a", TRUE) + nodematch("a", TRUE, levels=-2) + nodematch(c("a", "b"), TRUE, levels = 5:10) + nodematch(~2*a) + offset(nodematch(~a^2)) + 
+  nodematch("a") + nodematch("a", TRUE) + nodematch("a", TRUE, levels=2) + nodematch(c("a", "b"), TRUE, levels = 5:10) + nodematch(~2*a) + offset(nodematch(~a^2)) + 
   
-  absdiff("a") + absdiff("a", 2) + absdiff(~a + 2*c - exp(d)) + absdiff(function(x) if(is(x, "data.frame")) x[["a"]] + 2*x[["c"]] - exp(x[["d"]]) else (x %v% "a") + 2*(x %v% "c") - exp(x %v% "d")) + 
+  absdiff("a") + absdiff("a", 2) + absdiff(~a + 2*c - exp(d)) + 
+  absdiff(function(x) if(is(x, "data.frame")) x[["a"]] + 2*x[["c"]] - exp(x[["d"]]) else (x %v% "a") + 2*(x %v% "c") - exp(x %v% "d")) + 
   
   degree(0) + degree(3) + degree(0:6) +
   degree(0, by="a") + degree(3, by="a") + degree(0:6, by="a") +
-  degree(0, by="a", homophily=TRUE) + degree(3, by="a", homophily=TRUE) + degree(0:6, by="a", homophily=TRUE) +
+  degree(0, by="a", homophily=TRUE) + degree(3, by="a", homophily=TRUE) + degree(0:6, by="a", homophily=TRUE) + degree(0:6, by="a", homophily=FALSE, levels = -1) + 
+  degree(0:6, by="a", homophily=FALSE, levels=1) + degree(0:6, by=c("a", "b"), homophily=FALSE, levels = -1) + degree(0:6, by=c("a", "b"), homophily=FALSE, levels=1) +
   
   degrange(0) + degrange(3) + degrange(0:6) +
   degrange(0) + degrange(3) + degrange(0:6) +
   degrange(0, by="a") + degrange(3, by="a") + degrange(0:6, by="a") + degrange(0:6, by=~b) + degrange(0:6, by= function(x) if(is(x, "data.frame")) x[["b"]] else x %v% "b") + 
   degrange(0, by="a", homophily=TRUE) + degrange(3, by="a", homophily=TRUE) + degrange(0:6, by="a", homophily=TRUE) + offset(degrange(0:6, by="a", homophily=TRUE)) + 
+  degrange(0:6, by="a", homophily=FALSE, levels=2) + offset(degrange(0:6, by="a", homophily=FALSE, levels=-2)) + 
+  degrange(0:6, by=c("a","b"), homophily=FALSE, levels=3) + offset(degrange(0:6, by=c("a","b"), homophily=FALSE, levels=-3)) + 
   
   degrange(0,2) + degrange(3,5) + degrange(0:6,7) +  
   degrange(0,2) + degrange(3,5) + degrange(0:6,7) +
   degrange(0,2, by="a") + degrange(3,5, by="a") + degrange(0:6,7, by="a") + degrange(0:6,7, by=~b) + 
   degrange(0,2, by="a", homophily=TRUE) + degrange(3,5, by="a", homophily=TRUE) + degrange(0:6,7, by="a", homophily=TRUE) +
   
-  concurrent + concurrent("a") + offset(concurrent(~a)) + 
+  concurrent + concurrent("a") + concurrent("a", levels=2:3) + concurrent("a", levels=3) + concurrent(c("a", "b"), levels=2:3) + 
+  concurrent(c("a", "b"), levels=4) + offset(concurrent(~a)) + 
   
   concurrentties + concurrentties("a") + offset(concurrentties(function(x) if(is(x, "data.frame")) x[["a"]]else (x %v% "a"))) + 
+  concurrentties("a", levels=2:3) + concurrentties("a", levels=-1) + concurrentties("b", levels=c("a", "c")) + concurrentties("b", levels=c("a", "b", "e")) +
+  concurrentties(c("a", "b"), levels=2:3) + concurrentties(c("a", "b"), levels=-3) +
   
   degree1.5 + offset(degree1.5) + 
   
-  nodemix("a") + nodemix("a", levels2=-1) + nodemix("a", levels2=-2) + nodemix("a", levels2=-(2:3)) + nodemix(c("a", "b"), levels = -(2:3)) + nodemix(c("a", "b"), levels = -(2:3), levels2 = -(3:4)) + nodemix("b", levels = -2, levels2 = -3) + offset(nodemix("b", levels = -2, levels2 = -3)) + 
+  nodemix("a") + nodemix("a", levels2=-1) + nodemix("a", levels2=1) + nodemix("b", levels = c("b"), levels2=1) + nodemix("a", levels2=-2) + nodemix("a", levels2=-(2:3)) + 
+  nodemix(c("a", "b"), levels = -(2:3)) + nodemix(c("a", "b"), levels = -(2:3), levels2 = -(3:4)) + nodemix("b", levels = -2, levels2 = -3) + 
+  offset(nodemix("b", levels = -2, levels2 = -3)) + 
   
-  mm("a") + mm("a", levels2=~-1) + mm("a", levels2=-2) + mm("a", levels2=-(2:3)) + mm(~a>7) + mm(a~b) + mm(.~a) + offset(mm(.~a))
+  mm("a") + mm("a", levels2=~-1) + mm("a", levels2=-2) + mm("a", levels2=-(2:3)) + mm(~a>7) + mm(a~b) + mm(.~a) + offset(mm(.~a)) + mm("a", levels2 = 1) + 
+  mm("b", levels = c("a", "c", "e")) + mm("b", levels = c("a", "c", "e"), levels2 = 3)
 
 f.y <- statnet.common::nonsimp_update.formula(f, y~.)
 environment(f.y) <- globalenv()
