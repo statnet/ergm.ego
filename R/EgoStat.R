@@ -143,6 +143,8 @@ EgoStat.nodecov <- function(egodata, attr){
 
 #' @export
 EgoStat.nodefactor <- function(egodata, attr, base=1, levels=LEVELS_BASE1){
+  if(!missing(base)) message("In term `nodefactor' in package `ergm.ego': Argument \"base\" has been superseded by \"levels\" and it is recommended to use the latter.  Note that its interpretation may be different.")
+
   egos <- egodata$egos
   alters <- egodata$alters
   egoIDcol <- egodata$egoIDcol
@@ -168,6 +170,10 @@ EgoStat.nodefactor <- function(egodata, attr, base=1, levels=LEVELS_BASE1){
   ties <- data.frame(egoID=c(ties[[egoIDcol]],if(alt) ties[[egoIDcol]],isolates),x=c(ties$.e,if(alt) ties$.a,rep(0,length(isolates))),stringsAsFactors=FALSE)
 
   h <- t(sapply(tapply(ties$x, list(egoID=ties$egoID), FUN=tabulate, nbins=length(levs)),identity)) / if(alt) 2 else 1
+  
+  # handles case of one level
+  if(length(levs) == 1) h <- t(h)
+  
   colnames(h) <- paste("nodefactor",attrname,levs,sep=".")  
 
   if(length(base)==0 || base==0 || !missing(levels)) h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]
@@ -176,6 +182,8 @@ EgoStat.nodefactor <- function(egodata, attr, base=1, levels=LEVELS_BASE1){
 
 #' @export
 EgoStat.nodematch <- function(egodata, attr, diff=FALSE, keep=NULL, levels=NULL){
+  if(!missing(keep)) message("In term `nodematch' in package `ergm.ego': Argument \"keep\" has been superseded by \"levels\" and it is recommended to use the latter.  Note that its interpretation may be different.")
+  
   egos <- egodata$egos
   alters <- egodata$alters
   egoIDcol <- egodata$egoIDcol
@@ -213,6 +221,8 @@ EgoStat.nodematch <- function(egodata, attr, diff=FALSE, keep=NULL, levels=NULL)
 
 #' @export
 EgoStat.nodemix <- function(egodata, attr, base=NULL, levels=NULL, levels2=NULL){
+  if(!missing(base)) message("In term `nodemix' in package `ergm.ego': Argument \"base\" has been superseded by \"levels2\" and it is recommended to use the latter.  Note that its interpretation may be different.")
+  
   egos <- egodata$egos
   alters <- egodata$alters
   egoIDcol <- egodata$egoIDcol
@@ -231,6 +241,11 @@ EgoStat.nodemix <- function(egodata, attr, base=NULL, levels=NULL, levels2=NULL)
   alters <- setNames(data.frame(egoIDcol = alters[[egoIDcol]], attrname = xa, stringsAsFactors=FALSE), c(egoIDcol, attrname))
   
   ties<-merge(egos[c(egoIDcol,attrname)],alters[c(egoIDcol,attrname)],by=egoIDcol,suffixes=c(".ego",".alter"))
+  
+  # only consider ties where both ego and alter have attr value included in levs
+  # others do not contribute to the statistics we are generating
+  ties<-ties[ties[,2] > 0 & ties[,3] > 0,]
+  
   names(ties) <- c(egoIDcol,".e",".a")
   
   isolates <- egos[[egoIDcol]][!(egos[[egoIDcol]]%in%ties[[egoIDcol]])] 
@@ -259,12 +274,12 @@ EgoStat.nodemix <- function(egodata, attr, base=NULL, levels=NULL, levels2=NULL)
   
   mat <- t(apply(cbind(ties[,2:3]),1,sort))
 
-  mat[mat == 0] <- length(levs) + 1
-  levs = c(levs, "__EXCLUDEDPLACEHOLDER")
-
   h <- table(ties[,1],paste(levs[mat[,1]],levs[mat[,2]],sep="."))
   
-  h<- t(apply(h,1,function(x)x[namevec,drop=FALSE]))
+  h <- t(apply(h,1,function(x)x[namevec,drop=FALSE]))
+  
+  # handles case of single retained category
+  if(length(namevec) == 1) h <- t(h)
   
   if(length(isolates)){
     isolates.mat <- matrix(0,nrow=length(isolates),ncol=length(namevec))
@@ -272,10 +287,10 @@ EgoStat.nodemix <- function(egodata, attr, base=NULL, levels=NULL, levels2=NULL)
     h <- rbind(h,isolates.mat)
   }
   
-  h <- h[order(as.numeric(rownames(h))),]
+  h <- h[order(as.numeric(rownames(h))),,drop=FALSE]
   h[is.na(h)] <- 0
   colnames(h) <- paste("mix",attrname,namevec,sep=".")
-  h[match(egodata$egos[[egoIDcol]],rownames(h)),]/2
+  h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]/2
 }
 
 #' @export
