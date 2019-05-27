@@ -28,6 +28,8 @@
 #' @param main Main title of the plot.
 #' @param plot Whether to plot the histogram; if `FALSE`, graphical
 #'   parameters and `bgrmod` have no effect.
+#' @param weight Whether sampling weights should be incorporated into
+#'   the calculation (`TRUE`, the default) or ignored (`FALSE`).
 #' @param ... Additional arguments to [simulate.ergm.ego()].
 #'
 #' @return Returns either a vector of degree frequencies/proportions
@@ -48,8 +50,10 @@
 #' @importFrom graphics arrows barplot legend points
 #' @export
 degreedist.egodata <- function(object, freq = FALSE, prob = !freq, 
-                               by = NULL, brgmod = FALSE, main = NULL, plot = TRUE, ...){
+                               by = NULL, brgmod = FALSE, main = NULL, plot = TRUE, weight = TRUE, ...){
   egodata <- object
+  if(!weight) egodata$egoWt[] <- 1
+
   color <- "#83B6E1"
   beside <- TRUE
 
@@ -169,6 +173,8 @@ degreedist.egodata <- function(object, freq = FALSE, prob = !freq,
 #' attribute whose mixing matrix is wanted.
 #' @param rowprob Whether the counts should be normalized by row sums. That is,
 #' whether they should be proportions conditional on the ego's group.
+#' @param weight Whether sampling weights should be incorporated into
+#'   the calculation (`TRUE`, the default) or ignored (`FALSE`).
 #' @param ... Additional arguments, currently unused.
 #' @return A matrix with a row and a column for each level of \code{attrname}.
 #' 
@@ -190,8 +196,10 @@ degreedist.egodata <- function(object, freq = FALSE, prob = !freq,
 #' tmp}, mm.ego, check.attributes=FALSE)))
 #' 
 #' @export
-mixingmatrix.egodata <- function(object, attrname, rowprob = FALSE, ...){
+mixingmatrix.egodata <- function(object, attrname, rowprob = FALSE, weight = TRUE, ...){
   egodata <- object
+  if(!weight) egodata$egoWt[] <- 1
+
   egos <- egodata$egos
   alters <- egodata$alters
   egoIDcol <- egodata$egoIDcol

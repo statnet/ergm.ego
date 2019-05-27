@@ -5,7 +5,8 @@
 \alias{mixingmatrix}
 \title{Summarizing the mixing among groups in an egocentric dataset}
 \usage{
-\method{mixingmatrix}{egodata}(object, attrname, rowprob = FALSE, ...)
+\method{mixingmatrix}{egodata}(object, attrname, rowprob = FALSE,
+  weight = TRUE, ...)
 }
 \arguments{
 \item{object}{A \code{\link{egodata}} object.}
@@ -15,6 +16,9 @@ attribute whose mixing matrix is wanted.}
 
 \item{rowprob}{Whether the counts should be normalized by row sums. That is,
 whether they should be proportions conditional on the ego's group.}
+
+\item{weight}{Whether sampling weights should be incorporated into
+the calculation (\code{TRUE}, the default) or ignored (\code{FALSE}).}
 
 \item{...}{Additional arguments, currently unused.}
 }
