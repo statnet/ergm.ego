@@ -91,7 +91,7 @@
   \subsection{BUG FIXES}{
     \itemize{
       \item{
-	A wide variety of bugs have been fixed and robustifications. See commit log for details.
+	A wide variety of minor bugs has been fixed. See commit log and issue tracker for details.
       }
     }
   }
@@ -99,6 +99,9 @@
 
   \subsection{OTHER USER-VISIBLE CHANGES}{
     \itemize{
+      \item{
+	A number of robustifications have been made.
+      }
       \item{
 	\code{\link{ergm.ego}} now produces sensible error messages when terms have alter categories that egos do not.
       }
@@ -113,30 +116,6 @@
       }
     }
   }
-
-  \subsection{C-LEVEL FACILITIES}{
-    \itemize{
-    }
-  }
-
-  \subsection{UTILITIES}{
-    \itemize{
-      \item Likewise, "UTILITIES" is probably unnecessary.
-    }
-  }
-
-  \subsection{INSTALLATION}{
-    \itemize{
-      \item ... as is "INSTALLATION".
-    }
-  }
-
-  \subsection{PACKAGE INSTALLATION}{
-    \itemize{
-      \item ditto.
-    }
-  }
-
 }
 
 \section{Changes in version 0.4.0}{
