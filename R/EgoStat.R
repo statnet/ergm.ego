@@ -117,6 +117,7 @@ EgoStat.nodecov <- function(egodata, attr){
                      setNames(data.frame(egoIDcol = alters[[egoIDcol]], stringsAsFactors=FALSE), egoIDcol))
   
   ties.all <-merge(egos[c(egoIDcol,attrnames)],alters[c(egoIDcol,if(alt) attrnames)],by=egoIDcol,suffixes=c(".ego",".alter"))
+  names(ties.all) <- c(egoIDcol, paste0(attrnames, ".ego"), if(alt) paste0(attrnames, ".alter"))
   
   isolates <- egos[[egoIDcol]][!(egos[[egoIDcol]]%in%ties.all[[egoIDcol]])] 
 
