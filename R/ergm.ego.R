@@ -208,6 +208,17 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.
   }
   
   ergm.formula <- nonsimp_update.formula(formula,popnw~offset(netsize.adj)+.,from.new="popnw")
+
+  ergm.names <- param_names(ergm_model(deoffset(ergm.formula)), offset=FALSE)
+  if(!setequal(ergm.names,names(m))){
+    ergm.not.ts <- setdiff(ergm.names, names(m))
+    ts.not.ergm <- setdiff(names(m), ergm.names)
+    errstr <-
+      if(length(ergm.not.ts)) paste("statistics", paste.and(sQuote(ergm.not.ts)), "required by the ERGM could not be estimated from data.")
+      else paste("statistics", paste.and(sQuote(ts.not.ergm)), "estimated from data are not wanted by the ERGM.")
+    stop("There appears to be a mismatch between estimated statistic and the sufficient statistic of the ergm: ", errstr, " A common cause of this is that the set of levels of a categorical actor attribute is different for the egos and for the alters.")
+  }
+  
   ergm.offset.coef <- c(-log(ppopsize/popsize),offset.coef)
   out <- list(v=v, m=m, formula=formula, ergm.formula=ergm.formula, offset.coef=offset.coef, ergm.offset.coef=ergm.offset.coef, egodata=egodata, ppopsize=ppopsize, popsize=popsize)
   
