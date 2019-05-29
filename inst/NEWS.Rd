@@ -14,6 +14,131 @@
 % When a release is forked, copy the sections to a new release and
 % delete unused sections.
 
+%% \section{Changes in version X.Y.Z}{
+
+%%   \subsection{NEW FEATURES}{
+%%     \itemize{
+%%       \item{
+%%       }
+%%     }
+%%   }
+
+
+%%   \subsection{BUG FIXES}{
+%%     \itemize{
+%%       \item{
+%%       }
+%%     }
+%%   }
+
+
+%%   \subsection{OTHER USER-VISIBLE CHANGES}{
+%%     \itemize{
+%%       \item{
+%%       }
+%%     }
+%%   }
+
+  %% \subsection{C-LEVEL FACILITIES}{
+  %%   \itemize{
+  %%   }
+  %% }
+
+  % \subsection{UTILITIES}{
+  %   \itemize{
+  %     \item Likewise, "UTILITIES" is probably unnecessary.
+  %   }
+  % }
+
+  % \subsection{INSTALLATION}{
+  %   \itemize{
+  %     \item ... as is "INSTALLATION".
+  %   }
+  % }
+
+  % \subsection{PACKAGE INSTALLATION}{
+  %   \itemize{
+  %     \item ditto.
+  %   }
+  % }
+
+%% }
+
+
+\section{Changes in version 0.5.0}{
+
+  \subsection{NEW FEATURES}{
+    \itemize{
+      \item{
+	\code{\link[ergm]{ergm}}'s new nodal attributes user interface has been extended to \code{ergm.ego}.
+      }
+      \item{
+	\code{\link{mixingmatrix.egodata}} and \code{\link{degreedist.egodata}} now have an option to ignore sampling weights.
+      }
+      \item{
+	Simulation frmo an \code{\link{ergm.ego}} fit now inherints the constraints.
+      }
+      \item{
+	It is now possible to specify the (pseudo)population network temlate directly by passing it to \code{control$ppopsize}.
+      }
+      \item{
+	It is now possible to infer main effects (\code{nodefactor} and \code{nodecov}) when the attribute has only been obseved on the egos.
+      }
+    }
+  }
+
+
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item{
+	A wide variety of bugs have been fixed and robustifications. See commit log for details.
+      }
+    }
+  }
+
+
+  \subsection{OTHER USER-VISIBLE CHANGES}{
+    \itemize{
+      \item{
+	\code{\link{ergm.ego}} now produces sensible error messages when terms have alter categories that egos do not.
+      }
+      \item{
+	Chad Klumb has been added as a contributor.
+      }
+      \item{
+	\code{\link{gof.ergm.ego}}'s default MCMC.interval is now the MCMC.interval of the ergm fit \emph{scaled} by the ratio between the fit's \code{MCMC.samplesize} and GoF control's \code{nsim}.
+      }
+      \item{
+	\code{\link{gof.ergm.ego}} now only calculates GOF for degree values up to twice the highest observed in the data or 6, whichever is higher with an additional category to catch the higher values.
+      }
+    }
+  }
+
+  \subsection{C-LEVEL FACILITIES}{
+    \itemize{
+    }
+  }
+
+  \subsection{UTILITIES}{
+    \itemize{
+      \item Likewise, "UTILITIES" is probably unnecessary.
+    }
+  }
+
+  \subsection{INSTALLATION}{
+    \itemize{
+      \item ... as is "INSTALLATION".
+    }
+  }
+
+  \subsection{PACKAGE INSTALLATION}{
+    \itemize{
+      \item ditto.
+    }
+  }
+
+}
+
 \section{Changes in version 0.4.0}{
 
   \subsection{NEW FEATURES}{
