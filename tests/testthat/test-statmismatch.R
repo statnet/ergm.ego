@@ -24,6 +24,6 @@ test_that("no stat mismatch error", {
 test_that("stat mismatch error", {
   e$alters$x[1] <- 4
   
-  expect_error(ergm.ego(e ~ nodefactor("x")), "There appears to be a mismatch between estimated statistic and the sufficient statistic of the ergm: statistics 'nodefactor.x.4' estimated from data are not wanted by the ERGM. A common cause of this is that the set of levels of a categorical actor attribute is different for the egos and for the alters.")
+  expect_error(ergm.ego(e ~ nodefactor("x")), "There appears to be a mismatch between estimated statistic and the sufficient statistic of the ERGM:")
 })
 
