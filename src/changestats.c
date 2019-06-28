@@ -18,8 +18,6 @@ C_CHANGESTAT_FN(c_netsize_adj) {
     trties_coef = INPUT_PARAM[2],
     cyties_coef = INPUT_PARAM[3];
 
-  unsigned int edgeflag = IS_OUTEDGE(tail, head);
-  
   if(edges_coef!=0)
     CHANGE_STAT[0] += edgeflag ? - edges_coef : edges_coef;
 
