@@ -236,6 +236,7 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.
     coef <- coef(ergm.fit)
 
     oi <- ergm.fit$etamap$offsettheta
+    dropped <- oi[!ergm_model(ergm.formula)$etamap$offsettheta]
     
     DtDe <- -ergm.fit$hessian[!oi,!oi,drop=FALSE]
 
@@ -247,7 +248,7 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.
     vcov <- matrix(NA, length(coef), length(coef))
 
     iDtDe <- solve(DtDe[!novar,!novar,drop=FALSE])
-    vcov[!oi,!oi] <- iDtDe%*%v[!novar,!novar,drop=FALSE]%*%iDtDe
+    vcov[!oi,!oi] <- iDtDe%*%v[!dropped,!dropped,drop=FALSE][!novar,!novar,drop=FALSE]%*%iDtDe
     
     rownames(vcov) <- colnames(vcov) <- names(coef)
 
