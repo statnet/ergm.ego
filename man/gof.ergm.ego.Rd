@@ -5,8 +5,13 @@
 \title{Conduct Goodness-of-Fit Diagnostics on a Exponential Family Random Graph
 Model fit to Egocentrically Sampled Data}
 \usage{
-\method{gof}{ergm.ego}(object, ..., GOF = c("model", "degree"),
-  control = control.gof.ergm(), verbose = FALSE)
+\method{gof}{ergm.ego}(
+  object,
+  ...,
+  GOF = c("model", "degree"),
+  control = control.gof.ergm(),
+  verbose = FALSE
+)
 }
 \arguments{
 \item{object}{An \code{\link{ergm.ego}} fit.}

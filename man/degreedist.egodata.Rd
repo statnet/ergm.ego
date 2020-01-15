@@ -5,9 +5,17 @@
 \alias{degreedist}
 \title{Plotting the degree distribution of an egocentric dataset}
 \usage{
-\method{degreedist}{egodata}(object, freq = FALSE, prob = !freq,
-  by = NULL, brgmod = FALSE, main = NULL, plot = TRUE,
-  weight = TRUE, ...)
+\method{degreedist}{egodata}(
+  object,
+  freq = FALSE,
+  prob = !freq,
+  by = NULL,
+  brgmod = FALSE,
+  main = NULL,
+  plot = TRUE,
+  weight = TRUE,
+  ...
+)
 }
 \arguments{
 \item{object}{A \code{\link{egodata}} object.}

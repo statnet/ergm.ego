@@ -5,8 +5,7 @@
 \alias{mixingmatrix}
 \title{Summarizing the mixing among groups in an egocentric dataset}
 \usage{
-\method{mixingmatrix}{egodata}(object, attrname, rowprob = FALSE,
-  weight = TRUE, ...)
+\method{mixingmatrix}{egodata}(object, attrname, rowprob = FALSE, weight = TRUE, ...)
 }
 \arguments{
 \item{object}{A \code{\link{egodata}} object.}
