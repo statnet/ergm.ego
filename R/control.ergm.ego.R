@@ -16,7 +16,7 @@
 #' 
 #' 
 #' @param ppopsize,ppopsize.mul Parameters to determine the size
-#'   \eqn{|N'|} of the pseudopopulation network. \code{popsize} can be
+#'   \eqn{|N'|} of the pseudopopulation network. \code{ppopsize} can be
 #'   \describe{
 #' 
 #' \item{"auto"}{If the \code{popsize} (\eqn{|N|}) argument is

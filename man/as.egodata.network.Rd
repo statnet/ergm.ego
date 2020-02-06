@@ -4,8 +4,12 @@
 \alias{as.egodata.network}
 \title{Construct an Egocentric View of a Network}
 \usage{
-\method{as.egodata}{network}(object, special.cols = c("na",
-  "vertex.names"), ..., egoIDcol = "vertex.names")
+\method{as.egodata}{network}(
+  object,
+  special.cols = c("na", "vertex.names"),
+  ...,
+  egoIDcol = "vertex.names"
+)
 }
 \arguments{
 \item{object}{A \code{\link[network]{network}} object.}

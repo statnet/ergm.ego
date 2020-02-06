@@ -4,14 +4,20 @@
 \alias{control.ergm.ego}
 \title{Control parameters for \code{\link{ergm.ego}}.}
 \usage{
-control.ergm.ego(ppopsize = c("auto", "samp", "pop"), ppopsize.mul = 1,
-  ppop.wt = c("round", "sample"), stats.wt = c("data", "ppop"),
+control.ergm.ego(
+  ppopsize = c("auto", "samp", "pop"),
+  ppopsize.mul = 1,
+  ppop.wt = c("round", "sample"),
+  stats.wt = c("data", "ppop"),
   stats.est = c("asymptotic", "bootstrap", "jackknife", "naive"),
-  boot.R = 10000, ergm.control = control.ergm(), ...)
+  boot.R = 10000,
+  ergm.control = control.ergm(),
+  ...
+)
 }
 \arguments{
 \item{ppopsize, ppopsize.mul}{Parameters to determine the size
-\eqn{|N'|} of the pseudopopulation network. \code{popsize} can be
+\eqn{|N'|} of the pseudopopulation network. \code{ppopsize} can be
 \describe{
 
 \item{"auto"}{If the \code{popsize} (\eqn{|N|}) argument is

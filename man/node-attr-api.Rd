@@ -16,41 +16,53 @@
 \alias{ergm.ego_attr_levels.formula}
 \title{Helper functions for specifying nodal attribute levels}
 \usage{
-ergm.ego_get_vattr(object, df, accept = "character", multiple = if
-  (accept == "character") "paste" else "stop", ...)
+ergm.ego_get_vattr(
+  object,
+  df,
+  accept = "character",
+  multiple = if (accept == "character") "paste" else "stop",
+  ...
+)
 
-\method{ergm.ego_get_vattr}{character}(object, df, accept = "character",
-  multiple = if (accept == "character") "paste" else "stop", ...)
+\method{ergm.ego_get_vattr}{character}(
+  object,
+  df,
+  accept = "character",
+  multiple = if (accept == "character") "paste" else "stop",
+  ...
+)
 
-\method{ergm.ego_get_vattr}{function}(object, df, accept = "character",
-  multiple = if (accept == "character") "paste" else "stop", ...)
+\method{ergm.ego_get_vattr}{`function`}(
+  object,
+  df,
+  accept = "character",
+  multiple = if (accept == "character") "paste" else "stop",
+  ...
+)
 
-\method{ergm.ego_get_vattr}{formula}(object, df, accept = "character",
-  multiple = if (accept == "character") "paste" else "stop", ...)
+\method{ergm.ego_get_vattr}{formula}(
+  object,
+  df,
+  accept = "character",
+  multiple = if (accept == "character") "paste" else "stop",
+  ...
+)
 
-ergm.ego_attr_levels(object, attr, egodata, levels = sort(unique(attr)),
-  ...)
+ergm.ego_attr_levels(object, attr, egodata, levels = sort(unique(attr)), ...)
 
-\method{ergm.ego_attr_levels}{numeric}(object, attr, egodata,
-  levels = sort(unique(attr)), ...)
+\method{ergm.ego_attr_levels}{numeric}(object, attr, egodata, levels = sort(unique(attr)), ...)
 
-\method{ergm.ego_attr_levels}{logical}(object, attr, egodata,
-  levels = sort(unique(attr)), ...)
+\method{ergm.ego_attr_levels}{logical}(object, attr, egodata, levels = sort(unique(attr)), ...)
 
-\method{ergm.ego_attr_levels}{AsIs}(object, attr, egodata,
-  levels = sort(unique(attr)), ...)
+\method{ergm.ego_attr_levels}{AsIs}(object, attr, egodata, levels = sort(unique(attr)), ...)
 
-\method{ergm.ego_attr_levels}{character}(object, attr, egodata,
-  levels = sort(unique(attr)), ...)
+\method{ergm.ego_attr_levels}{character}(object, attr, egodata, levels = sort(unique(attr)), ...)
 
-\method{ergm.ego_attr_levels}{NULL}(object, attr, egodata,
-  levels = sort(unique(attr)), ...)
+\method{ergm.ego_attr_levels}{`NULL`}(object, attr, egodata, levels = sort(unique(attr)), ...)
 
-\method{ergm.ego_attr_levels}{function}(object, attr, egodata,
-  levels = sort(unique(attr)), ...)
+\method{ergm.ego_attr_levels}{`function`}(object, attr, egodata, levels = sort(unique(attr)), ...)
 
-\method{ergm.ego_attr_levels}{formula}(object, attr, egodata,
-  levels = sort(unique(attr)), ...)
+\method{ergm.ego_attr_levels}{formula}(object, attr, egodata, levels = sort(unique(attr)), ...)
 }
 \arguments{
 \item{object}{An argument specifying the nodal attribute to select

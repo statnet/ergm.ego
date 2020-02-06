@@ -18,8 +18,15 @@ egodata(egos, alters, egoWt = 1, ..., egoIDcol = "egoID")
 
 as.egodata(object, ..., egoIDcol = "egoID")
 
-\method{as.egodata}{data.frame}(object, alters, egoWt = 1, ...,
-  egoIDcol = "egoID", alterIcol = "alterInd", alterIDcol = "alterID")
+\method{as.egodata}{data.frame}(
+  object,
+  alters,
+  egoWt = 1,
+  ...,
+  egoIDcol = "egoID",
+  alterIcol = "alterInd",
+  alterIDcol = "alterID"
+)
 }
 \arguments{
 \item{alters}{The \code{\link{data.frame}} containing at least the column

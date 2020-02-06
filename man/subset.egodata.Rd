@@ -5,11 +5,9 @@
 \alias{subset.egodata}
 \title{Subsetting \code{\link{egodata}} Objects}
 \usage{
-\method{[}{egodata}(x, i, j, ..., dup.action = c("make.unique", "fail",
-  "number"))
+\method{[}{egodata}(x, i, j, ..., dup.action = c("make.unique", "fail", "number"))
 
-\method{subset}{egodata}(x, subset, select, ...,
-  dup.action = c("make.unique", "fail", "number"))
+\method{subset}{egodata}(x, subset, select, ..., dup.action = c("make.unique", "fail", "number"))
 }
 \arguments{
 \item{x}{An \code{\link{egodata}} object.}

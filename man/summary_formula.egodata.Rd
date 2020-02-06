@@ -7,8 +7,7 @@
 \title{Calculation of ERGM-style summary statistics for \code{\link{egodata}}
 objects.}
 \usage{
-\method{summary_formula}{egodata}(object, ..., basis = NULL,
-  individual = FALSE, scaleto = NULL)
+\method{summary_formula}{egodata}(object, ..., basis = NULL, individual = FALSE, scaleto = NULL)
 }
 \arguments{
 \item{object}{An \code{\link[ergm]{ergm}}-style formula with a
