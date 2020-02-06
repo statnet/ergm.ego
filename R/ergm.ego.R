@@ -13,7 +13,7 @@
 #' Sampled Data
 #' 
 #' A wrapper around the \code{\link[ergm]{ergm}} to fit an ERGM to an
-#' \code{\link{egodata}}.
+#' \code{\link{egodata}} object.
 #' 
 #' 
 #' @param formula An \code{\link{formula}} object, of the form \code{e ~ <model
