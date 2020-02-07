@@ -281,7 +281,12 @@ as.egodata.network<-function(object,special.cols=c("na","vertex.names"),...,egoI
 #' these rounded freqencies.} \item{"sample"}{Resample in
 #' proportion to \eqn{w_i}.} }
 #' @param \dots Additional arguments, currently unused.
-#' @return A \code{\link[network]{network}} object.
+#'
+#' @return A \code{\link[network]{network}} object. It has an
+#'   additional vertex attribute `.ego.ind` giving the *row index*
+#'   (not ego ID) of the ego from which a particular node was
+#'   generated.
+#'
 #' @author Pavel N. Krivitsky
 #' @seealso \code{\link{as.egodata.network}}, which performs the inverse
 #' operation.

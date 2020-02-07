@@ -24,7 +24,10 @@ proportion to \eqn{w_i}.} }}
 \item{\dots}{Additional arguments, currently unused.}
 }
 \value{
-A \code{\link[network]{network}} object.
+A \code{\link[network]{network}} object. It has an
+additional vertex attribute \code{.ego.ind} giving the \emph{row index}
+(not ego ID) of the ego from which a particular node was
+generated.
 }
 \description{
 Taking a \code{\link{egodata}} object, constructs a
