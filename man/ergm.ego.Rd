@@ -46,10 +46,8 @@ An object of class \code{ergm.ego} inheriting from
 elements: \item{"v"}{Variance-covariance matrix of the estimate of the
 sufficient statistics} \item{"m"}{Estimate of the sufficient
 statistics} \item{"egodata"}{The egodata object passed}
-\item{"popsize"}{Population network size and pseudopopulation size
-used, respectively}\item{, }{Population network size and pseudopopulation
-size used, respectively}\item{"ppopsize"}{Population network size and
-pseudopopulation size used, respectively} \item{"coef"}{The
+\item{"popsize"}{Population network size used}\item{"ppopsize"}
+{Pseudopopulation size used, see \code{\link{control.ergm.ego}}} \item{"coef"}{The
 coefficients, along with the network size adjustment \code{netsize.adj}
 coefficient.} \item{"covar"}{Pseudo-MLE estimate of the
 variance-covariance matrix of the parameter estimates under repeated
@@ -61,7 +59,7 @@ statistics with respect to the model parameters}
 }
 \description{
 A wrapper around the \code{\link[ergm]{ergm}} to fit an ERGM to an
-\code{\link{egodata}}.
+\code{\link{egodata}} object.
 }
 \examples{
 
