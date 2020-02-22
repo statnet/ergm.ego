@@ -51,8 +51,14 @@ EgoStat.absdiff(egor, attrname, pow = 1)
 
 EgoStat.degree(egor, d, by = NULL, homophily = FALSE, levels = NULL)
 
-EgoStat.degrange(egor, from = NULL, to = Inf, by = NULL,
-  homophily = FALSE, levels = NULL)
+EgoStat.degrange(
+  egor,
+  from = NULL,
+  to = Inf,
+  by = NULL,
+  homophily = FALSE,
+  levels = NULL
+)
 
 EgoStat.concurrent(egor, by = NULL, levels = NULL)
 
@@ -66,8 +72,7 @@ EgoStat.cyclicalties(egor, attrname = NULL)
 
 EgoStat.esp(egor, d)
 
-EgoStat.gwesp(egor, decay = NULL, fixed = FALSE, cutoff = 30,
-  alpha = NULL)
+EgoStat.gwesp(egor, decay = NULL, fixed = FALSE, cutoff = 30, alpha = NULL)
 
 EgoStat.gwdegree(egor, decay = NULL, fixed = FALSE, cutoff = 30)
 

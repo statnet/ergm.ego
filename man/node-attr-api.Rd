@@ -18,38 +18,27 @@
 \usage{
 ergm.ego_get_vattr(object, df, accept = "character", ...)
 
-\method{ergm.ego_get_vattr}{character}(object, df, accept = "character",
-  ...)
+\method{ergm.ego_get_vattr}{character}(object, df, accept = "character", ...)
 
-\method{ergm.ego_get_vattr}{function}(object, df, accept = "character",
-  ...)
+\method{ergm.ego_get_vattr}{`function`}(object, df, accept = "character", ...)
 
-\method{ergm.ego_get_vattr}{formula}(object, df, accept = "character",
-  ...)
+\method{ergm.ego_get_vattr}{formula}(object, df, accept = "character", ...)
 
-ergm.ego_attr_levels(object, attr, egor, levels = sort(unique(attr)),
-  ...)
+ergm.ego_attr_levels(object, attr, egor, levels = sort(unique(attr)), ...)
 
-\method{ergm.ego_attr_levels}{numeric}(object, attr, egor,
-  levels = sort(unique(attr)), ...)
+\method{ergm.ego_attr_levels}{numeric}(object, attr, egor, levels = sort(unique(attr)), ...)
 
-\method{ergm.ego_attr_levels}{logical}(object, attr, egor,
-  levels = sort(unique(attr)), ...)
+\method{ergm.ego_attr_levels}{logical}(object, attr, egor, levels = sort(unique(attr)), ...)
 
-\method{ergm.ego_attr_levels}{AsIs}(object, attr, egor,
-  levels = sort(unique(attr)), ...)
+\method{ergm.ego_attr_levels}{AsIs}(object, attr, egor, levels = sort(unique(attr)), ...)
 
-\method{ergm.ego_attr_levels}{character}(object, attr, egor,
-  levels = sort(unique(attr)), ...)
+\method{ergm.ego_attr_levels}{character}(object, attr, egor, levels = sort(unique(attr)), ...)
 
-\method{ergm.ego_attr_levels}{NULL}(object, attr, egor,
-  levels = sort(unique(attr)), ...)
+\method{ergm.ego_attr_levels}{`NULL`}(object, attr, egor, levels = sort(unique(attr)), ...)
 
-\method{ergm.ego_attr_levels}{function}(object, attr, egor,
-  levels = sort(unique(attr)), ...)
+\method{ergm.ego_attr_levels}{`function`}(object, attr, egor, levels = sort(unique(attr)), ...)
 
-\method{ergm.ego_attr_levels}{formula}(object, attr, egor,
-  levels = sort(unique(attr)), ...)
+\method{ergm.ego_attr_levels}{formula}(object, attr, egor, levels = sort(unique(attr)), ...)
 }
 \arguments{
 \item{object}{An argument specifying the nodal attribute to select

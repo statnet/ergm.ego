@@ -4,11 +4,17 @@
 \alias{control.ergm.ego}
 \title{Control parameters for \code{\link{ergm.ego}}.}
 \usage{
-control.ergm.ego(ppopsize = c("auto", "samp", "pop"), ppopsize.mul = 1,
-  ppop.wt = c("round", "sample"), stats.wt = c("data", "ppop"),
-  stats.est = c("survey", "asymptotic", "bootstrap", "jackknife",
-  "naive"), boot.R = 10000, ignore.max.alters = FALSE,
-  ergm.control = control.ergm(), ...)
+control.ergm.ego(
+  ppopsize = c("auto", "samp", "pop"),
+  ppopsize.mul = 1,
+  ppop.wt = c("round", "sample"),
+  stats.wt = c("data", "ppop"),
+  stats.est = c("survey", "asymptotic", "bootstrap", "jackknife", "naive"),
+  boot.R = 10000,
+  ignore.max.alters = FALSE,
+  ergm.control = control.ergm(),
+  ...
+)
 }
 \arguments{
 \item{ppopsize, ppopsize.mul}{Parameters to determine the size

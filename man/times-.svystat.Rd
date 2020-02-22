@@ -7,12 +7,12 @@
 \method{*}{svystat}(x, y)
 }
 \arguments{
-\item{x}{an object of class \code{[svystat][survey::svymean]}.}
+\item{x}{an object of class \verb{[svystat][survey::svymean]}.}
 
 \item{y}{a scalar (numeric vector of length 1).}
 }
 \value{
-a \code{[svystat][survey::svymean]} object with the updated statistics and variance-covariance matrix.
+a \verb{[svystat][survey::svymean]} object with the updated statistics and variance-covariance matrix.
 }
 \description{
 Multiply the values of survey statistics by the specified number, adjusting the variance.

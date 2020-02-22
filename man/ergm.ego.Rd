@@ -5,9 +5,17 @@
 \title{Inference for Exponential-Family Random Graph Models based on Egocentrically
 Sampled Data}
 \usage{
-ergm.ego(formula, popsize = 1, offset.coef = NULL, constraints = ~.,
-  ..., control = control.ergm.ego(), na.action = na.fail,
-  na.rm = FALSE, do.fit = TRUE)
+ergm.ego(
+  formula,
+  popsize = 1,
+  offset.coef = NULL,
+  constraints = ~.,
+  ...,
+  control = control.ergm.ego(),
+  na.action = na.fail,
+  na.rm = FALSE,
+  do.fit = TRUE
+)
 }
 \arguments{
 \item{formula}{An \code{\link{formula}} object, of the form \code{e
