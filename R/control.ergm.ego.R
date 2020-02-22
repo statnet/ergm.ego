@@ -97,7 +97,7 @@ control.ergm.ego <- function(
   boot.R = 10000,
   ergm.control = control.ergm(),
   ...){
-  match.arg.pars <- c("stats.est", "ppop.wt", "stats.wt", if(!is.numeric(ppopsize) && !is.data.frame(ppopsize)) "ppopsize")
+  match.arg.pars <- c("stats.est", "ppop.wt", "stats.wt", if(is.character(ppopsize)) "ppopsize")
 
   control<-list()
   formal.args<-formals(sys.function())
