@@ -70,6 +70,7 @@
 #' @export
 simulate.ergm.ego <- function(object, nsim = 1, seed = NULL, constraints=object$constraints, popsize=if(object$popsize==1) object$ppopsize else object$popsize, control=control.simulate.ergm.ego(), output=c("network","stats","edgelist","pending_update_network"), ..., verbose=FALSE){
   statnet.common::check.control.class("simulate.ergm.ego", "simulate.ergm.ego")
+  output <- match.arg(output)
   
   egodata <- object$egodata
   if(is.data.frame(popsize)){ # If pseudopoluation composition is given in popsize, use that.
