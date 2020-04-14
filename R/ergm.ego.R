@@ -1,11 +1,11 @@
 #  File R/ergm.ego.R in package ergm.ego, part of the Statnet suite
-#  of packages for network analysis, http://statnet.org .
+#  of packages for network analysis, https://statnet.org .
 #
 #  This software is distributed under the GPL-3 license.  It is free,
 #  open source, and has the attribution requirements (GPL Section 7) at
-#  http://statnet.org/attribution
+#  https://statnet.org/attribution
 #
-#  Copyright 2015-2018 Statnet Commons
+#  Copyright 2015-2019 Statnet Commons
 #######################################################################
 
 
@@ -40,17 +40,21 @@
 #' @param do.fit Whether to actually call \code{\link[ergm]{ergm}}
 #' @return An object of class \code{ergm.ego} inheriting from
 #' \code{\link[ergm]{ergm}}, with the following additional or overridden
-#' elements: \item{"v"}{Variance-covariance matrix of the estimate of the
-#' sufficient statistics} \item{"m"}{Estimate of the sufficient
-#' statistics} \item{"egor"}{The egor object passed}
-#' \item{"popsize"}{Population network size and pseudopopulation size
-#' used, respectively}\item{, }{Population network size and pseudopopulation
-#' size used, respectively}\item{"ppopsize"}{Population network size and
-#' pseudopopulation size used, respectively} \item{"coef"}{The
+#' elements:
+#' \item{"v"}{Variance-covariance matrix of the estimate of the
+#' sufficient statistics}
+#' \item{"m"}{Estimate of the sufficient
+#' statistics}
+#' \item{"egor"}{The [`egor`] object passed}
+#' \item{"popsize"}{Population network size used}
+#' \item{"ppopsize"}{Pseudopopulation size used, see \code{\link{control.ergm.ego}}}
+#' \item{"coef"}{The
 #' coefficients, along with the network size adjustment \code{netsize.adj}
-#' coefficient.} \item{"covar"}{Pseudo-MLE estimate of the
+#' coefficient.}
+#' \item{"covar"}{Pseudo-MLE estimate of the
 #' variance-covariance matrix of the parameter estimates under repeated
-#' egocentric sampling} \item{"ergm.covar"}{ The variance-covariance matrix of
+#' egocentric sampling}
+#' \item{"ergm.covar"}{ The variance-covariance matrix of
 #' parameter estimates under the ERGM superpopulation process (without
 #' incorporating sampling).  }
 #' \item{"DtDe"}{Estimated Jacobian of the expectation of the sufficient
@@ -209,10 +213,20 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
                 jackknife = (n-1)/n*crossprod(sweep(m.j,2,colMeans(m.j)))
                 )
   }
-
+  
   ergm.formula <- nonsimp_update.formula(formula,popnw~.,from.new="popnw")
-  ergm.formula <- nonsimp_update.formula(ergm.formula,adj.update)
 
+  ergm.names <- param_names(ergm_model(deoffset(ergm.formula)), offset=FALSE)
+  if(!setequal(ergm.names,names(m))){
+    ergm.not.ts <- setdiff(ergm.names, names(m))
+    ts.not.ergm <- setdiff(names(m), ergm.names)
+    errstr <-
+      if(length(ergm.not.ts)) paste("statistics", paste.and(sQuote(ergm.not.ts)), "required by the ERGM could not be estimated from data.")
+      else paste("statistics", paste.and(sQuote(ts.not.ergm)), "estimated from data are extraneous to the ERGM.")
+    stop("There appears to be a mismatch between estimated statistic and the sufficient statistic of the ERGM: ", errstr, " A common cause of this is that egos and alters do not have a consistent set of levels for one or more factors.")
+  }
+  
+  ergm.formula <- nonsimp_update.formula(ergm.formula,adj.update)
   ergm.offset.coef <- c(-log(ppopsize/popsize),offset.coef)
 
   # If nominations were limited, represent the cap a degree bound.
@@ -240,6 +254,7 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
     coef <- coef(ergm.fit)
 
     oi <- ergm.fit$etamap$offsettheta
+    dropped <- oi[!ergm_model(ergm.formula)$etamap$offsettheta]
     
     DtDe <- -ergm.fit$hessian[!oi,!oi,drop=FALSE]
 
@@ -251,7 +266,7 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
     vcov <- matrix(NA, length(coef), length(coef))
 
     iDtDe <- solve(DtDe[!novar,!novar,drop=FALSE])
-    vcov[!oi,!oi] <- iDtDe%*%v[!novar,!novar,drop=FALSE]%*%iDtDe
+    vcov[!oi,!oi] <- iDtDe%*%v[!dropped,!dropped,drop=FALSE][!novar,!novar,drop=FALSE]%*%iDtDe
     
     rownames(vcov) <- colnames(vcov) <- names(coef)
 

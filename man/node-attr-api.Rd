@@ -16,13 +16,37 @@
 \alias{ergm.ego_attr_levels.formula}
 \title{Helper functions for specifying nodal attribute levels}
 \usage{
-ergm.ego_get_vattr(object, df, accept = "character", ...)
+ergm.ego_get_vattr(
+  object,
+  df,
+  accept = "character",
+  multiple = if (accept == "character") "paste" else "stop",
+  ...
+)
 
-\method{ergm.ego_get_vattr}{character}(object, df, accept = "character", ...)
+\method{ergm.ego_get_vattr}{character}(
+  object,
+  df,
+  accept = "character",
+  multiple = if (accept == "character") "paste" else "stop",
+  ...
+)
 
-\method{ergm.ego_get_vattr}{`function`}(object, df, accept = "character", ...)
+\method{ergm.ego_get_vattr}{`function`}(
+  object,
+  df,
+  accept = "character",
+  multiple = if (accept == "character") "paste" else "stop",
+  ...
+)
 
-\method{ergm.ego_get_vattr}{formula}(object, df, accept = "character", ...)
+\method{ergm.ego_get_vattr}{formula}(
+  object,
+  df,
+  accept = "character",
+  multiple = if (accept == "character") "paste" else "stop",
+  ...
+)
 
 ergm.ego_attr_levels(object, attr, egor, levels = sort(unique(attr)), ...)
 
@@ -48,6 +72,9 @@ or which levels to include.}
 
 \item{accept}{A character vector listing permitted data types for
 the output. See the Details section for the specification.}
+
+\item{multiple}{Handling of multiple attributes or matrix or data
+frame output. See the Details section for the specification.}
 
 \item{...}{Additional argument to the functions of network or to
 the formula's environment.}
@@ -112,6 +139,16 @@ beconverted to character).}
 \item{\code{"nonnegative"}}{Accept a nonnegative number or logical.}
 
 \item{\code{"positive"}}{Accept a strictly positive number or logical.}
+}
+
+\describe{
+
+\item{\code{"paste"}}{Paste together with dot as the separator.}
+
+\item{\code{"stop"}}{Fail with an error message.}
+
+\item{\code{"matrix"}}{Construct and/or return a matrix whose rows correspond to vertices.}
+
 }
 }
 \examples{

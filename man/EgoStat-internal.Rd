@@ -6,9 +6,14 @@
 \alias{.attrErr}
 \alias{.unfactor}
 \alias{.exsum}
+\alias{.degreeseq}
+\alias{.alterEgos}
 \alias{.extabulate}
 \alias{.matchNA}
 \alias{.pasteNA}
+\alias{split_egos_by_ego}
+\alias{split_alters_by_ego}
+\alias{split_aaties_by_ego}
 \alias{.checkNA}
 \title{Helper functions of EgoStats. Some may be documented and exported in the future.}
 \usage{
@@ -20,11 +25,21 @@
 
 .exsum(x)
 
+.degreeseq(egor)
+
+.alterEgos(egor)
+
 .extabulate(bin, nbins = max(1, bin, na.rm = TRUE))
 
 .matchNA(x, table, nomatch = NA_integer_, incomparables = NULL)
 
 .pasteNA(..., sep = " ", collapse = NULL)
+
+split_egos_by_ego(x, egor)
+
+split_alters_by_ego(x, egor)
+
+split_aaties_by_ego(x, egor)
 
 .checkNA(x, ...)
 }
@@ -48,11 +63,21 @@ Helper functions of EgoStats. Some may be documented and exported in the future.
 
 \item \code{.exsum}: As \code{\link[=sum]{sum()}}, but "extrapolating" the \code{NA}s.
 
+\item \code{.degreeseq}: Degree sequence of the egos.
+
+\item \code{.alterEgos}: Ego index (i.e., row) associated with each alter.
+
 \item \code{.extabulate}: As \code{\link[=tabulate]{tabulate()}}, but "extrapolating" the \code{NA}s.
 
 \item \code{.matchNA}: As \code{\link[base:match]{base::match()}}, but \code{NA}s are passed through.
 
 \item \code{.pasteNA}: As \code{\link[=paste]{paste()}}, but \code{NA}s are passed through rather than typeset.
+
+\item \code{split_egos_by_ego}: Split an arbitrary vector or matrix by egos.
+
+\item \code{split_alters_by_ego}: Split an arbitrary vector or matrix by egos.
+
+\item \code{split_aaties_by_ego}: Split an arbitrary vector or matrix by egos.
 
 \item \code{.checkNA}: Pass through the input if it does not contain mising values; otherwise stop with given error. Arguments after the first are passed through to \code{\link[=stop]{stop()}}.
 }}

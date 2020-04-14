@@ -14,11 +14,6 @@
 \alias{EgoStat}
 \alias{EgoStat.offset}
 \alias{EgoStat.edges}
-\alias{EgoStat.nodecov}
-\alias{EgoStat.nodefactor}
-\alias{EgoStat.nodematch}
-\alias{EgoStat.nodemix}
-\alias{EgoStat.absdiff}
 \alias{EgoStat.degree}
 \alias{EgoStat.degrange}
 \alias{EgoStat.concurrent}
@@ -39,16 +34,6 @@ EgoStat.offset(egor, trm)
 
 EgoStat.edges(egor)
 
-EgoStat.nodecov(egor, attrname)
-
-EgoStat.nodefactor(egor, attrname, base = 1, levels = NULL)
-
-EgoStat.nodematch(egor, attrname, diff = FALSE, keep = NULL)
-
-EgoStat.nodemix(egor, attrname, base = NULL)
-
-EgoStat.absdiff(egor, attrname, pow = 1)
-
 EgoStat.degree(egor, d, by = NULL, homophily = FALSE, levels = NULL)
 
 EgoStat.degrange(
@@ -66,9 +51,9 @@ EgoStat.concurrentties(egor, by = NULL, levels = NULL)
 
 EgoStat.degree1.5(egor)
 
-EgoStat.transitiveties(egor, attrname = NULL)
+EgoStat.transitiveties(egor, attr = NULL, diff = FALSE, levels = TRUE)
 
-EgoStat.cyclicalties(egor, attrname = NULL)
+EgoStat.cyclicalties(egor, attr = NULL, diff = FALSE, levels = TRUE)
 
 EgoStat.esp(egor, d)
 

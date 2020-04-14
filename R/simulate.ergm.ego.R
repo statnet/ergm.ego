@@ -1,11 +1,11 @@
 #  File R/simulate.ergm.ego.R in package ergm.ego, part of the Statnet suite
-#  of packages for network analysis, http://statnet.org .
+#  of packages for network analysis, https://statnet.org .
 #
 #  This software is distributed under the GPL-3 license.  It is free,
 #  open source, and has the attribution requirements (GPL Section 7) at
-#  http://statnet.org/attribution
+#  https://statnet.org/attribution
 #
-#  Copyright 2015-2018 Statnet Commons
+#  Copyright 2015-2019 Statnet Commons
 #######################################################################
 
 
@@ -68,6 +68,7 @@
 #' @export
 simulate.ergm.ego <- function(object, nsim = 1, seed = NULL, constraints=object$constraints, popsize=if(object$popsize==1) object$ppopsize else object$popsize, control=control.simulate.ergm.ego(), output=c("network","stats","edgelist","pending_update_network"), ..., verbose=FALSE){
   statnet.common::check.control.class("simulate.ergm.ego", "simulate.ergm.ego")
+  output <- match.arg(output)
   
   if(is.data.frame(popsize)){ # If pseudopoluation composition is given in popsize, use that.
     popnw <- template_network(popsize, nrow(popsize))

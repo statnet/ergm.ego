@@ -25,7 +25,7 @@
 #' @export
 as.egor.egodata <- function(x, ...){
   ego_design <- list(~1, weights = rep(x$egoWt, length.out=nrow(x$egos)))
-  egor(egos.df=x$egos, alters.df=x$alters, ID.vars = list(ego = x$egoIDcol), ego_design=ego_design)
+  egor(egos=x$egos, alters=x$alters, ID.vars = list(ego = x$egoIDcol), ego_design=ego_design)
 }
 
 #' Construct an Egocentric View of a \code{\link{network}} Object
@@ -58,7 +58,7 @@ as.egor.network<-function(x,special.cols=c("na"),...){
   for(a in list.vertex.attributes(x))
     if(!(a %in% special.cols)) egos[[a]]<-get.vertex.attribute(x,attrname=a)
 
-  egos <- tibble::as_tibble(egos)
+  egos <- as_tibble(egos)
 
   # FIXME: Save edge attributes as well.
   alters <- lapply(seq_len(N), get.neighborhood, x=x) # so v gets the index variable
@@ -75,9 +75,8 @@ as.egor.network<-function(x,special.cols=c("na"),...){
 
   alters <- lapply(alters, function(js) cbind(egos[js,,drop=FALSE], .alterID=js))
   
-  egor(egos.df=egos, alters.df=alters, aaties.df=aaties,
-       ID.vars=list(alter=".alterID", source=".Source", target=".Target"),
-       ego_design=list(~1, weights=~1))
+  egor(egos=egos, alters=alters, aaties=aaties,
+       ID.vars=list(alter=".alterID", source=".Source", target=".Target"))
 }
 
 
@@ -141,9 +140,9 @@ template_network<-function(x, N, scaling=c("round","sample"), ...){
   N <- length(egoinds) # round scaling may modify N.
   y0<-network.initialize(N,directed=FALSE)
 
-  x <- x[egoinds,]
+  x <- as_tibble(x$ego)[egoinds,]
   
-  for(ego.col in setdiff(names(x),c(".alts",".aaties")))
+  for(ego.col in names(x))
     if(is.factor(x[[ego.col]]))
       y0 <- set.vertex.attribute(y0,ego.col,as.character(x[[ego.col]]))
     else

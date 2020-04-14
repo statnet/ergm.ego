@@ -4,7 +4,9 @@
 \name{fmhfit}
 \alias{fmhfit}
 \title{Fitted ergm.ego model object}
-\format{An object of class \code{ergm.ego}.}
+\format{
+An object of class \code{ergm.ego}.
+}
 \description{
 This is an object with a fitted model to \code{faux.mesa.high} data using the code
 shown below in the Examples section.

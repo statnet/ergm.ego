@@ -1,6 +1,6 @@
 Package: ergm.ego
-Version: 0.5-458
-Date: 2019-06-28
+Version: 0.9-472
+Date: 2020-04-14
 Title: Fit, Simulate and Diagnose Exponential-Family Random Graph Models to Egocentrically Sampled Network Data
 Authors@R: c(
             person("Pavel N.", "Krivitsky", role=c("aut","cre"), email="pavel@uow.edu.au", comment=c(ORCID="0000-0002-9101-3362")),
@@ -8,17 +8,27 @@ Authors@R: c(
             person("Martina", "Morris", role=c("ctb"), email="morrism@u.washington.edu"),
 	    person("Kirk", "Li", role=c("ctb"), email="kirkli@uw.edu"),
 	    person("Emily N.", "Beylerian", role=c("ctb"), email="ebey@uw.edu"),
-	    person("Michał", "Bojanowski", role=c("ctb"), email="michal2992@gmail.com", comment=c(ORCID="0000-0001-7503-852X")))
-Depends: R (>= 2.10), ergm (>= 4.0), network (>= 1.14), egor
-Imports: statnet.common (>= 4.1.2), coda, RColorBrewer, stats, tibble, survey, methods, zeallot, purrr, rlang
-LinkingTo: ergm
-Suggests: 
-    testthat,
-    covr
+	    person("Michał", "Bojanowski", role=c("ctb"), email="michal2992@gmail.com", comment=c(ORCID="0000-0001-7503-852X")),
+	    person("Chad", "Klumb", role=c("ctb"), email="cklumb@gmail.com"))
+Depends:
+    ergm (>= 3.10.1),
+    network (>= 1.15)
+Imports:
+    statnet.common (>= 4.2.0),
+    coda (>= 0.19.2),
+    RColorBrewer (>= 1.1.2),
+    purrr (>= 0.3.2),
+    rlang (>= 0.3.4),
+    tibble (>= 2.1.1),
+    stats,
+    methods
+Suggests:
+    testthat (>= 2.1.1),
+    covr (>= 3.2.1)
 Description: Utilities for managing egocentrically sampled network data and a wrapper around the 'ergm' package to facilitate ERGM inference and simulation from such data.
 License: GPL-3 + file LICENSE
 URL: http://www.statnet.org
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8
 Remotes:

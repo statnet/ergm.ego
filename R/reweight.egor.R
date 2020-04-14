@@ -3,9 +3,9 @@
 #
 #  This software is distributed under the GPL-3 license.  It is free,
 #  open source, and has the attribution requirements (GPL Section 7) at
-#  http://statnet.org/attribution
+#  https://statnet.org/attribution
 #
-#  Copyright 2015-2018 Statnet Commons
+#  Copyright 2015-2019 Statnet Commons
 #######################################################################
 ## reweight.egor <- function(x, g, gw){
 ##   gw <- gw[order(gw[,1]),2]

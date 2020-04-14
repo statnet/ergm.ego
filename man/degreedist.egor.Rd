@@ -35,6 +35,9 @@ observed.}
 parameters and \code{bgrmod} have no effect.}
 
 \item{...}{Additional arguments to \code{\link[=simulate.ergm.ego]{simulate.ergm.ego()}}.}
+
+\item{weight}{Whether sampling weights should be incorporated into
+the calculation (\code{TRUE}, the default) or ignored (\code{FALSE}).}
 }
 \value{
 Returns either a vector of degree frequencies/proportions

@@ -81,3 +81,12 @@ test_that("degreedist() works on data based on faux.mesa.high with `by=Sex`", {
   expect_silent(degreedist(fmh.ego, by="Sex"))
   dev.off()
 })
+
+test_that("weighted degreedist with weights disabled", {
+  expect_equivalent(unclass(degreedist(e, plot=FALSE, weight=FALSE)), c(1/2,1/2))
+})
+
+test_that("weighted degreedist by attribute with weights disabled", {
+  expect_equivalent(unclass(degreedist(e, plot=FALSE, by="x", weight=FALSE)), rbind(c(1/2,1/2),
+                                                                                    c(1/2,1/2)))
+})

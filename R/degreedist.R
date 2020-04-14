@@ -1,11 +1,11 @@
 #  File R/degreedist.R in package ergm.ego, part of the Statnet suite
-#  of packages for network analysis, http://statnet.org .
+#  of packages for network analysis, https://statnet.org .
 #
 #  This software is distributed under the GPL-3 license.  It is free,
 #  open source, and has the attribution requirements (GPL Section 7) at
-#  http://statnet.org/attribution
+#  https://statnet.org/attribution
 #
-#  Copyright 2015-2018 Statnet Commons
+#  Copyright 2015-2019 Statnet Commons
 #######################################################################
 
 
@@ -28,6 +28,8 @@
 #' @param main Main title of the plot.
 #' @param plot Whether to plot the histogram; if `FALSE`, graphical
 #'   parameters and `bgrmod` have no effect.
+#' @param weight Whether sampling weights should be incorporated into
+#'   the calculation (`TRUE`, the default) or ignored (`FALSE`).
 #' @param ... Additional arguments to [simulate.ergm.ego()].
 #'
 #' @return Returns either a vector of degree frequencies/proportions
@@ -50,22 +52,20 @@
 #' @export
 degreedist.egor <- function(object, freq = FALSE, prob = !freq, 
                             by = NULL, brgmod = FALSE, main = NULL, plot = TRUE, ...){
-  c(egor, by) %<-% .preproc_factor(object, by)
-
   color <- "#83B6E1"
   beside <- TRUE
 
   ylabel <- if(prob) "Proportion" else "Frequency"
   if(!is.null(by)) ylabel <- paste(ylabel, "(within attr level)")
 
-  degtable <- sapply(egor$.alts, nrow)
+  degtable <- .degreeseq(object)
   
   if(is.null(by)){
     deg.ego <- xtabs(weights(egor)~degtable)
     names(dimnames(deg.ego)) <- "degree"
     degrees <- as.integer(names(deg.ego))
   }else{
-    deg.ego <- xtabs(weights(egor)~egor[[by]]+degtable)
+    deg.ego <- xtabs(weights(egor)~as_tibble(egor)[[by]]+degtable)
     names(dimnames(deg.ego)) <- c(by, "degree")
     levs <- rownames(deg.ego)
     degrees <- as.integer(colnames(deg.ego))
@@ -100,7 +100,7 @@ degreedist.egor <- function(object, freq = FALSE, prob = !freq,
   if(plot){
     if(brgmod) {
       ppopsize.mul <- max(weights(egor))/min(weights(egor))
-      brgdraws <- simulate(suppressMessages(ergm.ego(egor ~ edges, control=control.ergm.ego(ppopsize=nrow(egor)*ppopsize.mul))), nsim = 50, ...)
+      brgdraws <- simulate(suppressMessages(ergm.ego(egor ~ edges, control=control.ergm.ego(ppopsize=nrow(egor$ego)*ppopsize.mul))), nsim = 50, ...)
       deg.brg <- summary(brgdraws ~ degree(degrees))/ppopsize.mul
       brgmeans <- apply(deg.brg, MARGIN = 2, FUN = mean)
       brgsd <- apply(deg.brg, MARGIN = 2, FUN = sd)
@@ -162,6 +162,8 @@ degreedist.egor <- function(object, freq = FALSE, prob = !freq,
 #' attribute whose mixing matrix is wanted.
 #' @param rowprob Whether the counts should be normalized by row sums. That is,
 #' whether they should be proportions conditional on the ego's group.
+#' @param weight Whether sampling weights should be incorporated into
+#'   the calculation (`TRUE`, the default) or ignored (`FALSE`).
 #' @param ... Additional arguments, currently unused.
 #' @return A matrix with a row and a column for each level of \code{attrname}.
 #' 
@@ -183,17 +185,22 @@ degreedist.egor <- function(object, freq = FALSE, prob = !freq,
 #' tmp}, mm.ego, check.attributes=FALSE)))
 #' 
 #' @export
-mixingmatrix.egor <- function(object, attrname, rowprob = FALSE, ...){
+mixingmatrix.egor <- function(object, attrname, rowprob = FALSE, weight = TRUE, ...){
   c(egor, attrname) %<-% .preproc_factor(object, attrname)
 
-  levs <- sort(unique(c(egor[[attrname]], .allAlters(egor)[[attrname]])))
+  levs <- sort(unique(c(as_tibble(egor$ego)[[attrname]], egor$alter[[attrname]])))
 
-  ds <- sapply(egor$.alts, nrow)
-  egos <- rep(egor[[attrname]], ds)
-  alters <- .allAlters(egor)[[attrname]]
-  w <- rep(weights(egor),ds)
+  ds <- sapply(alters_by_ego(egor), nrow)
+  egos <- rep(as_tibble(egor$egos)[[attrname]], ds)
+  alters <- egor$alter[[attrname]]
 
-  mxmat <- outer(levs, levs, Vectorize(function(l1, l2) sum(w[egos==l1&alters==l2])))
+  mxmat <-
+    if(weight){
+      w <- rep(weights(egor),ds)
+      outer(levs, levs, Vectorize(function(l1, l2) sum(w[egos==l1&alters==l2])))
+    }else{
+      outer(levs, levs, Vectorize(function(l1, l2) sum(egos==l1&alters==l2)))
+    }
 
   dimnames(mxmat) <- list(ego = levs,  
                           alter = levs)
