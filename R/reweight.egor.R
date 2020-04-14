@@ -23,8 +23,8 @@
 ## }
 
 ## category.weights.egor <- function(x, pop, by){
-##   x.g <- apply(x$egos[by],1,paste,collapse="\n")
-##   pop.g <- apply(pop$egos[by],1,paste,collapse="\n")
+##   x.g <- apply(x$ego[by],1,paste,collapse="\n")
+##   pop.g <- apply(pop$ego[by],1,paste,collapse="\n")
 
 ##   pop.freq <- as.data.frame(table(pop.g))
 

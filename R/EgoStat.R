@@ -64,7 +64,7 @@ NULL
 #'
 #' Ego index (i.e., row) associated with each alter.
 .alterEgos <- function(egor){
-  match(egor$alter$.egoID, as_tibble(egor$egos)$.egoID)
+  match(egor$alter$.egoID, as_tibble(egor$ego)$.egoID)
 }
 
 

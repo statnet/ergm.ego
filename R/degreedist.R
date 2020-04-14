@@ -61,11 +61,11 @@ degreedist.egor <- function(object, freq = FALSE, prob = !freq,
   degtable <- .degreeseq(object)
   
   if(is.null(by)){
-    deg.ego <- xtabs(weights(egor)~degtable)
+    deg.ego <- xtabs(weights(object)~degtable)
     names(dimnames(deg.ego)) <- "degree"
     degrees <- as.integer(names(deg.ego))
   }else{
-    deg.ego <- xtabs(weights(egor)~as_tibble(egor)[[by]]+degtable)
+    deg.ego <- xtabs(weights(object)~as_tibble(object)[[by]]+degtable)
     names(dimnames(deg.ego)) <- c(by, "degree")
     levs <- rownames(deg.ego)
     degrees <- as.integer(colnames(deg.ego))
@@ -99,8 +99,8 @@ degreedist.egor <- function(object, freq = FALSE, prob = !freq,
   
   if(plot){
     if(brgmod) {
-      ppopsize.mul <- max(weights(egor))/min(weights(egor))
-      brgdraws <- simulate(suppressMessages(ergm.ego(egor ~ edges, control=control.ergm.ego(ppopsize=nrow(egor$ego)*ppopsize.mul))), nsim = 50, ...)
+      ppopsize.mul <- max(weights(object))/min(weights(object))
+      brgdraws <- simulate(suppressMessages(ergm.ego(object ~ edges, control=control.ergm.ego(ppopsize=nrow(object$ego)*ppopsize.mul))), nsim = 50, ...)
       deg.brg <- summary(brgdraws ~ degree(degrees))/ppopsize.mul
       brgmeans <- apply(deg.brg, MARGIN = 2, FUN = mean)
       brgsd <- apply(deg.brg, MARGIN = 2, FUN = sd)
@@ -186,15 +186,15 @@ degreedist.egor <- function(object, freq = FALSE, prob = !freq,
 #' 
 #' @export
 mixingmatrix.egor <- function(object, attrname, rowprob = FALSE, weight = TRUE, ...){
-  levs <- sort(unique(c(as_tibble(egor$ego)[[attrname]], egor$alter[[attrname]])))
+  levs <- sort(unique(c(as_tibble(object$ego)[[attrname]], object$alter[[attrname]])))
 
-  ds <- sapply(alters_by_ego(egor), nrow)
-  egos <- rep(as_tibble(egor$egos)[[attrname]], ds)
-  alters <- egor$alter[[attrname]]
+  ds <- sapply(alters_by_ego(object), nrow)
+  egos <- rep(as_tibble(object$ego)[[attrname]], ds)
+  alters <- object$alter[[attrname]]
 
   mxmat <-
     if(weight){
-      w <- rep(weights(egor),ds)
+      w <- rep(weights(object),ds)
       outer(levs, levs, Vectorize(function(l1, l2) sum(w[egos==l1&alters==l2])))
     }else{
       outer(levs, levs, Vectorize(function(l1, l2) sum(egos==l1&alters==l2)))

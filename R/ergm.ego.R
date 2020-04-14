@@ -97,7 +97,7 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
   stats.wt <- control$stats.wt
   egor <- eval_lhs.formula(formula)
 
-  sampsize <- nrow(egor)
+  sampsize <- nrow(egor$ego)
   ppopsize <-
     if(is.network(control$ppopsize)) network.size(control$ppopsize)
     else if(is.data.frame(control$ppopsize)) nrow(control$ppopsize)
