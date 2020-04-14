@@ -186,8 +186,6 @@ degreedist.egor <- function(object, freq = FALSE, prob = !freq,
 #' 
 #' @export
 mixingmatrix.egor <- function(object, attrname, rowprob = FALSE, weight = TRUE, ...){
-  c(egor, attrname) %<-% .preproc_factor(object, attrname)
-
   levs <- sort(unique(c(as_tibble(egor$ego)[[attrname]], egor$alter[[attrname]])))
 
   ds <- sapply(alters_by_ego(egor), nrow)

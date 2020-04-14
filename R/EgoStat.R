@@ -64,7 +64,7 @@ NULL
 #'
 #' Ego index (i.e., row) associated with each alter.
 .alterEgos <- function(egor){
-  match(egor$alter$.egoID, as_tibble(egos)$.egoID)
+  match(egor$alter$.egoID, as_tibble(egor$egos)$.egoID)
 }
 
 
@@ -199,7 +199,6 @@ split_aaties_by_ego <- function(x, egor){
 #'
 #' @param egor The [`egor`] object whose statistics are to be evaluated.
 #' @param attrname,base,diff,keep,pow,d,by,homophily,from,to,decay,fixed,cutoff,alpha,emptyval,nw,arglist,levels,levels2,attrs,... arguments to terms. See \code{\link[ergm]{ergm-terms}}.
-#' @import zeallot
 #' @seealso \code{\link[ergm]{ergm-terms}}
 #' @keywords models
 NULL
@@ -250,7 +249,7 @@ EgoStat.nodecov <- function(egor, attr){
     xal <- 0
   }
 
-  structure((xe + xal)/if(alt) 2 else 1, dimnames = list(NULL, attrames), order=1)
+  structure((xe + xal)/if(alt) 2 else 1, dimnames = list(NULL, attrnames), order=1)
 }
 
 #' @export
@@ -269,7 +268,7 @@ EgoStat.nodefactor <- function(egor, attr, base=1, levels=LEVELS_BASE1){
   levs <- ergm.ego_attr_levels(levels, c(xe, xa), egor, sort(unique(c(xe, xa))))
 
   if(alt){
-    xa <- matchNA(xa, levs, 0)
+    xa <- .matchNA(xa, levs, 0)
     xal <- split_alters_by_ego(xa, egor)
 
     xe <- apply(match(xe, levs, 0), 1, .extabulate, length(levs))*sapply(xal,length)
@@ -297,7 +296,7 @@ EgoStat.nodematch <- function(egor, attr, diff=FALSE, keep=NULL, levels=NULL){
   levs <- ergm.ego_attr_levels(levels, c(xe, xa), egor, sort(unique(c(xe, xa))))
 
   xe <- match(xe, levs, 0)
-  xa <- matchNA(xa, levs, 0)
+  xa <- .matchNA(xa, levs, 0)
 
   xal <- split_alters_by_ego(xa, egor)
 
@@ -508,7 +507,7 @@ EgoStat.concurrent <- function(egor, by=NULL, levels=NULL){
   if(!is.null(by)) {
     xe <- ergm.ego_get_vattr(by, egos)
     by <- attributes(xe)$name  
-    levs <- ergm.ego_attr_levels(levels, xe, egor, sort(unique(c(xe, xa))))
+    levs <- ergm.ego_attr_levels(levels, xe, egor, sort(unique(c(xe))))
     xe <- match(xe, levs, 0)
   }
 
@@ -538,7 +537,7 @@ EgoStat.concurrentties <- function(egor, by=NULL, levels=NULL){
   if(!is.null(by)) {
     xe <- ergm.ego_get_vattr(by, egos)
     by <- attributes(xe)$name  
-    levs <- ergm.ego_attr_levels(levels, xe, egor, sort(unique(c(xe, xa))))
+    levs <- ergm.ego_attr_levels(levels, xe, egor, sort(unique(c(xe))))
     xe <- match(xe, levs, 0)
   }
 
@@ -590,6 +589,7 @@ EgoStat.transitiveties <- function(egor, attr=NULL, diff=FALSE, levels=TRUE){
   }
 
   nlevs <- length(levs)
+  combine <- if(diff) identity else sum
   h <- mapply(function(e, aa)
     # Implement Krivitsky and Morris (2017, p. 490) This works
     # because we want to count how many alters have at least one
