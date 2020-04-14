@@ -66,17 +66,19 @@ as.egor.network<-function(x,special.cols=c("na"),...){
   aaties <- lapply(alters, lapply, get.neighborhood, x=x) # list of lists of alters' nominations
 
   # Note: Alter ID API is subject to change.
-  aaties <- mapply(function(a, aa){
+  aaties <- mapply(function(i, a, aa){
     # Only keep alters' ties that are with another alter of this ego.
     aa <- lapply(aa, function(ks) ks[ks %in% a])
     # FIXME: Save edge attributes as well.
-    tibble(.Source=rep(a, sapply(aa, length)), .Target=as.vector(unlist(aa), mode=storage.mode(a)))
-  }, alters, aaties, SIMPLIFY=FALSE)
+    tibble(..Source=rep(a, sapply(aa, length)), ..Target=as.vector(unlist(aa), mode=storage.mode(a)), ..EgoID=rep.int(i, length(unlist(aa))))
+  }, seq_along(aaties), alters, aaties, SIMPLIFY=FALSE) %>% bind_rows
 
-  alters <- lapply(alters, function(js) cbind(egos[js,,drop=FALSE], .alterID=js))
+  alters <- mapply(function(i, js) bind_cols(egos[js,,drop=FALSE], ..AlterID=js, ..EgoID=rep.int(i,length(js))), seq_along(alters), alters, SIMPLIFY=FALSE) %>% bind_rows
+
+  egos <- bind_cols(egos, ..EgoID=seq_len(N))
   
   egor(egos=egos, alters=alters, aaties=aaties,
-       ID.vars=list(alter=".alterID", source=".Source", target=".Target"))
+       ID.vars=list(ego="..EgoID", alter="..AlterID", source="..Source", target="..Target"))
 }
 
 
