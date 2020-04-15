@@ -13,13 +13,12 @@ EgoStat.mean.age <- function(egor, emptyval=0){
   startcol <- attr(egor,"alter_design")$startcol
   if(is.null(startcol)) stop("Egocentric dataset does not appear to contain durational information.")
 
-  nedges <- summary(egor~edges, individual=FALSE, scaleto=1)
+  nedges <- nrow(egor$alter)
   if(nedges==0){
     out <- emptyval
   }else{
-    d <- sapply(egor, nrow)
-    w <- rep(weights(egor), d)
-    starts <- .allAlters(egor)[[startcol]]
+    w <- rep(weights(egor), .degreeseq(egor))
+    starts <- egor$alter[[startcol]]
     out <- sum(w*starts)/sum(w)
   }    
 
