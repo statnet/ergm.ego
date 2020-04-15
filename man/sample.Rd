@@ -43,7 +43,7 @@ fmh.ego <- as.egor(faux.mesa.high)
 (sample(s3, 3, replace=TRUE, prob=weights(s3)))
 
 # Create a large weighted sample, oversampling 12th-graders:
-p <- ifelse(fmh.ego$Grade==12, 2, 1)
+p <- ifelse(as_tibble(fmh.ego$ego)$Grade==12, 2, 1)
 s2000 <- sample(fmh.ego, 2000, replace=TRUE, prob=p)
 
 # Summary function adjusts for weights:

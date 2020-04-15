@@ -214,7 +214,7 @@ na.omit.egor <- function(object, relevant=TRUE, ...){
 #' (sample(s3, 3, replace=TRUE, prob=weights(s3)))
 #'
 #' # Create a large weighted sample, oversampling 12th-graders:
-#' p <- ifelse(fmh.ego$Grade==12, 2, 1)
+#' p <- ifelse(as_tibble(fmh.ego$ego)$Grade==12, 2, 1)
 #' s2000 <- sample(fmh.ego, 2000, replace=TRUE, prob=p)
 #'
 #' # Summary function adjusts for weights:
@@ -250,7 +250,8 @@ sample.egor <- function(x, size, replace=FALSE, prob=NULL, ...){
   is <- sample.int(N, size, replace, prob)
 
   x <- x[is, ,unit="ego"]
-  ego_design(x) <- list(~1, weights=(w/prob)[is])
+  x$ego <- bind_cols(as_tibble(x$ego), .sample_weights = (w/prob)[is])
+  ego_design(x) <- list(weights=".sample_weights")
   x
 }
 
