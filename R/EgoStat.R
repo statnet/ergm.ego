@@ -590,7 +590,11 @@ EgoStat.transitiveties <- function(egor, attr=NULL, diff=FALSE, levels=TRUE){
   alters <- egor$alter
   aaties <- egor$aatie
 
-  if(!is.null(attr)) {
+  combine <- if(diff) identity else sum
+
+  aal <- split_aaties_by_ego(as.matrix(aaties[,c(".srcID",".tgtID"),drop=FALSE]), egor)
+
+  if(!is.null(attr)){
     xe <- ergm.ego_get_vattr(attr, egos)
     xa <- ergm.ego_get_vattr(attr, alters)
     attrname <- attributes(xe)$name  
@@ -598,24 +602,21 @@ EgoStat.transitiveties <- function(egor, attr=NULL, diff=FALSE, levels=TRUE){
     xe <- match(xe, levs, 0)
     xa <- match(xa, levs, 0)
     xal <- NVL3(xa, split_alters_by_ego(., egor))
-    aal <- split_aaties_by_ego(as.matrix(egor$aaties[,c(".srcID",".tgtID"),drop=FALSE]), egor)
-  }
 
-  if(!is.null(attr)){
     if(!is.null(xe) && !is.null(xa)) .attrErr("transitiveties and cyclicalties", attrname, "both")
     aal <- mapply(function(e, a, aa) aa[e==a[aa[,1]] & e==a[aa[,2]]], xe, xal, aal, SIMPLIFY=FALSE)
-  }
 
-  nlevs <- length(levs)
-  combine <- if(diff) identity else sum
-  h <- .mapply_col(function(e, aa)
+    nlevs <- length(levs)
     # Implement Krivitsky and Morris (2017, p. 490) This works
     # because we want to count how many alters have at least one
     # alter-alter tie, thus forming a transitive tie.
-    combine(length(unique(union(aa[,1], aa[,2])))*tabulate(e,nlevs))/2, xe, aal)
-
-  colnames(h) <- if(is.null(attr)) paste("transitiveties",sep=".")
-                 else paste("transitiveties",attrname,sep=".")
+    h <- .mapply_col(function(e, aa)
+      combine(length(unique(union(aa[,1], aa[,2])))*tabulate(e,nlevs))/2, xe, aal)
+    colnames(h) <- paste("transitiveties",attrname,sep=".")
+  }else{
+    h <- .sapply_col(aal, function(aa) length(unique(union(aa[,1], aa[,2])))/2)
+    colnames(h) <- "transitiveties"
+  }
   attr(h, "order") <- 3
   h
 }
