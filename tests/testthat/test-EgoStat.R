@@ -7,7 +7,8 @@
 #
 #  Copyright 2015-2018 Statnet Commons
 #######################################################################
-
+library(purrr)
+library(dplyr)
 
 context("Testing EgoStat")
 
@@ -137,18 +138,19 @@ test_that("egostats with alter missing data are close to complete network stats"
     
     gwdegree(fix=FALSE) + gwdegree(0.5, fix=TRUE)
   
-  
+  alter_l <- alters_by_ego(y.e)
   replicate(30,{
     y.em <- y.e
-    y.em$.alts <- lapply(y.em$.alts, function(a){
+    y.em$alter <- alter_l %>% map(function(a){
       N <- nrow(a)
       if(N){
         am <- a
         am[-sample.int(N,1),] <- NA
+        am$.egoID <- a$.egoID
         am$.altID <- a$.altID
         am
       }else a
-    })
+    }) %>% bind_rows
     f.y.em <- statnet.common::nonsimp_update.formula(f, y.em~., from.new="y.em")
     summary(f.y.em)
   })->s

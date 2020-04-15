@@ -263,7 +263,7 @@ EgoStat.nodecov <- function(egor, attr){
     xal <- 0
   }
 
-  structure((xe + xal)/if(alt) 2 else 1, dimnames = list(NULL, attrnames), order=1)
+  structure((xe + xal)/if(alt) 2 else 1, dimnames = list(NULL, paste("nodecov",attrnames,sep=".")), order=1)
 }
 
 #' @export
@@ -310,6 +310,7 @@ EgoStat.nodematch <- function(egor, attr, diff=FALSE, keep=NULL, levels=NULL){
   attrname <- attributes(xe)$name
   
   levs <- ergm.ego_attr_levels(levels, c(xe, xa), egor, sort(unique(c(xe, xa))))
+  if(!is.null(keep) && missing(levels)) levs <- levs[keep]
 
   xe <- match(xe, levs, 0)
   xa <- .matchNA(xa, levs, 0)
@@ -337,10 +338,9 @@ EgoStat.nodemix <- function(egor, attr, base=NULL, levels=NULL, levels2=NULL){
   attrname <- attributes(xeval)$name
   
   levs <- ergm.ego_attr_levels(levels, c(xeval, xaval), egor, sort(unique(c(xeval, xaval))))
-  if(!is.null(base) && !identical(base,0) && missing(levels)) levs <- levs[-base]
 
   xe <- match(xeval, levs, 0)
-  xa <- match(xaval, levs, 0)
+  xa <- .matchNA(xaval, levs, 0)
  
   nr <- length(levs)
   nc <- length(levs)
@@ -369,12 +369,11 @@ EgoStat.nodemix <- function(egor, attr, base=NULL, levels=NULL, levels2=NULL){
   xeal <- mapply(function(e,a) unlist(apply(cbind(row=pmin(e,a),col=pmax(e,a)),1,list),recursive=FALSE), xe, xal, SIMPLIFY=FALSE)
   # xeal is now a list (over egos) of lists (over alters) of sorted pairs of edge category codes.
   # Missing alter attribute causes both to be NA.
-  xeal <- lapply(xeal, lapply, function(xea) if(identical(xea,list(NA,NA))) NA else xea)
+  xeal <- lapply(xeal, lapply, function(xea) if(identical(xea,c(row=NA_integer_,col=NA_integer_))) NA else xea)
   # And now they've been replaced by NA.
 
-  nlevels2.sel <- length(levels2.sel)
-  indices2.grid <- unlist(apply(indices2.grid,1,list), recursive=FALSE)
-  h <- .sapply_col(xeal, function(xea) .extabulate(.matchNA(xea,indices2.grid,0), nbins=nlevels2.sel)/2)
+  u <- lapply(split(u, seq_len(nrow(u))), unlist)
+  h <- .sapply_col(xeal, function(xea) .extabulate(.matchNA(xea,u,0), nbins=length(u))/2)
   colnames(h) <- paste("mix",attrname,namevec,sep=".")
   attr(h, "order") <- 1
   h
@@ -431,8 +430,9 @@ EgoStat.degree <- function(egor, d, by=NULL, homophily=FALSE, levels=NULL){
 
   if(!is.null(by) && !homophily){
     bys <- rep(seq_along(levs),each=length(d))
+    bynames <- rep(levs,each=length(d))
     degs <- rep(d,length(levs))
-    cn <- paste0("deg",degs,".",by,bys)
+    cn <- paste0("deg",degs,".",by,bynames)
     h <- .mapply_col(function(e,c) as.numeric(c==degs & e==bys), xe, alterct)
   }else if(homophily){
     cn <-  paste0("deg",d,".homophily.",by)
@@ -487,18 +487,19 @@ EgoStat.degrange <- function(egor, from=NULL, to=Inf, by=NULL, homophily=FALSE, 
 
   if(!is.null(by) && !homophily){
     bys <- rep(seq_along(levs),each=length(from))
+    bynames <- rep(levs,each=length(from))
     froms <- rep(from,length(levs))
     tos <- rep(to,length(levs))
 
     cn <- ifelse(tos>=.Machine$integer.max,
-                 paste0("deg", from, "+.",          by, bys),
-                 paste0("deg", from, "to", to, ".", by, bys))
+                 paste0("deg", from, "+.",          by, bynames),
+                 paste0("deg", from, "to", to, ".", by, bynames))
     h <- .mapply_col(function(e,c) as.numeric(c>=froms & c<tos & e==bys), xe, alterct)
   }else if(homophily){
     cn <- ifelse(to>=.Machine$integer.max,
                  paste0("deg", from,  "+",     ".homophily.", by),
                  paste0("deg", from, "to", to, ".homophily.", by))
-    h <- .sapply_col(alterct, function(c) as.numeric(c>=from & c<=to))
+    h <- .sapply_col(alterct, function(c) as.numeric(c>=from & c<to))
   }else{
     cn <- ifelse(to>=.Machine$integer.max,
                  paste0("deg", from,  "+"),
@@ -558,10 +559,10 @@ EgoStat.concurrentties <- function(egor, by=NULL, levels=NULL){
   alterct <- .degreeseq(egor)
 
   if(!is.null(by)){
-    cn <- paste0("concurrent.",by,levs)
+    cn <- paste0("concurrentties.",by,levs)
     h <- .mapply_col(function(e,c) max(c-1,0)*as.numeric(e==seq_along(levs)), xe, alterct)
   }else{
-    cn <-  "concurrent"
+    cn <-  "concurrentties"
     h <- .sapply_col(alterct, function(c) max(c-1,0))
   }
 
