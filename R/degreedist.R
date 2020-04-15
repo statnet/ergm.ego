@@ -188,13 +188,12 @@ degreedist.egor <- function(object, freq = FALSE, prob = !freq,
 #' 
 #' @export
 mixingmatrix.egor <- function(object, attrname, rowprob = FALSE, weight = TRUE, ...){
-  levs <- sort(unique(c(as_tibble(object$ego)[[attrname]], object$alter[[attrname]])))
+  ds <- .degreeseq(object)
+  egos <- rep(.unfactor(as_tibble(object$ego)[[attrname]]), ds)
+  alters <- .unfactor(object$alter[[attrname]])
+  levs <- sort(unique(c(egos,alters)))
 
-  ds <- sapply(alters_by_ego(object), nrow)
-  egos <- rep(as_tibble(object$ego)[[attrname]], ds)
-  alters <- object$alter[[attrname]]
-
-  w <- if(weight) weights(object) else rep(1, nrow(object$ego))
+  w <- if(weight) rep(weights(object),ds) else rep(1, nrow(object$alter))
 
   mxmat <- outer(levs, levs, Vectorize(function(l1, l2) sum(w[egos==l1&alters==l2])))
 

@@ -9,7 +9,7 @@ for( v in varnames ) {
   test_that(
     paste0("Sum of mixing matrix for ", v, " is equal to number of alters"), {
       expect_silent(mm <- mixingmatrix(egor32, v))
-      expect_equal(sum(mm), sum(vapply(egor32$.alts, nrow, numeric(1))))
+      expect_equal(sum(mm), nrow(egor32$alter))
     })
 }
 
@@ -68,7 +68,7 @@ for ( v in varnames ) {
       " is equal to the total number of alters"
     ), {
       expect_silent(mm <- mixingmatrix(edata, v))
-      expect_equal(sum(mm), sum(vapply(edata$.alts, nrow, numeric(1))))
+      expect_equal(sum(mm), nrow(edata$alter))
     })  
 }
 
