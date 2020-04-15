@@ -193,14 +193,14 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
     }else if(stats.est=="bootstrap"){
       m.b <- t(replicate(control$boot.R,{
                            i <- sample.int(length(w),replace=TRUE)
-                           e <- egor[i,]
+                           e <- egor$ego[i,]
                            summary(deoffset(formula), basis=e, individual=FALSE, scaleto=ppopsize)
                          }))
       m <- m - (colMeans(m.b)-m)
       
     }else if(stats.est=="jackknife"){
       m.j <- t(sapply(seq_len(n), function(i){
-                        e <- egor[-i,]
+                        e <- egor$ego[-i,]
                         summary(deoffset(formula), basis=e, individual=FALSE, scaleto=ppopsize)
                       }))
       m <- n*m - (n-1)*colMeans(m.j)
