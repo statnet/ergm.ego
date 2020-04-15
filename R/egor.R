@@ -24,9 +24,15 @@
 #' @import egor
 #' @export
 as.egor.egodata <- function(x, ...){
-  ego_design <- list(~1, weights = rep(x$egoWt, length.out=nrow(x$egos)))
-  egor(egos=x$egos, alters=x$alters, ID.vars = list(ego = x$egoIDcol), ego_design=ego_design)
+  x$egos$.egoWt <- rep(x$egoWt, length.out=nrow(x$egos))
+  ego_design <- list(weights = ".egoWt")
+  x$alters$.alterIDdummy <- seq_len(nrow(x$alters)) # This is a workaround around egor() requiring alter ID even without alter-alter ties.
+  egor(egos=x$egos, alters=x$alters, ID.vars = list(ego = x$egoIDcol, alter=".alterIDdummy"), ego_design=ego_design)
 }
+
+#' @rdname as.egor.egodata
+#' @export
+as_egor.egodata <- as.egor.egodata
 
 #' Construct an Egocentric View of a \code{\link{network}} Object
 #' 
