@@ -48,7 +48,8 @@ as.egor.egodata <- function(x, ...){
 #' @examples
 #' 
 #' # See example(ergm.ego) and example(template_network).
-#' @import tibble dplyr
+#' @import tibble
+#' @importFrom dplyr bind_rows bind_cols
 #' @export
 as.egor.network<-function(x,special.cols=c("na"),...){
   N<-network.size(x)

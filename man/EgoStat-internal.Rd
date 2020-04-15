@@ -2,7 +2,6 @@
 % Please edit documentation in R/EgoStat.R
 \name{EgoStat-internal}
 \alias{EgoStat-internal}
-\alias{.allAlters}
 \alias{.attrErr}
 \alias{.unfactor}
 \alias{.degreeseq}
@@ -19,8 +18,6 @@
 \alias{.checkNA}
 \title{Helper functions of EgoStats. Some may be documented and exported in the future.}
 \usage{
-.allAlters(egor)
-
 .attrErr(term, attrname, req = c("one", "both"))
 
 .unfactor(x)
@@ -50,9 +47,9 @@ split_aaties_by_ego(x, egor)
 .checkNA(x, ...)
 }
 \arguments{
-\item{egor}{an \code{\link[=egor]{egor()}} object.}
-
 \item{x, bin}{a vector.}
+
+\item{egor}{an \code{\link[=egor]{egor()}} object.}
 
 \item{...}{Additional arguments to subroutines.}
 }
@@ -61,8 +58,6 @@ Helper functions of EgoStats. Some may be documented and exported in the future.
 }
 \section{Functions}{
 \itemize{
-\item \code{.allAlters}: Return a \code{\link{tibble}} containing all alters.
-
 \item \code{.attrErr}: Construct and throw an error message about ego or alter attributes being missing.
 
 \item \code{.unfactor}: Convert a factor to its "ordinary" vector representation.
