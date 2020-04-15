@@ -25,7 +25,7 @@ test_that("egostats are close to complete network stats", {
   y %v% "d" <- runif(n)
   y <- san(y~edges+degree(0:3), target.stats=c(e,ds))
 
-  y.e <- as.egodata(y)
+  y.e <- as.egor(y)
 
   f <- ~ edges +
     nodecov("a") + nodecov(c("a", "c")) + nodecov(c("a", "c", "d")) + nodecov(~c^2 + sin(d)) + offset(nodecov(~c^2 + sin(d))) + 
