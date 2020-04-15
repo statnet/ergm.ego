@@ -2,29 +2,27 @@ context("Testing degreedist()")
 
 library(egor)
 
+library(tibble)
+
+## |----|--------|---|----------|-----------|
+## | id | weight | x | # alters | alter a's |
+## |----|--------|---|----------|-----------|
+## | 1  | 2      | a | 1        | a         |
+## | 2  | 1      | a | 2        | b, a      |
+## | 3  | 1      | b | 1        | b         |
+## | 4  | 2      | b | 2        | a, b      |
+## |----|--------|---|----------|-----------|
+
+e <- egor(
+  alters=tibble(x=c("a","b","a","b","a","b"),
+                i=c(1L,2L,2L,3L,4L,4L)),
+  egos=tibble(i=seq_len(4),x=letters[c(1,1,2,2)],
+              w=c(2,1,1,2)),
+  ID.vars = list(ego="i", alter="x"),
+  ego_design=list(weights="w")
+)
 
 test_that("degreedist() gives correct results on custom data", {
-  
-  library(tibble)
-  
-  ## |----|--------|---|----------|-----------|
-  ## | id | weight | x | # alters | alter a's |
-  ## |----|--------|---|----------|-----------|
-  ## | 1  | 2      | a | 1        | a         |
-  ## | 2  | 1      | a | 2        | b, a      |
-  ## | 3  | 1      | b | 1        | b         |
-  ## | 4  | 2      | b | 2        | a, b      |
-  ## |----|--------|---|----------|-----------|
-  
-  e <- egor(
-    alters=tibble(x=c("a","b","a","b","a","b"),
-                  i=c(1L,2L,2L,3L,4L,4L)),
-    egos=tibble(i=seq_len(4),x=letters[c(1,1,2,2)],
-                w=c(2,1,1,2)),
-    ID.vars = list(ego="i", alter="x"),
-    ego_design=list(weights="w")
-  )
-
   expect_equivalent(
     unclass(degreedist(e, plot=FALSE)), 
     c(1/2,1/2)
