@@ -22,13 +22,6 @@ NULL
 
 #' @describeIn EgoStat-internal
 #'
-#' Return a [`tibble`] containing all alters.
-.allAlters <- function(egor){
-  egor$alter
-}
-
-#' @describeIn EgoStat-internal
-#'
 #' Construct and throw an error message about ego or alter attributes being missing.
 .attrErr <- function(term, attrname, req = c("one","both")){
   req <- match.arg(req)
@@ -115,7 +108,7 @@ NULL
 #' Split an arbitrary vector or matrix by egos.
 split_egos_by_ego <- function(x, egor){
   f <- factor(seq_len(nrow(egor$ego)))
-  NVL2(dim(x), split(x, f, margin=1), split(x, f))
+  if(is.matrix(x) || is.array(x)) split(x, f, margin=1) else split(x, f)
 }
 
 #' @describeIn EgoStat-internal
@@ -123,7 +116,7 @@ split_egos_by_ego <- function(x, egor){
 #' Split an arbitrary vector or matrix by egos.
 split_alters_by_ego <- function(x, egor){
   f <- factor(egor$alter$.egoID, levels = as_tibble(egor$ego)$.egoID)
-  NVL2(dim(x), split(x, f, margin=1), split(x, f))
+  if(is.matrix(x) || is.array(x)) split(x, f, margin=1) else split(x, f)
 }
 
 #' @describeIn EgoStat-internal
@@ -131,7 +124,7 @@ split_alters_by_ego <- function(x, egor){
 #' Split an arbitrary vector or matrix by egos.
 split_aaties_by_ego <- function(x, egor){
   f <- factor(egor$aatie$.egoID, levels = as_tibble(egor$ego)$.egoID)
-  NVL2(dim(x), split(x, f, margin=1), split(x, f))
+  if(is.matrix(x) || is.array(x)) split(x, f, margin=1) else split(x, f)
 }
 
 #' @describeIn EgoStat-internal
@@ -241,6 +234,7 @@ EgoStat.offset <- function(egor, trm){
   
   # needed to match ergm's naming convention for offsets  
   colnames(h) <- paste0("offset(", colnames(h), ")")
+  h
 }
 
 #' @export
@@ -254,18 +248,18 @@ EgoStat.nodecov <- function(egor, attr){
   egos <- as_tibble(egor$ego)
   alters <- egor$alter
 
-  xe <- as.matrix(ergm.ego_get_vattr(attr, egos, accept = "numeric", multiple = "matrix"))
+  xe <- ergm.ego_get_vattr(attr, egos, accept = "numeric", multiple = "matrix")
   xa <- ERRVL(try(ergm.ego_get_vattr(attr, alters, accept = "numeric", multiple = "matrix"), silent=TRUE), NULL)
 
   attrnames <- if(is.matrix(xe)) colnames(xe) else attributes(xe)$name
   alt <- !is.null(xa)
 
   if(alt){
-    xal <- split_alters_by_ego(xa, egor)
+    xal <- split_alters_by_ego(as.matrix(xa), egor) %>% map(as.matrix)
+    xe <- as.matrix(xe)*sapply(xal,nrow)
     xal <- .sapply_col(xal, apply, 2, .exsum)
-    xe <- xe*sapply(xal,length)
   }else{
-    xe <- xe*.degreeseq(egor)
+    xe <- as.matrix(xe)*.degreeseq(egor)
     xal <- 0
   }
 
@@ -367,19 +361,20 @@ EgoStat.nodemix <- function(egor, attr, base=NULL, levels=NULL, levels2=NULL){
   rows2keep <- match(levels2.sel,levels2.list, NA)
   rows2keep <- rows2keep[!is.na(rows2keep)]
   
-  u <- indices2.grid[rows2keep,]
+  u <- indices2.grid[rows2keep,,drop=FALSE]
   namevec <- uun[rows2keep]
 
   xal <- split_alters_by_ego(xa, egor)
 
-  xeal <- mapply(function(e,a) unlist(apply(cbind(pmin(e,a),pmax(e,a)),1,list),recursive=FALSE), xe, xal, SIMPLIFY=FALSE)
+  xeal <- mapply(function(e,a) unlist(apply(cbind(row=pmin(e,a),col=pmax(e,a)),1,list),recursive=FALSE), xe, xal, SIMPLIFY=FALSE)
   # xeal is now a list (over egos) of lists (over alters) of sorted pairs of edge category codes.
   # Missing alter attribute causes both to be NA.
   xeal <- lapply(xeal, lapply, function(xea) if(identical(xea,list(NA,NA))) NA else xea)
   # And now they've been replaced by NA.
 
   nlevels2.sel <- length(levels2.sel)
-  h <- .sapply_col(xeal, function(xea) .extabulate(.matchNA(xea,levels2.sel,0), nbins=nlevels2.sel)/2)
+  indices2.grid <- unlist(apply(indices2.grid,1,list), recursive=FALSE)
+  h <- .sapply_col(xeal, function(xea) .extabulate(.matchNA(xea,indices2.grid,0), nbins=nlevels2.sel)/2)
   colnames(h) <- paste("mix",attrname,namevec,sep=".")
   attr(h, "order") <- 1
   h
@@ -435,7 +430,7 @@ EgoStat.degree <- function(egor, d, by=NULL, homophily=FALSE, levels=NULL){
   }
 
   if(!is.null(by) && !homophily){
-    bys <- rep(levs,each=length(d))
+    bys <- rep(seq_along(levs),each=length(d))
     degs <- rep(d,length(levs))
     cn <- paste0("deg",degs,".",by,bys)
     h <- .mapply_col(function(e,c) as.numeric(c==degs & e==bys), xe, alterct)
@@ -479,7 +474,7 @@ EgoStat.degrange <- function(egor, from=NULL, to=Inf, by=NULL, homophily=FALSE, 
     xa <- NVL3(xa, match(., levs, 0))
   }
 
-  alt <- !is.null(by) && !is.null(alters[[by]])
+  alt <- !is.null(by) && !is.null(xa)
   if(homophily && !alt) stop("Attribute ", sQuote(by), " must be observed on alters if homophily=TRUE.")
 
   if(!is.null(by) && homophily){
@@ -491,7 +486,7 @@ EgoStat.degrange <- function(egor, from=NULL, to=Inf, by=NULL, homophily=FALSE, 
   }
 
   if(!is.null(by) && !homophily){
-    bys <- rep(levs,each=length(from))
+    bys <- rep(seq_along(levs),each=length(from))
     froms <- rep(from,length(levs))
     tos <- rep(to,length(levs))
 
@@ -535,7 +530,7 @@ EgoStat.concurrent <- function(egor, by=NULL, levels=NULL){
 
   if(!is.null(by)){
     cn <- paste0("concurrent.",by,levs)
-    h <- .mapply_col(function(e,c) as.numeric(c>=2 & e==levs), xe, alterct)
+    h <- .mapply_col(function(e,c) as.numeric(c>=2 & e==seq_along(levs)), xe, alterct)
   }else{
     cn <-  "concurrent"
     h <- .sapply_col(alterct, function(c) as.numeric(c>=2))
@@ -564,7 +559,7 @@ EgoStat.concurrentties <- function(egor, by=NULL, levels=NULL){
 
   if(!is.null(by)){
     cn <- paste0("concurrent.",by,levs)
-    h <- .mapply_col(function(e,c) max(c-1,0)*as.numeric(e==levs), xe, alterct)
+    h <- .mapply_col(function(e,c) max(c-1,0)*as.numeric(e==seq_along(levs)), xe, alterct)
   }else{
     cn <-  "concurrent"
     h <- .sapply_col(alterct, function(c) max(c-1,0))
@@ -601,10 +596,11 @@ EgoStat.transitiveties <- function(egor, attr=NULL, diff=FALSE, levels=TRUE){
     levs <- ergm.ego_attr_levels(levels, xe, egor, sort(unique(c(xe, xa))))
     xe <- match(xe, levs, 0)
     xa <- match(xa, levs, 0)
+    xa <- tibble(.altID=alters$.altID, x=xa)
     xal <- NVL3(xa, split_alters_by_ego(., egor))
 
-    if(!is.null(xe) && !is.null(xa)) .attrErr("transitiveties and cyclicalties", attrname, "both")
-    aal <- mapply(function(e, a, aa) aa[e==a[aa[,1]] & e==a[aa[,2]]], xe, xal, aal, SIMPLIFY=FALSE)
+    if(is.null(xe) || is.null(xa)) .attrErr("transitiveties and cyclicalties", attrname, "both")
+    aal <- mapply(function(e, a, aa) aa[e==a$x[a$.altID==aa[,1]] & e==a$x[a$.altID==aa[,2]], , drop=FALSE], xe, xal, aal, SIMPLIFY=FALSE)
 
     nlevs <- length(levs)
     # Implement Krivitsky and Morris (2017, p. 490) This works
@@ -649,7 +645,6 @@ EgoStat.esp <- function(egor, d){
 #' @export
 #' @rdname ergm.ego-terms
 EgoStat.gwesp <- function(egor, decay=NULL, fixed=FALSE, cutoff=30, alpha=NULL){
-  egor <- as_nested_egor(egor)
   maxesp <- cutoff # Hopefully, network.size > cutoff
 
   esp <- EgoStat.esp(egor, 1:maxesp)
@@ -690,7 +685,7 @@ EgoStat.gwdegree <- function(egor, decay=NULL, fixed=FALSE, cutoff=30){
 EgoStat.mm <- function(egor, attrs, levels=NULL, levels2=NULL){
   egor <- as_nested_egor(egor)
 
-  aei <- rep(seq_len(nrow(egor$ego)), map_int(egor$.alts, nrow))
+  aei <- rep(seq_len(nrow(egor)), map_int(egor$.alts, nrow))
   
   # Some preprocessing steps are the same, so run together:
   #' @import purrr
@@ -727,19 +722,19 @@ EgoStat.mm <- function(egor, attrs, levels=NULL, levels2=NULL){
              name = ".",
              levels = 0,
              levelcodes = 0,
-             id = rep(merge(data.frame(i=seq_len(nrow(egor$ego))),
+             id = rep(merge(data.frame(i=seq_len(nrow(egor))),
                             data.frame(i=aei))$i,
                       2)
              )
       }else{
         xe <- ERRVL(ec <- try(ergm.ego_get_vattr(spec$attrs, egor), silent=TRUE), NULL)
-        xa <- ERRVL(try(ergm.ego_get_vattr(spec$attrs, .allAlters(egor)), silent=TRUE), NULL)
+        xa <- ERRVL(try(ergm.ego_get_vattr(spec$attrs, bind_rows(egor$.alts)), silent=TRUE), NULL)
         name <- attr(NVL(xe,xa), "name")
         if(is.null(xe)&&is.null(xa)) stop(attr(ec, "condition"), call.=FALSE) # I.e., they were both errors. => propagate error message.
         name <- NVL(attr(xe, "name"),attr(xa, "name"))
         xe <- NVL2(xe,
-                   data.frame(i=seq_len(nrow(egor$ego)), xe=xe, stringsAsFactors=FALSE),
-                   data.frame(i=seq_len(nrow(egor$ego)), stringsAsFactors=FALSE))
+                   data.frame(i=seq_len(nrow(egor)), xe=xe, stringsAsFactors=FALSE),
+                   data.frame(i=seq_len(nrow(egor)), stringsAsFactors=FALSE))
         xa <- NVL2(xa,
                    data.frame(i=aei, xa=xa, stringsAsFactors=FALSE),
                    data.frame(i=aei, stringsAsFactors=FALSE))
@@ -810,7 +805,7 @@ EgoStat.mm <- function(egor, attrs, levels=NULL, levels2=NULL){
     map(.extabulate, length(levels2codes)) %>%
     do.call(rbind,.)
 
-  h <- matrix(0, nrow(egor$ego), ncol=ncol(h1))
+  h <- matrix(0, nrow(egor), ncol=ncol(h1))
   h[sort(unique(aei)),] <- h1/2
   colnames(h) <- coef.names
 
