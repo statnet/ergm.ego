@@ -48,13 +48,6 @@ NULL
 
 #' @describeIn EgoStat-internal
 #'
-#' As [sum()], but "extrapolating" the `NA`s.
-.exsum <- function(x){
-  if(length(x)) sum(x, na.rm=TRUE)/mean(!is.na(x)) else 0
-}
-
-#' @describeIn EgoStat-internal
-#'
 #' Degree sequence of the egos.
 .degreeseq <- function(egor){
   tabulate(.alterEgos(egor), nbins=nrow(egor$ego))
@@ -67,13 +60,18 @@ NULL
   match(egor$alter$.egoID, as_tibble(egor$ego)$.egoID)
 }
 
-
+#' @describeIn EgoStat-internal
+#'
+#' As [sum()], but "extrapolating" the `NA`s.
+.exsum <- function(x){
+  if(length(x)) sum(x, na.rm=TRUE)/mean(!is.na(x)) else 0
+}
 
 #' @describeIn EgoStat-internal
 #'
 #' As [tabulate()], but "extrapolating" the `NA`s.
 .extabulate <- function(bin, nbins = max(1, bin, na.rm = TRUE)){
-  if(length(bin)) tabulate(bin, nbins)/mean(!is.na(bin)) else rep(0, nbins)
+  if(length(bin)) tabulate(bin, nbins)/mean(!is.na(bin)) else numeric(nbins)
 }
 
 #' @describeIn EgoStat-internal
@@ -92,26 +90,48 @@ NULL
 
 #' @describeIn EgoStat-internal
 #'
+#' As [sapply()], but if the function returns a vector, return those
+#' vectors in rows, and if it returns a scalar, return a column
+#' vector.
+.sapply_col <- function(...,simplify=TRUE){
+  if(!simplify) stop("This helper function does not make sense with simplify=FALSE.")
+  o <- sapply(..., simplify=simplify)
+  if(is.null(dim(o))) cbind(o) else t(o)
+}
+
+#' @describeIn EgoStat-internal
+#'
+#' As [mapply()], but if the function returns a vector, return those
+#' vectors in rows, and if it returns a scalar, return a column
+#' vector.
+.mapply_col <- function(..., SIMPLIFY=TRUE){
+  if(!SIMPLIFY) stop("This helper function does not make sense with SIMPLIFY=FALSE.")
+  o <- mapply(..., SIMPLIFY=SIMPLIFY)
+  if(is.null(dim(o))) cbind(o) else t(o)
+}
+
+#' @describeIn EgoStat-internal
+#'
 #' Split an arbitrary vector or matrix by egos.
 split_egos_by_ego <- function(x, egor){
   f <- factor(seq_len(nrow(egor$ego)))
-  split(x, f, margin=1)
+  NVL2(dim(x), split(x, f, margin=1), split(x, f))
 }
 
 #' @describeIn EgoStat-internal
 #'
 #' Split an arbitrary vector or matrix by egos.
 split_alters_by_ego <- function(x, egor){
-  f <- factor(x$alter$.egoID, levels = as_tibble(x$ego)$.egoID)
-  split(x, f, margin=1)
+  f <- factor(egor$alter$.egoID, levels = as_tibble(egor$ego)$.egoID)
+  NVL2(dim(x), split(x, f, margin=1), split(x, f))
 }
 
 #' @describeIn EgoStat-internal
 #'
 #' Split an arbitrary vector or matrix by egos.
 split_aaties_by_ego <- function(x, egor){
-  f <- factor(x$aatie$.egoID, levels = as_tibble(x$ego)$.egoID)
-  split(x, f, margin=1)
+  f <- factor(egor$aatie$.egoID, levels = as_tibble(egor$ego)$.egoID)
+  NVL2(dim(x), split(x, f, margin=1), split(x, f))
 }
 
 #' @describeIn EgoStat-internal
@@ -242,7 +262,7 @@ EgoStat.nodecov <- function(egor, attr){
 
   if(alt){
     xal <- split_alters_by_ego(xa, egor)
-    xal <- sapply(xal, apply, 2, .exsum)
+    xal <- .sapply_col(xal, apply, 2, .exsum)
     xe <- xe*sapply(xal,length)
   }else{
     xe <- xe*.degreeseq(egor)
@@ -266,15 +286,17 @@ EgoStat.nodefactor <- function(egor, attr, base=1, levels=LEVELS_BASE1){
   alt <- !is.null(xa)
   
   levs <- ergm.ego_attr_levels(levels, c(xe, xa), egor, sort(unique(c(xe, xa))))
+  if(!is.null(base) && !identical(base,0) && missing(levels)) levs <- levs[-base]
 
   if(alt){
+    xe <- match(xe, levs, 0)
     xa <- .matchNA(xa, levs, 0)
     xal <- split_alters_by_ego(xa, egor)
 
-    xe <- apply(match(xe, levs, 0), 1, .extabulate, length(levs))*sapply(xal,length)
-    xal <- sapply(xal, apply, 2, .extabulate, length(levs))
+    xe <- .sapply_col(xe, .extabulate, length(levs))*sapply(xal,length)
+    xal <- .sapply_col(xal, .extabulate, length(levs))
   }else{
-    xe <- apply(match(xe, levs, 0), 1, .extabulate, length(levs))*.degreeseq(egor)
+    xe <- .sapply_col(match(xe, levs, 0), .extabulate, length(levs))*.degreeseq(egor)
     xal <- 0
   }
 
@@ -302,7 +324,7 @@ EgoStat.nodematch <- function(egor, attr, diff=FALSE, keep=NULL, levels=NULL){
 
   nlevs <- length(levs)
   combine <- if(diff) identity else sum
-  h <- as.matrix(mapply(function(e,a) combine(tabulate(e, nbins=nlevs)*.exsum(e==a)/2), xe, xal, SIMPLIFY=TRUE))
+  h <- .mapply_col(function(e,a) combine(tabulate(e, nbins=nlevs)*.exsum(e==a)/2), xe, xal, SIMPLIFY=TRUE)
   colnames(h) <- if(diff) paste("nodematch",attrname,levs,sep=".") else paste("nodematch",attrname,sep=".")
   attr(h, "order") <- 1
   h
@@ -321,6 +343,7 @@ EgoStat.nodemix <- function(egor, attr, base=NULL, levels=NULL, levels2=NULL){
   attrname <- attributes(xeval)$name
   
   levs <- ergm.ego_attr_levels(levels, c(xeval, xaval), egor, sort(unique(c(xeval, xaval))))
+  if(!is.null(base) && !identical(base,0) && missing(levels)) levs <- levs[-base]
 
   xe <- match(xeval, levs, 0)
   xa <- match(xaval, levs, 0)
@@ -356,8 +379,7 @@ EgoStat.nodemix <- function(egor, attr, base=NULL, levels=NULL, levels2=NULL){
   # And now they've been replaced by NA.
 
   nlevels2.sel <- length(levels2.sel)
-  h <- sapply(xeal, function(xea) .extabulate(.matchNA(xea,levels2.sel,0), nbins=nlevels2.sel)/2)
-  h <- if(length(namevec) == 1) cbind(h) else t(h)
+  h <- .sapply_col(xeal, function(xea) .extabulate(.matchNA(xea,levels2.sel,0), nbins=nlevels2.sel)/2)
   colnames(h) <- paste("mix",attrname,namevec,sep=".")
   attr(h, "order") <- 1
   h
@@ -375,7 +397,7 @@ EgoStat.absdiff <- function(egor, attr, pow=1){
 
   xal <- split_alters_by_ego(xa, egor)
 
-  h <- as.matrix(mapply(function(e,a) .exsum(abs(e-a)^pow)/2, xe, xal, SIMPLIFY=TRUE))
+  h <- .mapply_col(function(e,a) .exsum(abs(e-a)^pow)/2, xe, xal, SIMPLIFY=TRUE)
   colnames(h) <- if(pow==1) paste("absdiff",attrname,sep=".") else paste("absdiff",pow,".",attrname,sep="")
   attr(h, "order") <- 1
   h
@@ -416,16 +438,15 @@ EgoStat.degree <- function(egor, d, by=NULL, homophily=FALSE, levels=NULL){
     bys <- rep(levs,each=length(d))
     degs <- rep(d,length(levs))
     cn <- paste0("deg",degs,".",by,bys)
-    h <- mapply(function(e,c) as.numeric(c==degs & e==bys), xe, alterct)
+    h <- .mapply_col(function(e,c) as.numeric(c==degs & e==bys), xe, alterct)
   }else if(homophily){
     cn <-  paste0("deg",d,".homophily.",by)
-    h <- sapply(alterct, function(c) as.numeric(c==d))
+    h <- .sapply_col(alterct, function(c) as.numeric(c==d))
   }else{
     cn <-  paste0("degree",d)
-    h <- sapply(alterct, function(c) as.numeric(c==d))
+    h <- .sapply_col(alterct, function(c) as.numeric(c==d))
   }
 
-  h <- if(is.matrix(h)) t(h) else cbind(h)
   colnames(h) <- cn
   attr(h, "order") <- 1
   h
@@ -477,20 +498,19 @@ EgoStat.degrange <- function(egor, from=NULL, to=Inf, by=NULL, homophily=FALSE, 
     cn <- ifelse(tos>=.Machine$integer.max,
                  paste0("deg", from, "+.",          by, bys),
                  paste0("deg", from, "to", to, ".", by, bys))
-    h <- mapply(function(e,c) as.numeric(c>=froms & c<tos & e==bys), xe, alterct)
+    h <- .mapply_col(function(e,c) as.numeric(c>=froms & c<tos & e==bys), xe, alterct)
   }else if(homophily){
     cn <- ifelse(to>=.Machine$integer.max,
                  paste0("deg", from,  "+",     ".homophily.", by),
                  paste0("deg", from, "to", to, ".homophily.", by))
-    h <- sapply(alterct, function(c) as.numeric(c>=from & c<=to))
+    h <- .sapply_col(alterct, function(c) as.numeric(c>=from & c<=to))
   }else{
     cn <- ifelse(to>=.Machine$integer.max,
                  paste0("deg", from,  "+"),
                  paste0("deg", from, "to", to))
-    h <- sapply(alterct, function(c) as.numeric(c>=from & c<to))
+    h <- .sapply_col(alterct, function(c) as.numeric(c>=from & c<to))
   }
 
-  h <- if(is.matrix(h)) t(h) else cbind(h)
   colnames(h) <- cn
   attr(h, "order") <- 1
   h
@@ -515,13 +535,12 @@ EgoStat.concurrent <- function(egor, by=NULL, levels=NULL){
 
   if(!is.null(by)){
     cn <- paste0("concurrent.",by,levs)
-    h <- mapply(function(e,c) as.numeric(c>=2 & e==levs), xe, alterct)
+    h <- .mapply_col(function(e,c) as.numeric(c>=2 & e==levs), xe, alterct)
   }else{
     cn <-  "concurrent"
-    h <- sapply(alterct, function(c) as.numeric(c>=2))
+    h <- .sapply_col(alterct, function(c) as.numeric(c>=2))
   }
 
-  h <- if(is.matrix(h)) t(h) else cbind(h)
   colnames(h) <- cn
   attr(h, "order") <- 1
   h
@@ -545,13 +564,12 @@ EgoStat.concurrentties <- function(egor, by=NULL, levels=NULL){
 
   if(!is.null(by)){
     cn <- paste0("concurrent.",by,levs)
-    h <- mapply(function(e,c) max(c-1,0)*as.numeric(e==levs), xe, alterct)
+    h <- .mapply_col(function(e,c) max(c-1,0)*as.numeric(e==levs), xe, alterct)
   }else{
     cn <-  "concurrent"
-    h <- sapply(alterct, function(c) max(c-1,0))
+    h <- .sapply_col(alterct, function(c) max(c-1,0))
   }
 
-  h <- if(is.matrix(h)) t(h) else cbind(h)
   colnames(h) <- cn
   attr(h, "order") <- 1
   h
@@ -590,13 +608,12 @@ EgoStat.transitiveties <- function(egor, attr=NULL, diff=FALSE, levels=TRUE){
 
   nlevs <- length(levs)
   combine <- if(diff) identity else sum
-  h <- mapply(function(e, aa)
+  h <- .mapply_col(function(e, aa)
     # Implement Krivitsky and Morris (2017, p. 490) This works
     # because we want to count how many alters have at least one
     # alter-alter tie, thus forming a transitive tie.
     combine(length(unique(union(aa[,1], aa[,2])))*tabulate(e,nlevs))/2, xe, aal)
 
-  h <- if(is.matrix(h)) t(h) else cbind(h)
   colnames(h) <- if(is.null(attr)) paste("transitiveties",sep=".")
                  else paste("transitiveties",attrname,sep=".")
   attr(h, "order") <- 3
