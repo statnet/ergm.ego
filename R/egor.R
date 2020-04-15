@@ -176,7 +176,7 @@ template_network<-function(x, N, scaling=c("round","sample"), ...){
 #' @export
 na.omit.egor <- function(object, relevant=TRUE, ...){
   # Create a subdataset containing only the relevant variables.
-  obj <- object[,relevant,aspect="egos"][,relevant,aspect="alters"]
+  obj <- object[,relevant,unit="ego"][,relevant,unit="alter"]
 
   # What this deos: for each row, for each column, sees if any element
   # (including in the alters table) is an NA.
@@ -208,7 +208,7 @@ na.omit.egor <- function(object, relevant=TRUE, ...){
 #' fmh.ego <- as.egor(faux.mesa.high)
 #'
 #' # Create a tiny weighted sample:
-#' (s3 <- sample(fmh.ego, 3, replace=TRUE, prob=1:nrow(fmh.ego)))
+#' (s3 <- sample(fmh.ego, 3, replace=TRUE, prob=1:nrow(fmh.ego$ego)))
 #' # Resampling with prob=weights(egor) creates a self-weighted
 #' # sample:
 #' (sample(s3, 3, replace=TRUE, prob=weights(s3)))
@@ -242,13 +242,14 @@ sample.default <- function(x, ...) base::sample(x, ...)
 #' @rdname sample
 #' @export
 sample.egor <- function(x, size, replace=FALSE, prob=NULL, ...){
-  if(missing(size)) size <- nrow(x)
+  N <- nrow(x$ego)
+  if(missing(size)) size <- N
 
   w <- weights(x)
-  if(is.null(prob)) prob <- rep(size/nrow(x), nrow(x))
-  is <- sample.int(nrow(x), size, replace, prob)
+  if(is.null(prob)) prob <- rep(size/N, N)
+  is <- sample.int(N, size, replace, prob)
 
-  x <- x[is, ,aspect="egos"]
+  x <- x[is, ,unit="ego"]
   ego_design(x) <- list(~1, weights=(w/prob)[is])
   x
 }

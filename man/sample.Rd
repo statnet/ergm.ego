@@ -37,7 +37,7 @@ data(faux.mesa.high)
 fmh.ego <- as.egor(faux.mesa.high)
 
 # Create a tiny weighted sample:
-(s3 <- sample(fmh.ego, 3, replace=TRUE, prob=1:nrow(fmh.ego)))
+(s3 <- sample(fmh.ego, 3, replace=TRUE, prob=1:nrow(fmh.ego$ego)))
 # Resampling with prob=weights(egor) creates a self-weighted
 # sample:
 (sample(s3, 3, replace=TRUE, prob=weights(s3)))

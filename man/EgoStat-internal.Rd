@@ -5,12 +5,14 @@
 \alias{.allAlters}
 \alias{.attrErr}
 \alias{.unfactor}
-\alias{.exsum}
 \alias{.degreeseq}
 \alias{.alterEgos}
+\alias{.exsum}
 \alias{.extabulate}
 \alias{.matchNA}
 \alias{.pasteNA}
+\alias{.sapply_col}
+\alias{.mapply_col}
 \alias{split_egos_by_ego}
 \alias{split_alters_by_ego}
 \alias{split_aaties_by_ego}
@@ -23,17 +25,21 @@
 
 .unfactor(x)
 
-.exsum(x)
-
 .degreeseq(egor)
 
 .alterEgos(egor)
+
+.exsum(x)
 
 .extabulate(bin, nbins = max(1, bin, na.rm = TRUE))
 
 .matchNA(x, table, nomatch = NA_integer_, incomparables = NULL)
 
 .pasteNA(..., sep = " ", collapse = NULL)
+
+.sapply_col(..., simplify = TRUE)
+
+.mapply_col(..., SIMPLIFY = TRUE)
 
 split_egos_by_ego(x, egor)
 
@@ -61,17 +67,25 @@ Helper functions of EgoStats. Some may be documented and exported in the future.
 
 \item \code{.unfactor}: Convert a factor to its "ordinary" vector representation.
 
-\item \code{.exsum}: As \code{\link[=sum]{sum()}}, but "extrapolating" the \code{NA}s.
-
 \item \code{.degreeseq}: Degree sequence of the egos.
 
 \item \code{.alterEgos}: Ego index (i.e., row) associated with each alter.
+
+\item \code{.exsum}: As \code{\link[=sum]{sum()}}, but "extrapolating" the \code{NA}s.
 
 \item \code{.extabulate}: As \code{\link[=tabulate]{tabulate()}}, but "extrapolating" the \code{NA}s.
 
 \item \code{.matchNA}: As \code{\link[base:match]{base::match()}}, but \code{NA}s are passed through.
 
 \item \code{.pasteNA}: As \code{\link[=paste]{paste()}}, but \code{NA}s are passed through rather than typeset.
+
+\item \code{.sapply_col}: As \code{\link[=sapply]{sapply()}}, but if the function returns a vector, return those
+vectors in rows, and if it returns a scalar, return a column
+vector.
+
+\item \code{.mapply_col}: As \code{\link[=mapply]{mapply()}}, but if the function returns a vector, return those
+vectors in rows, and if it returns a scalar, return a column
+vector.
 
 \item \code{split_egos_by_ego}: Split an arbitrary vector or matrix by egos.
 
