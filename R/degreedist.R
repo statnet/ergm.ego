@@ -51,7 +51,7 @@
 #' @importFrom methods is
 #' @export
 degreedist.egor <- function(object, freq = FALSE, prob = !freq, 
-                            by = NULL, brgmod = FALSE, main = NULL, plot = TRUE, ...){
+                            by = NULL, brgmod = FALSE, main = NULL, plot = TRUE, weight = TRUE, ...){
   color <- "#83B6E1"
   beside <- TRUE
 
@@ -59,13 +59,15 @@ degreedist.egor <- function(object, freq = FALSE, prob = !freq,
   if(!is.null(by)) ylabel <- paste(ylabel, "(within attr level)")
 
   degtable <- .degreeseq(object)
+
+  w <- if(weight) weights(object) else rep(1, nrow(object$ego))
   
   if(is.null(by)){
-    deg.ego <- xtabs(weights(object)~degtable)
+    deg.ego <- xtabs(w~degtable)
     names(dimnames(deg.ego)) <- "degree"
     degrees <- as.integer(names(deg.ego))
   }else{
-    deg.ego <- xtabs(weights(object)~as_tibble(object)[[by]]+degtable)
+    deg.ego <- xtabs(w~as_tibble(object$ego)[[by]]+degtable)
     names(dimnames(deg.ego)) <- c(by, "degree")
     levs <- rownames(deg.ego)
     degrees <- as.integer(colnames(deg.ego))
@@ -99,7 +101,7 @@ degreedist.egor <- function(object, freq = FALSE, prob = !freq,
   
   if(plot){
     if(brgmod) {
-      ppopsize.mul <- max(weights(object))/min(weights(object))
+      ppopsize.mul <- max(w)/min(w)
       brgdraws <- simulate(suppressMessages(ergm.ego(object ~ edges, control=control.ergm.ego(ppopsize=nrow(object$ego)*ppopsize.mul))), nsim = 50, ...)
       deg.brg <- summary(brgdraws ~ degree(degrees))/ppopsize.mul
       brgmeans <- apply(deg.brg, MARGIN = 2, FUN = mean)
@@ -192,13 +194,9 @@ mixingmatrix.egor <- function(object, attrname, rowprob = FALSE, weight = TRUE, 
   egos <- rep(as_tibble(object$ego)[[attrname]], ds)
   alters <- object$alter[[attrname]]
 
-  mxmat <-
-    if(weight){
-      w <- rep(weights(object),ds)
-      outer(levs, levs, Vectorize(function(l1, l2) sum(w[egos==l1&alters==l2])))
-    }else{
-      outer(levs, levs, Vectorize(function(l1, l2) sum(egos==l1&alters==l2)))
-    }
+  w <- if(weight) weights(object) else rep(1, nrow(object$ego))
+
+  mxmat <- outer(levs, levs, Vectorize(function(l1, l2) sum(w[egos==l1&alters==l2])))
 
   dimnames(mxmat) <- list(ego = levs,  
                           alter = levs)

@@ -13,6 +13,7 @@
   brgmod = FALSE,
   main = NULL,
   plot = TRUE,
+  weight = TRUE,
   ...
 )
 }
@@ -34,10 +35,10 @@ observed.}
 \item{plot}{Whether to plot the histogram; if \code{FALSE}, graphical
 parameters and \code{bgrmod} have no effect.}
 
-\item{...}{Additional arguments to \code{\link[=simulate.ergm.ego]{simulate.ergm.ego()}}.}
-
 \item{weight}{Whether sampling weights should be incorporated into
 the calculation (\code{TRUE}, the default) or ignored (\code{FALSE}).}
+
+\item{...}{Additional arguments to \code{\link[=simulate.ergm.ego]{simulate.ergm.ego()}}.}
 }
 \value{
 Returns either a vector of degree frequencies/proportions

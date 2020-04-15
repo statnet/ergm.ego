@@ -17,15 +17,12 @@ test_that("degreedist() gives correct results on custom data", {
   ## |----|--------|---|----------|-----------|
   
   e <- egor(
-    list(
-      tibble(x="a"),
-      tibble(x=c("b","a")),
-      tibble(x="b"),
-      tibble(x=c("a","b"))
-    ),
-    tibble(y=letters[c(1,1,2,2)]),
-    ID.vars = list(ego="x", alter="x"),
-    ego_design=list(~1,weights=c(2,1,1,2))
+    alters=tibble(x=c("a","b","a","b","a","b"),
+                  i=c(1L,2L,2L,3L,4L,4L)),
+    egos=tibble(i=seq_len(4),x=letters[c(1,1,2,2)],
+                w=c(2,1,1,2)),
+    ID.vars = list(ego="i", alter="x"),
+    ego_design=list(weights="w")
   )
 
   expect_equivalent(
@@ -34,7 +31,7 @@ test_that("degreedist() gives correct results on custom data", {
   )
 
   expect_equivalent(
-    unclass(degreedist(e, plot=FALSE, by="y")), 
+    unclass(degreedist(e, plot=FALSE, by="x")), 
     rbind(c(2/3,1/3), c(1/3,2/3))
   )
 })
