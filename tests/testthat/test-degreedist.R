@@ -18,7 +18,7 @@ e <- egor(
                 i=c(1L,2L,2L,3L,4L,4L)),
   egos=tibble(i=seq_len(4),x=letters[c(1,1,2,2)],
               w=c(2,1,1,2)),
-  ID.vars = list(ego="i", alter="x"),
+  ID.vars = list(ego="i"),
   ego_design=list(weights="w")
 )
 

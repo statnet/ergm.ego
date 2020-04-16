@@ -1,6 +1,6 @@
 Package: ergm.ego
-Version: 0.9-495
-Date: 2020-04-15
+Version: 0.9-496
+Date: 2020-04-16
 Title: Fit, Simulate and Diagnose Exponential-Family Random Graph Models to Egocentrically Sampled Network Data
 Authors@R: c(
             person("Pavel N.", "Krivitsky", role=c("aut","cre"), email="pavel@uow.edu.au", comment=c(ORCID="0000-0002-9101-3362")),
@@ -38,4 +38,4 @@ Remotes:
     statnet/network,
     statnet/statnet.common,
     statnet/ergm-private@dev,
-    tilltnet/egor
+    tilltnet/egor@ego_srvyr

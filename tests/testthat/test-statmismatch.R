@@ -12,18 +12,16 @@ context("test-statmismatch.R")
 egos <- data.frame(egoIDcol = 1:12, x = rep(1:3, 4))
 alters <- data.frame(egoIDcol = sample(1:12, 24, TRUE), x = rep(1:3, 8))
 
-e <- egodata(egos,
-             alters=alters,
-             egoWt=rep(1,12),
-             egoIDcol="egoIDcol")
+e <- egor(egos=egos,
+          alters=alters,
+          ID.vars=list(ego="egoIDcol"))
 
 test_that("no stat mismatch error", {             
   expect_error(ergm.ego(e ~ nodefactor("x")), NA)
 })
 
 test_that("stat mismatch error", {
-  e$alters$x[1] <- 4
+  e$alter$x[1] <- 4
   
   expect_error(ergm.ego(e ~ nodefactor("x")), "There appears to be a mismatch between estimated statistic and the sufficient statistic of the ERGM:")
 })
-
