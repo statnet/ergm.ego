@@ -38,4 +38,4 @@ Remotes:
     statnet/network,
     statnet/statnet.common,
     statnet/ergm-private@dev,
-    tilltnet/egor@ego_srvyr
+    tilltnet/egor
