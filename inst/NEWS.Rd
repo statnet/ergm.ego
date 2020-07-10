@@ -64,6 +64,25 @@
 
 %% }
 
+\section{Changes in version 0.6.0}{
+
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item{
+        \code{\link{ergm.ego}} now detects when a coefficient has been
+        dropped by \code{\link[ergm]{ergm}} due to the statistic having
+        an extreme value and subsets the variance matrices accordingly.
+      }
+      \item{
+        \code{\link{control.ergm.ego}} now calls \code{match.arg} on 
+        \code{ppopsize} only if \code{ppopsize} is of class 
+        \code{character}.  This allows \code{ppopsize} to be of class 
+        \code{\link[network]{network}} when calling 
+        \code{\link{control.ergm.ego}}.
+      }
+    }
+  }
+}
 
 \section{Changes in version 0.5.0}{
 
