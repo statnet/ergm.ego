@@ -67,7 +67,7 @@ pseudopopulation network.} }}
 
 \item{stats.est, boot.R}{Method to be used to estimate the ERGM's sufficient
 statistics and their variance: \describe{
-\item{"survey"}{Variance estimator returned by \code{\link[survey:svymean]{survey::svymean()}}, appropriate to the design of the dataset.}
+\item{"survey"}{Variance estimator returned by \code{\link[survey:surveysummary]{survey::svymean()}}, appropriate to the design of the dataset.}
 \item{"asymptotic"}{Delta method, as derived by Krivitsky and
 Morris (2015), assuming the ego weights are sampled alongside the
 egos.}\item{ (default)}{Delta method, as derived by Krivitsky and Morris

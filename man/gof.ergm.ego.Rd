@@ -20,7 +20,7 @@ Model fit to Egocentrically Sampled Data}
 \item{object}{An \code{\link{ergm.ego}} fit.}
 
 \item{...}{Additional arguments. Unused by \code{\link[=gof.ergm.ego]{gof.ergm.ego()}}, passed to
-\code{\link[ergm:plot.gof]{ergm::plot.gof()}} by \code{\link[=plot.gof.ergm.ego]{plot.gof.ergm.ego()}}}
+\code{\link[ergm:gof]{ergm::plot.gof()}} by \code{\link[=plot.gof.ergm.ego]{plot.gof.ergm.ego()}}}
 
 \item{GOF}{A string specifying the statistics whose goodness of fit is to be
 evaluated. Currently, only \dQuote{degree}, \dQuote{espartners} and \dQuote{model} are

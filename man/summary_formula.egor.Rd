@@ -33,7 +33,7 @@ specified network statistics.}
 statistics. Defaults to the number of egos in the dataset.}
 }
 \value{
-If \code{individual==FALSE}, a \link[survey:svymean]{svystat} object---effectively a named vector of statistics. If
+If \code{individual==FALSE}, a \link[survey:surveysummary]{svystat} object---effectively a named vector of statistics. If
 \code{individual==TRUE}, a matrix with a row for each ego, giving that ego's
 contribution to the network statistic.
 }
