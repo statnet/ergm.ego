@@ -10,3 +10,4 @@ appveyor.yml
 .*\.bak$
 .*~$
 ^revdep$
+^\.github$
