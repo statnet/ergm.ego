@@ -99,7 +99,7 @@ combination.
 These functions are meant to be used in \code{EgoStat} and
 other implementations to provide the user with a way to extract
 nodal attributes and select their levels in standardized and
-flexible ways described under \code{\link{node-attr}}. They are intended to
+flexible ways described under \link{node-attr}. They are intended to
 parallel \link{node-attr-api} of \code{ergm} package.
 
 \code{ergm.ego_get_vattr} extracts and processes the specified
