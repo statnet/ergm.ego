@@ -10,11 +10,10 @@
 #' @name node-attr-api
 #' @title Helper functions for specifying nodal attribute levels
 #'
-#' @description These functions are meant to be used in `EgoStat` and
-#'   other implementations to provide the user with a way to extract
-#'   nodal attributes and select their levels in standardized and
-#'   flexible ways described under [node-attr]. They are intended to
-#'   parallel [node-attr-api] of `ergm` package.
+#' @description These functions are meant to be used in `EgoStat` and other
+#'   implementations to provide the user with a way to extract nodal attributes
+#'   and select their levels in standardized and flexible ways. They are
+#'   intended to parallel [ergm::nodal_attributes-API] of `ergm` package.
 #'
 #' @param object An argument specifying the nodal attribute to select
 #'   or which levels to include.

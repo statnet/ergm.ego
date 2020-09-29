@@ -96,11 +96,10 @@ combination.
 \code{ergm.ego_attr_levels} returns a vector of levels to use and their order.
 }
 \description{
-These functions are meant to be used in \code{EgoStat} and
-other implementations to provide the user with a way to extract
-nodal attributes and select their levels in standardized and
-flexible ways described under \link{node-attr}. They are intended to
-parallel \link{node-attr-api} of \code{ergm} package.
+These functions are meant to be used in \code{EgoStat} and other
+implementations to provide the user with a way to extract nodal attributes
+and select their levels in standardized and flexible ways. They are
+intended to parallel \link[ergm:nodal_attributes-API]{ergm::nodal_attributes-API} of \code{ergm} package.
 
 \code{ergm.ego_get_vattr} extracts and processes the specified
 nodal attribute vector. It is strongly recommended that
