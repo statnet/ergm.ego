@@ -16,8 +16,8 @@ test_that("it just works for model without offsets", {
 
 
 test_that("it just works for model with offsets", {
-  data("faux.magnolia.high", package="ergm")
-  fmhego <- as.egodata(faux.magnolia.high)
+  data("faux.mesa.high", package="ergm")
+  fmhego <- as.egodata(faux.mesa.high)
   fit <- ergm.ego(
     fmhego ~ edges 
     + nodefactor("Grade")
