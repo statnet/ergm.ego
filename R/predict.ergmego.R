@@ -11,9 +11,9 @@ predict.ergm.ego <- function(object, ...) {
   # Extract network
   net <- object$network
   # Update formula with pseudo-population network
-  frm <- statnet.common::nonsimp_update.formula(object$formula, net ~ .)
+  frm <- statnet.common::nonsimp_update.formula(object$ergm.formula, net ~ .)
   assign("net", object$network, envir=environment(frm))
-  # thetas without the offset(s)
-  th <- ergm.eta(object$coef, object$etamap)[-1L] # drop offset(netsize.adj)
+  # thetas
+  th <- ergm.eta(object$coef, object$etamap)
   predict(frm, theta=th, ...)
 }
