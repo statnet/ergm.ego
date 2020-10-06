@@ -1,4 +1,3 @@
-context("Test predict.ergm.ego()")
 
 test_that("it just works for model without offsets", {
   data(faux.mesa.high, package="ergm")

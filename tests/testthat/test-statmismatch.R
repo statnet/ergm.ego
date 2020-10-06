@@ -7,7 +7,7 @@
 #
 #  Copyright 2015-2019 Statnet Commons
 #######################################################################
-context("test-statmismatch.R")
+
 
 egos <- data.frame(egoIDcol = 1:12, x = rep(1:3, 4))
 alters <- data.frame(egoIDcol = sample(1:12, 24, TRUE), x = rep(1:3, 8))
