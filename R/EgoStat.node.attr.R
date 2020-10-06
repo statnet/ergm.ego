@@ -143,7 +143,6 @@ ergm.ego_get_vattr <- function(object, df, accept="character", multiple=if(accep
 
 #' @rdname nodal_attributes-API
 #' @importFrom purrr "%>%" "map" "pmap_chr"
-#' @importFrom rlang set_attrs
 #' @export
 ergm.ego_get_vattr.character <- function(object, df, accept="character", multiple=if(accept=="character") "paste" else "stop", ...){
   multiple <- match.arg(multiple, ERGM_GET_VATTR_MULTIPLE_TYPES)
@@ -154,7 +153,7 @@ ergm.ego_get_vattr.character <- function(object, df, accept="character", multipl
   }
 
   object %>% map(~df[[.]]) %>% set_names(object) %>% .handle_multiple(multiple=multiple) %>%
-    .rightsize_vattr(df) %>% set_attrs(name=paste(object, collapse=".")) %>%
+    .rightsize_vattr(df) %>% structure(name=paste(object, collapse=".")) %>%
     .check_acceptable(accept=accept, xspec=object)
 }
 
@@ -166,7 +165,7 @@ ergm.ego_get_vattr.function <- function(object, df, accept="character", multiple
 
   ERRVL(try(object(df, ...) %>%
             .rightsize_vattr(df) %>% .handle_multiple(multiple=multiple) %>%
-            set_attrs(name=strtrim(despace(paste(deparse(body(object)),collapse="\n")),80)),
+            structure(name=strtrim(despace(paste(deparse(body(object)),collapse="\n")),80)),
             silent=TRUE),
         ergm_Init_abort(.)) %>%
     .check_acceptable(accept=accept)
@@ -188,7 +187,7 @@ ergm.ego_get_vattr.formula <- function(object, df, accept="character", multiple=
   ERRVL(try({
     eval(e, envir=vlist, enclos=environment(object)) %>%
       .rightsize_vattr(df) %>% .handle_multiple(multiple=multiple) %>%
-      set_attrs(name=if(length(object)>2) eval_lhs.formula(object) else despace(paste(deparse(e),collapse="\n")))
+      structure(name=if(length(object)>2) eval_lhs.formula(object) else despace(paste(deparse(e),collapse="\n")))
   }, silent=TRUE),
   ergm_Init_abort(.)) %>%
     .check_acceptable(accept=accept, xspec=object)
