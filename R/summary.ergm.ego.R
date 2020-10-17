@@ -5,7 +5,7 @@
 #  open source, and has the attribution requirements (GPL Section 7) at
 #  https://statnet.org/attribution
 #
-#  Copyright 2015-2019 Statnet Commons
+#  Copyright 2015-2020 Statnet Commons
 #######################################################################
 ## A thin wrapper around summary.ergm to get rid of a spurious error message.
 #' @method summary ergm.ego

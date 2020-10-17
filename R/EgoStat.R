@@ -5,7 +5,7 @@
 #  open source, and has the attribution requirements (GPL Section 7) at
 #  https://statnet.org/attribution
 #
-#  Copyright 2015-2019 Statnet Commons
+#  Copyright 2015-2020 Statnet Commons
 #######################################################################
 # An EgoStat.* function takes the data frame of egos, a data frame of
 # alters, and the arguments passed to the corresponding ERGM terms,
