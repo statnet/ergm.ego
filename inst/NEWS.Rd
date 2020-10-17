@@ -66,6 +66,14 @@
 
 \section{Changes in version 0.6.0}{
 
+  \subsection{NEW FEATURES}{
+    \itemize{
+      \item{
+       \code{\link{predict.ergm.ego}}, a \code{\link{predict}} method for \code{\link{ergm.ego}} has been implemented. (Thanks, Michał Bojanowski.)
+      }
+    }
+  }
+
   \subsection{BUG FIXES}{
     \itemize{
       \item{
