@@ -11,10 +11,10 @@ Authors@R: c(
 	    person("Michał", "Bojanowski", role=c("ctb"), email="michal2992@gmail.com", comment=c(ORCID="0000-0001-7503-852X")),
 	    person("Chad", "Klumb", role=c("ctb"), email="cklumb@gmail.com"))
 Depends:
-    ergm (>= 3.10.1),
+    ergm (>= 3.11.0),
     network (>= 1.15)
 Imports:
-    statnet.common (>= 4.2.0),
+    statnet.common (>= 4.4.0),
     coda (>= 0.19.2),
     RColorBrewer (>= 1.1.2),
     purrr (>= 0.3.2),
