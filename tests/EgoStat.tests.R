@@ -66,7 +66,9 @@ f <- ~ edges +
   offset(nodemix("b", levels = -2, levels2 = -3)) + 
   
   mm("a") + mm("a", levels2=~-1) + mm("a", levels2=-2) + mm("a", levels2=-(2:3)) + mm(~a>7) + mm(a~b) + mm(.~a) + offset(mm(.~a)) + mm("a", levels2 = 1) + 
-  mm("b", levels = c("a", "c", "e")) + mm("b", levels = c("a", "c", "e"), levels2 = 3)
+  mm("b", levels = c("a", "c", "e")) + mm("b", levels = c("a", "c", "e"), levels2 = 3) +
+
+  meandeg
 
 f.y <- statnet.common::nonsimp_update.formula(f, y~.)
 environment(f.y) <- globalenv()

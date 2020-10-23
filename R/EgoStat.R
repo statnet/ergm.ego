@@ -34,7 +34,7 @@
 #'   EgoStat.nodefactor EgoStat.nodematch EgoStat.nodemix
 #'   EgoStat.absdiff EgoStat.degree EgoStat.degrange
 #'   EgoStat.concurrent EgoStat.concurrentties EgoStat.degree1.5
-#'   EgoStat.mm EgoStat.mean.age netsize.adj InitErgmTerm.netsize.adj
+#'   EgoStat.mm EgoStat.mean.age EgoStat.meandeg netsize.adj InitErgmTerm.netsize.adj
 #'
 #' @docType methods
 #' @section Currently implemented egocentric statistics: For each of these,
@@ -51,9 +51,14 @@
 #' \item \code{nodecov} \item \code{nodefactor} \item \code{nodematch}
 #' \item \code{nodemix} \item \code{absdiff} \item \code{degree} \item
 #' \code{degrange} \item \code{concurrent} \item \code{concurrentties}
-#' \item \code{degree1.5} \item `mm` } }
+#' \item \code{degree1.5} \item `mm` \item `meandeg`*} }
 #' 
-#' \item{tergm:}{ \itemize{ \item \code{mean.age} } } }
+#' \item{tergm:}{ \itemize{ \item \code{mean.age}* } } }
+#'
+#' Starred terms are *nonscaling*, in that while they can be
+#' evaluated, some inferential results and standard error calculation
+#' methods may not be applicable.
+#'
 #' @seealso \code{\link[ergm]{ergm-terms}}
 #' @keywords models
 NULL
@@ -680,4 +685,11 @@ EgoStat.mm <- function(egodata, attrs, levels=NULL, levels2=NULL){
   h <- h[match(egos[[egoIDcol]], i),,drop=FALSE]/2
   h[is.na(h)] <- 0
   h
+}
+
+EgoStat.meandeg <- function(egodata){
+  out <- summary(egodata~edges, individual=FALSE, scaleto=2)
+  names(out) <- "meandeg"
+  attr(out, "nonscaling") <- TRUE
+  out
 }
