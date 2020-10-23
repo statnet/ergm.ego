@@ -257,7 +257,7 @@ sample.egor <- function(x, size, replace=FALSE, prob=NULL, ...){
   is <- sample.int(N, size, replace, prob)
 
   x <- x[is, ,unit="ego"]
-  x$ego <- bind_cols(as_tibble(x$ego), .sample_weights = (w/prob)[is])
+  x$ego$.sample_weights <- (w/prob)[is]
   ego_design(x) <- list(weights=".sample_weights")
   x
 }
