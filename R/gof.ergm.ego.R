@@ -139,7 +139,7 @@ gof.ergm.ego <- function (object, ...,
   .gof.egor <- object$egor
   formula <- nonsimp_update.formula(object$formula, .gof.egor~., from.new=".gof.egor")
   
-  control.transfer <- c("MCMC.burnin", "MCMC.prop.weights", "MCMC.prop.args", "MCMC.packagenames", "MCMC.init.maxedges")
+  control.transfer <- c("MCMC.burnin", "MCMC.prop", "MCMC.prop.weights", "MCMC.prop.args", "MCMC.packagenames", "MCMC.init.maxedges")
   for(arg in control.transfer)
     if(is.null(control[[arg]]))
       control[arg] <- list(object$control[[arg]])
