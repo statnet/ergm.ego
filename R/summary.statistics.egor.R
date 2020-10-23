@@ -76,10 +76,12 @@ summary_formula.egor <- function(object,..., basis=NULL, individual=FALSE, scale
   
   for(trm in list_rhs.formula(object)){
     if(is.call(trm)){
-      init.call <- list(as.name(paste("EgoStat.", trm[[1]],sep="")),egor=egor)
+      egostat <- locate_prefixed_function(trm[[1]], "EgoStat", "Egocentric statistic", env=environment(object))
+      init.call <- list(egostat, egor=egor)
       init.call <- c(init.call,as.list(trm[-1]))
     }else{
-      init.call <- list(as.name(paste("EgoStat.", trm,sep="")),egor=egor)
+      egostat <- locate_prefixed_function(trm, "EgoStat", "Egocentric statistic", env=environment(object))
+      init.call <- list(egostat, egor=egor)
     }
     stat <- eval(as.call(init.call), environment(object))
     if(attr(stat, "order")==0){

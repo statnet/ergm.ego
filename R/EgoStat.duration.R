@@ -5,10 +5,8 @@
 #  open source, and has the attribution requirements (GPL Section 7) at
 #  https://statnet.org/attribution
 #
-#  Copyright 2015-2019 Statnet Commons
+#  Copyright 2015-2020 Statnet Commons
 #######################################################################
-#' @export
-#' @rdname ergm.ego-terms
 EgoStat.mean.age <- function(egor, emptyval=0){
   startcol <- attr(egor,"alter_design")$startcol
   if(is.null(startcol)) stop("Egocentric dataset does not appear to contain durational information.")

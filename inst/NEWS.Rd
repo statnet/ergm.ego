@@ -5,7 +5,7 @@
 %  open source, and has the attribution requirements (GPL Section 7) at
 %  https://statnet.org/attribution
 %
-%  Copyright 2015-2019 Statnet Commons
+%  Copyright 2015-2020 Statnet Commons
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \name{NEWS}
 \title{NEWS file for the \code{\link[=ergm.ego-package]{ergm.ego}} package}
@@ -64,6 +64,33 @@
 
 %% }
 
+\section{Changes in version 0.6.0}{
+
+  \subsection{NEW FEATURES}{
+    \itemize{
+      \item{
+       \code{\link{predict.ergm.ego}}, a \code{\link{predict}} method for \code{\link{ergm.ego}} has been implemented. (Thanks, Michał Bojanowski.)
+      }
+    }
+  }
+
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item{
+        \code{\link{ergm.ego}} now detects when a coefficient has been
+        dropped by \code{\link[ergm]{ergm}} due to the statistic having
+        an extreme value and subsets the variance matrices accordingly.
+      }
+      \item{
+        \code{\link{control.ergm.ego}} now calls \code{match.arg} on 
+        \code{ppopsize} only if \code{ppopsize} is of class 
+        \code{character}.  This allows \code{ppopsize} to be of class 
+        \code{\link[network]{network}} when calling 
+        \code{\link{control.ergm.ego}}.
+      }
+    }
+  }
+}
 
 \section{Changes in version 0.5.0}{
 

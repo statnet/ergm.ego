@@ -1,5 +1,3 @@
-context("Test netsize.adj() on directed network")
-
 data(sampson, package="ergm")
 
 set.seed(1)
@@ -25,16 +23,6 @@ for(i in 1:10) {
     }
   )
 }
-
-
-
-
-
-
-
-
-
-context("Test netsize.adj() on undirected network")
 
 set.seed(1)
 for(i in 1:10) {

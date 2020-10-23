@@ -1,6 +1,3 @@
-context("Test if ergm.ego() recovers complete ERGM parameters")
-
-
 test_that("complete ERGM and ergm.ego() give similar coef estimates",{
   ergm.ego:::long_test()
 

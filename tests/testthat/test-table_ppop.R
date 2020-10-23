@@ -7,11 +7,6 @@
 #
 #  Copyright 2015-2018 Statnet Commons
 #######################################################################
-
-context("Fitting a model with ppopsize=data.frame")
-
-
-
 test_that("estimation works", {
   
   skip("Not yet fixed")

@@ -5,7 +5,7 @@
 #  open source, and has the attribution requirements (GPL Section 7) at
 #  https://statnet.org/attribution
 #
-#  Copyright 2015-2019 Statnet Commons
+#  Copyright 2015-2020 Statnet Commons
 #######################################################################
 # An EgoStat.* function takes an egor object and returns a matrix of
 # h(e[i]) values, with egos in rows and elements of h(e[i]) in
@@ -203,15 +203,18 @@ split_aaties_by_ego <- function(x, egor){
 #' * `gwesp`
 #' * `gwdegree`
 #' * `mm`
+#' * `meandeg`*
 #' }
 #' 
 #' \item{tergm:}{
-#' * `mean.age`
+#' * `mean.age`*
 #' }
 #' }
 #'
-#' @param egor The [`egor`] object whose statistics are to be evaluated.
-#' @param attrname,base,diff,keep,pow,d,by,homophily,from,to,decay,fixed,cutoff,alpha,emptyval,nw,arglist,levels,levels2,attrs,... arguments to terms. See \code{\link[ergm]{ergm-terms}}.
+#' Starred terms are *nonscaling*, in that while they can be
+#' evaluated, some inferential results and standard error calculation
+#' methods may not be applicable.
+#'
 #' @seealso \code{\link[ergm]{ergm-terms}}
 #' @keywords models
 NULL
@@ -219,9 +222,6 @@ NULL
 # copied from ergm
 LEVELS_BASE1 <- NULL
 
-#' @export
-#' @param trm [`ergm`] terms to be offset.
-#' @rdname ergm.ego-terms
 EgoStat.offset <- function(egor, trm){
   trm <- substitute(trm)
   if(is.call(trm)){
@@ -237,13 +237,10 @@ EgoStat.offset <- function(egor, trm){
   h
 }
 
-#' @export
-#' @rdname ergm.ego-terms
 EgoStat.edges <- function(egor){
   structure(matrix(.degreeseq(egor)/2, dimnames=list(NULL, "edges")), order=1)
 }
 
-#' @export
 EgoStat.nodecov <- function(egor, attr){
   egos <- as_tibble(egor$ego)
   alters <- egor$alter
@@ -266,7 +263,6 @@ EgoStat.nodecov <- function(egor, attr){
   structure((xe + xal)/if(alt) 2 else 1, dimnames = list(NULL, paste("nodecov",attrnames,sep=".")), order=1)
 }
 
-#' @export
 EgoStat.nodefactor <- function(egor, attr, base=1, levels=LEVELS_BASE1){
   if(!missing(base)) message("In term `nodefactor' in package `ergm.ego': Argument \"base\" has been superseded by \"levels\" and it is recommended to use the latter.  Note that its interpretation may be different.")
 
@@ -297,7 +293,6 @@ EgoStat.nodefactor <- function(egor, attr, base=1, levels=LEVELS_BASE1){
   structure((xe + xal)/if(alt) 2 else 1, dimnames = list(NULL, paste("nodefactor",attrname,levs,sep=".")), order=1)
 }
 
-#' @export
 EgoStat.nodematch <- function(egor, attr, diff=FALSE, keep=NULL, levels=NULL){
   if(!missing(keep)) message("In term `nodematch' in package `ergm.ego': Argument \"keep\" has been superseded by \"levels\" and it is recommended to use the latter.  Note that its interpretation may be different.")
   
@@ -325,7 +320,6 @@ EgoStat.nodematch <- function(egor, attr, diff=FALSE, keep=NULL, levels=NULL){
   h
 }
 
-#' @export
 EgoStat.nodemix <- function(egor, attr, base=NULL, levels=NULL, levels2=NULL){
   if(!missing(base)) message("In term `nodemix' in package `ergm.ego': Argument \"base\" has been superseded by \"levels2\" and it is recommended to use the latter.  Note that its interpretation may be different.")
   
@@ -379,7 +373,6 @@ EgoStat.nodemix <- function(egor, attr, base=NULL, levels=NULL, levels2=NULL){
   h
 }
 
-#' @export
 EgoStat.absdiff <- function(egor, attr, pow=1){
   egos <- as_tibble(egor$ego)
   alters <- egor$alter
@@ -397,8 +390,6 @@ EgoStat.absdiff <- function(egor, attr, pow=1){
   h
 }
 
-#' @export
-#' @rdname ergm.ego-terms
 EgoStat.degree <- function(egor, d, by=NULL, homophily=FALSE, levels=NULL){
   ## if(any(d==0)) warning("degree(0) (isolate) count statistic depends strongly on the specified population network size.")
 
@@ -447,8 +438,6 @@ EgoStat.degree <- function(egor, d, by=NULL, homophily=FALSE, levels=NULL){
   h
 }
 
-#' @export
-#' @rdname ergm.ego-terms
 EgoStat.degrange <- function(egor, from=NULL, to=Inf, by=NULL, homophily=FALSE, levels=NULL){
   ## if(any(from==0)) warning("degrange(0,...) (isolate) count depends strongly on the specified population network size.")
   
@@ -512,14 +501,12 @@ EgoStat.degrange <- function(egor, from=NULL, to=Inf, by=NULL, homophily=FALSE, 
   h
 }
 
-#' @export
-#' @rdname ergm.ego-terms
 EgoStat.concurrent <- function(egor, by=NULL, levels=NULL){
   ## if(any(from==0)) warning("degrange(0,...) (isolate) count depends strongly on the specified population network size.")
   
   egos <- as_tibble(egor$ego)
   alters <- egor$alter
-  
+
   if(!is.null(by)) {
     xe <- ergm.ego_get_vattr(by, egos)
     by <- attributes(xe)$name  
@@ -542,8 +529,6 @@ EgoStat.concurrent <- function(egor, by=NULL, levels=NULL){
   h
 }
 
-#' @export
-#' @rdname ergm.ego-terms
 EgoStat.concurrentties <- function(egor, by=NULL, levels=NULL){
   
   egos <- as_tibble(egor$ego)
@@ -571,16 +556,12 @@ EgoStat.concurrentties <- function(egor, by=NULL, levels=NULL){
   h
 }
 
-#' @export
-#' @rdname ergm.ego-terms
 EgoStat.degree1.5 <- function(egor){
   egor <- as_nested_egor(egor)
   h <- function(e) nrow(e$.alts)^(3/2)
   .eval.h(egor, h, "degree1.5", order=1)
 }
 
-#' @export
-#' @rdname ergm.ego-terms
 EgoStat.transitiveties <- function(egor, attr=NULL, diff=FALSE, levels=TRUE){
   egos <- as_tibble(egor$ego)
   alters <- egor$alter
@@ -618,12 +599,8 @@ EgoStat.transitiveties <- function(egor, attr=NULL, diff=FALSE, levels=TRUE){
   h
 }
 
-#' @export
-#' @rdname ergm.ego-terms
 EgoStat.cyclicalties <- EgoStat.transitiveties
 
-#' @export
-#' @rdname ergm.ego-terms
 EgoStat.esp <- function(egor, d){
   egor <- as_nested_egor(egor)
   h <- function(e){
@@ -636,15 +613,13 @@ EgoStat.esp <- function(egor, d){
            )
     sapply(d, function(k) sum(sp==k))/2
   }
-  
+    
   .eval.h(egor, h,
           paste0("esp",d),
           3
           )
 }
 
-#' @export
-#' @rdname ergm.ego-terms
 EgoStat.gwesp <- function(egor, decay=NULL, fixed=FALSE, cutoff=30, alpha=NULL){
   maxesp <- cutoff # Hopefully, network.size > cutoff
 
@@ -662,8 +637,6 @@ EgoStat.gwesp <- function(egor, decay=NULL, fixed=FALSE, cutoff=30, alpha=NULL){
   hv
 }
 
-#' @export
-#' @rdname ergm.ego-terms
 EgoStat.gwdegree <- function(egor, decay=NULL, fixed=FALSE, cutoff=30){
   maxdeg <- cutoff # Hopefully, network.size > cutoff
 
@@ -681,8 +654,6 @@ EgoStat.gwdegree <- function(egor, decay=NULL, fixed=FALSE, cutoff=30){
   hv
 }
 
-#' @export
-#' @rdname ergm.ego-terms
 EgoStat.mm <- function(egor, attrs, levels=NULL, levels2=NULL){
   egor <- as_nested_egor(egor)
 
@@ -817,4 +788,11 @@ EgoStat.mm <- function(egor, attrs, levels=NULL, levels2=NULL){
  
   attr(h, "order") <- 1
   h
+}
+
+EgoStat.meandeg <- function(egor){
+  out <- summary(egor~edges, individual=FALSE, scaleto=2)
+  names(out) <- "meandeg"
+  attr(out, "order") <- 0
+  out
 }

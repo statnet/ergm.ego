@@ -1,5 +1,3 @@
-context("Testing gof.ergm.ego() with `fmhfit` model")
-
 data("fmhfit", package="ergm.ego")
 
 
@@ -65,10 +63,6 @@ test_that("GOF='espartners' works if `esp` term is in the model", {
   )
 })
 
-
-
-
-context("Temporary testing gof.ergm.ego() using model fit to GSS data")
 
 model_path <- "~/Projects/statnet/ergm.ego-papers/sn-work/estimation/main-10k-cd.rds"
 

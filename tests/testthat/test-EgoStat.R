@@ -10,8 +10,6 @@
 library(purrr)
 library(dplyr)
 
-context("Testing EgoStat")
-
 test_that("egostats are close to complete network stats", {
   # Test data
   set.seed(0)
@@ -73,7 +71,9 @@ test_that("egostats are close to complete network stats", {
     mm("a") + mm("a", levels2=~-1) + mm("a", levels2=-2) + mm("a", levels2=-(2:3)) + mm(~a>7) + mm(a~b) + mm(.~a) + offset(mm(.~a)) + mm("a", levels2 = 1) + 
     mm("b", levels = c("a", "c", "e")) + mm("b", levels = c("a", "c", "e"), levels2 = 3) +
     transitiveties + transitiveties("a") + esp(0:6) + gwesp(fix=FALSE) + gwesp(0.5, fix=TRUE) +
-    gwdegree(fix=FALSE) + gwdegree(0.5, fix=TRUE)
+    gwdegree(fix=FALSE) + gwdegree(0.5, fix=TRUE) +
+
+    meandeg
 
   f.y <- statnet.common::nonsimp_update.formula(f, y~.)
   # environment(f.y) <- globalenv()
@@ -136,7 +136,9 @@ test_that("egostats with alter missing data are close to complete network stats"
     
     mm("a") + mm("a", levels2=~-1) + mm("a", levels2=-2) + mm("a", levels2=-(2:3)) + mm(~a>7) + mm(a~b) + mm(.~a) +
     
-    gwdegree(fix=FALSE) + gwdegree(0.5, fix=TRUE)
+    gwdegree(fix=FALSE) + gwdegree(0.5, fix=TRUE) +
+
+    meandeg
   
   alter_l <- alters_by_ego(y.e)
   replicate(30,{

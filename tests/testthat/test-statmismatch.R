@@ -5,9 +5,9 @@
 #  open source, and has the attribution requirements (GPL Section 7) at
 #  https://statnet.org/attribution
 #
-#  Copyright 2015-2019 Statnet Commons
+#  Copyright 2015-2020 Statnet Commons
 #######################################################################
-context("test-statmismatch.R")
+
 
 egos <- data.frame(egoIDcol = 1:12, x = rep(1:3, 4))
 alters <- data.frame(egoIDcol = sample(1:12, 24, TRUE), x = rep(1:3, 8))

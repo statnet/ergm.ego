@@ -1,5 +1,3 @@
-context("Testing mixingmatrix() with egor::egor32 data")
-
 data(egor32, package="egor")
 
 varnames <- c("sex", "age")
@@ -30,13 +28,6 @@ for( v in varnames ) {
 
 rm(varnames, v)
 
-
-
-
-
-
-
-context("Testing mixingmatrix() on different types of attributes")
 
 set.seed(666)
 egodf <- dplyr::data_frame(

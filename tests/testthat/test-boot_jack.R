@@ -8,8 +8,6 @@
 #  Copyright 2015-2018 Statnet Commons
 #######################################################################
 
-context("Test if bootstrap and jackknife methods of suffstat estimation give same results")
-
 data(faux.mesa.high)
 fmh.ego <- as.egor(faux.mesa.high)
 
