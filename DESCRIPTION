@@ -14,7 +14,7 @@ Depends:
     ergm (>= 3.11.0),
     network (>= 1.15)
 Imports:
-    statnet.common (>= 4.5.0),
+    statnet.common (>= 4.4.0),
     coda (>= 0.19.2),
     RColorBrewer (>= 1.1.2),
     purrr (>= 0.3.2),
