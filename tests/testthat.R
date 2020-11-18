@@ -8,6 +8,5 @@
 #  Copyright 2015-2020 Statnet Commons
 #######################################################################
 library(testthat)
-library(ergm.ego)
 
 test_check("testthat")
