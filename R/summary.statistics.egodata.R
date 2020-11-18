@@ -77,10 +77,12 @@ summary_formula.egodata <- function(object,..., basis=NULL, individual=FALSE, sc
   
   for(trm in list_rhs.formula(object)){
     if(is.call(trm)){
-      init.call <- list(as.name(paste("EgoStat.", trm[[1]],sep="")),egodata=egodata)
+      egostat <- locate_prefixed_function(trm[[1]], "EgoStat", "Egocentric statistic", env=environment(object))
+      init.call <- list(egostat, egodata=egodata)
       init.call <- c(init.call,as.list(trm[-1]))
     }else{
-      init.call <- list(as.name(paste("EgoStat.", trm,sep="")),egodata=egodata)
+      egostat <- locate_prefixed_function(trm, "EgoStat", "Egocentric statistic", env=environment(object))
+      init.call <- list(egostat, egodata=egodata)
     }
     stat<-eval(as.call(init.call), environment(object))
     if(isTRUE(attr(stat, "nonscaling"))){

@@ -25,6 +25,7 @@
 \alias{EgoStat.degree1.5}
 \alias{EgoStat.mm}
 \alias{EgoStat.mean.age}
+\alias{EgoStat.meandeg}
 \alias{netsize.adj}
 \alias{InitErgmTerm.netsize.adj}
 \title{\code{\link[ergm]{ergm}} Terms Implemented for
@@ -56,9 +57,13 @@ formula directly.  } } }
 \item \code{nodecov} \item \code{nodefactor} \item \code{nodematch}
 \item \code{nodemix} \item \code{absdiff} \item \code{degree} \item
 \code{degrange} \item \code{concurrent} \item \code{concurrentties}
-\item \code{degree1.5} \item \code{mm} } }
+\item \code{degree1.5} \item \code{mm} \item \code{meandeg}*} }
 
-\item{tergm:}{ \itemize{ \item \code{mean.age} } } }
+\item{tergm:}{ \itemize{ \item \code{mean.age}* } } }
+
+Starred terms are \emph{nonscaling}, in that while they can be
+evaluated, some inferential results and standard error calculation
+methods may not be applicable.
 }
 
 \seealso{

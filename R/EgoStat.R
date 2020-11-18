@@ -34,7 +34,7 @@
 #'   EgoStat.nodefactor EgoStat.nodematch EgoStat.nodemix
 #'   EgoStat.absdiff EgoStat.degree EgoStat.degrange
 #'   EgoStat.concurrent EgoStat.concurrentties EgoStat.degree1.5
-#'   EgoStat.mm EgoStat.mean.age netsize.adj InitErgmTerm.netsize.adj
+#'   EgoStat.mm EgoStat.mean.age EgoStat.meandeg netsize.adj InitErgmTerm.netsize.adj
 #'
 #' @docType methods
 #' @section Currently implemented egocentric statistics: For each of these,
@@ -51,9 +51,14 @@
 #' \item \code{nodecov} \item \code{nodefactor} \item \code{nodematch}
 #' \item \code{nodemix} \item \code{absdiff} \item \code{degree} \item
 #' \code{degrange} \item \code{concurrent} \item \code{concurrentties}
-#' \item \code{degree1.5} \item `mm` } }
+#' \item \code{degree1.5} \item `mm` \item `meandeg`*} }
 #' 
-#' \item{tergm:}{ \itemize{ \item \code{mean.age} } } }
+#' \item{tergm:}{ \itemize{ \item \code{mean.age}* } } }
+#'
+#' Starred terms are *nonscaling*, in that while they can be
+#' evaluated, some inferential results and standard error calculation
+#' methods may not be applicable.
+#'
 #' @seealso \code{\link[ergm]{ergm-terms}}
 #' @keywords models
 NULL
@@ -61,7 +66,6 @@ NULL
 # copied from ergm
 LEVELS_BASE1 <- NULL
 
-#' @export
 EgoStat.offset <- function(egodata, trm){
   trm <- substitute(trm)
   if(is.call(trm)){
@@ -77,7 +81,6 @@ EgoStat.offset <- function(egodata, trm){
   h
 }
 
-#' @export
 EgoStat.edges <- function(egodata){
   egos <- egodata$egos
   alters <- egodata$alters
@@ -100,7 +103,6 @@ EgoStat.edges <- function(egodata){
 }
 
 
-#' @export
 EgoStat.nodecov <- function(egodata, attr){
   egos <- egodata$egos
   alters <- egodata$alters
@@ -142,7 +144,6 @@ EgoStat.nodecov <- function(egodata, attr){
 }
 
 
-#' @export
 EgoStat.nodefactor <- function(egodata, attr, base=1, levels=LEVELS_BASE1){
   if(!missing(base)) message("In term `nodefactor' in package `ergm.ego': Argument \"base\" has been superseded by \"levels\" and it is recommended to use the latter.  Note that its interpretation may be different.")
 
@@ -181,7 +182,6 @@ EgoStat.nodefactor <- function(egodata, attr, base=1, levels=LEVELS_BASE1){
   else h[match(egodata$egos[[egoIDcol]],rownames(h)),-base,drop=FALSE]
 }
 
-#' @export
 EgoStat.nodematch <- function(egodata, attr, diff=FALSE, keep=NULL, levels=NULL){
   if(!missing(keep)) message("In term `nodematch' in package `ergm.ego': Argument \"keep\" has been superseded by \"levels\" and it is recommended to use the latter.  Note that its interpretation may be different.")
   
@@ -220,7 +220,6 @@ EgoStat.nodematch <- function(egodata, attr, diff=FALSE, keep=NULL, levels=NULL)
 }
 
 
-#' @export
 EgoStat.nodemix <- function(egodata, attr, base=NULL, levels=NULL, levels2=NULL){
   if(!missing(base)) message("In term `nodemix' in package `ergm.ego': Argument \"base\" has been superseded by \"levels2\" and it is recommended to use the latter.  Note that its interpretation may be different.")
   
@@ -294,7 +293,6 @@ EgoStat.nodemix <- function(egodata, attr, base=NULL, levels=NULL, levels2=NULL)
   h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]/2
 }
 
-#' @export
 EgoStat.absdiff <- function(egodata, attr, pow=1){
   egos <- egodata$egos
   alters <- egodata$alters
@@ -321,7 +319,6 @@ EgoStat.absdiff <- function(egodata, attr, pow=1){
   h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]/2
 }
 
-#' @export
 EgoStat.degree <- function(egodata, d, by=NULL, homophily=FALSE, levels=NULL){
   ## if(any(d==0)) warning("degree(0) (isolate) count statistic depends strongly on the specified population network size.")
   
@@ -372,7 +369,6 @@ EgoStat.degree <- function(egodata, d, by=NULL, homophily=FALSE, levels=NULL){
   h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]
 }
 
-#' @export
 EgoStat.degrange <- function(egodata, from=NULL, to=Inf, by=NULL, homophily=FALSE, levels=NULL){
   ## if(any(from==0)) warning("degrange(0,...) (isolate) count depends strongly on the specified population network size.")
   
@@ -443,7 +439,6 @@ EgoStat.degrange <- function(egodata, from=NULL, to=Inf, by=NULL, homophily=FALS
   h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]
 }
 
-#' @export
 EgoStat.concurrent <- function(egodata, by=NULL, levels=NULL){
   egos <- egodata$egos
   alters <- egodata$alters
@@ -490,7 +485,6 @@ EgoStat.concurrent <- function(egodata, by=NULL, levels=NULL){
   h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]
 }
 
-#' @export
 EgoStat.concurrentties <- function(egodata, by=NULL, levels=NULL){
   egos <- egodata$egos
   alters <- egodata$alters
@@ -538,7 +532,6 @@ EgoStat.concurrentties <- function(egodata, by=NULL, levels=NULL){
 }
 
 
-#' @export
 EgoStat.degree1.5 <- function(egodata){
   egos <- egodata$egos
   alters <- egodata$alters
@@ -559,7 +552,6 @@ EgoStat.degree1.5 <- function(egodata){
   h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]
 }
 
-#' @export
 EgoStat.mm <- function(egodata, attrs, levels=NULL, levels2=NULL){
   egos <- egodata$egos
   alters <- egodata$alters
@@ -693,4 +685,11 @@ EgoStat.mm <- function(egodata, attrs, levels=NULL, levels2=NULL){
   h <- h[match(egos[[egoIDcol]], i),,drop=FALSE]/2
   h[is.na(h)] <- 0
   h
+}
+
+EgoStat.meandeg <- function(egodata){
+  out <- summary(egodata~edges, individual=FALSE, scaleto=2)
+  names(out) <- "meandeg"
+  attr(out, "nonscaling") <- TRUE
+  out
 }
