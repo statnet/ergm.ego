@@ -50,11 +50,11 @@ egofit <- ergm.ego(fmh.ego~edges+degree(0:3)+nodefactor("Race")+nodematch("Race"
 # Check whether the model "converged":
 (modelgof <- gof(egofit, GOF="model"))
 plot(modelgof)
-
+\donttest{
 # Check whether the model reconstructs the degree distribution:
 (deggof <- gof(egofit, GOF="degree"))
 plot(deggof)
-
+}
 }
 \seealso{
 For examples, see \code{\link{ergm.ego}}.
