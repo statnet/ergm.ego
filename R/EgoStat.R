@@ -64,6 +64,11 @@
 NULL
 
 # copied from ergm
+nodecov_names <- function(nodecov, prefix=NULL){
+  cn <- if(is.matrix(nodecov)) NVL3(colnames(nodecov), ., paste(attr(nodecov, "name"), seq_len(ncol(nodecov)), sep="."))
+        else attr(nodecov, "name")
+  NVL3(prefix, paste0(prefix,".",cn), cn)
+}
 LEVELS_BASE1 <- NULL
 
 EgoStat.offset <- function(egodata, trm){
@@ -131,14 +136,10 @@ EgoStat.nodecov <- function(egodata, attr){
     ties <- data.frame(egoID=c(ties[[egoIDcol]],if(alt) ties[[egoIDcol]],isolates),x=c(ties$.e,if(alt) ties$.a,rep(0,length(isolates))),stringsAsFactors=FALSE)
   
     h <- cbind(sapply(tapply(ties$x,list(egoID=ties$egoID),FUN=sum),identity)) / if(alt) 2 else 1
-    
-    colname <- "nodecov"
-    if(is.matrix(xe)) colname <- paste(colname, attributes(xe)$name, sep = ".")
-    colname <- paste(colname, attrname, sep = ".")
-    colnames(h) <- colname
-  
     h.all <- cbind(h.all, h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE])
   }
+
+  colnames(h.all) <- nodecov_names(xe, "nodecov")
 
   h.all
 }
