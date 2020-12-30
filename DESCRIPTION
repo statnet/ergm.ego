@@ -31,3 +31,7 @@ BugReports: https://github.com/statnet/ergm.ego/issues
 RoxygenNote: 7.1.1
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8
+Remotes: github::statnet/statnet.common@master,
+    github::statnet/rle@master,
+    github::statnet/network@master,
+    github::statnet/ergm@master
