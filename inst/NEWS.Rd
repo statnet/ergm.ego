@@ -69,7 +69,18 @@
   \subsection{NEW FEATURES}{
     \itemize{
       \item{
-       \code{\link{predict.ergm.ego}}, a \code{\link{predict}} method for \code{\link{ergm.ego}} has been implemented. (Thanks, Michał Bojanowski.)
+        \code{\link{predict.ergm.ego}}, a \code{\link{predict}} method for \code{\link{ergm.ego}} has been implemented. (Thanks, Michał Bojanowski.)
+      }
+      \item{
+        Nonscaling statistic \code{\link{meandeg}} has been added.
+      }
+    }
+  }
+
+  \subsection{OTHER USER-VISIBLE CHANGES}{
+    \itemize{
+      \item{
+        \code{EgoStat.*} functions no longer need to be exported, reducing namespace pollution.
       }
     }
   }
@@ -87,6 +98,9 @@
         \code{character}.  This allows \code{ppopsize} to be of class 
         \code{\link[network]{network}} when calling 
         \code{\link{control.ergm.ego}}.
+      }
+      \item{
+        A more thorough search mechanism for \code{EgoStat.*} functions no longer requires them to be exported.
       }
     }
   }

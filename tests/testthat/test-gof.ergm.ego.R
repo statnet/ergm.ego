@@ -54,7 +54,7 @@ test_that("GOF='espartners' works if `esp` term is in the model", {
   fit <- ergm.ego(
     edata ~ edges + esp(1), 
     control = control.ergm.ego(
-      ergm.control=control.ergm(MCMLE.maxit=2)
+      ergm=control.ergm(MCMLE.maxit=2)
     )
   )
   

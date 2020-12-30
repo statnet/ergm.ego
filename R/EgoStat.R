@@ -220,6 +220,11 @@ split_aaties_by_ego <- function(x, egor){
 NULL
 
 # copied from ergm
+nodecov_names <- function(nodecov, prefix=NULL){
+  cn <- if(is.matrix(nodecov)) NVL3(colnames(nodecov), ., paste(attr(nodecov, "name"), seq_len(ncol(nodecov)), sep="."))
+        else attr(nodecov, "name")
+  NVL3(prefix, paste0(prefix,".",cn), cn)
+}
 LEVELS_BASE1 <- NULL
 
 EgoStat.offset <- function(egor, trm){
@@ -259,6 +264,8 @@ EgoStat.nodecov <- function(egor, attr){
     xe <- as.matrix(xe)*.degreeseq(egor)
     xal <- 0
   }
+
+  colnames(h.all) <- nodecov_names(xe, "nodecov")
 
   structure((xe + xal)/if(alt) 2 else 1, dimnames = list(NULL, paste("nodecov",attrnames,sep=".")), order=1)
 }

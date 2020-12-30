@@ -96,14 +96,17 @@ ergm.ego_get_vattr <- function(object, df, accept="character", multiple=if(accep
 }
 
 .handle_multiple <- function(a, multiple){
+  name <- attr(a, "name")
   if(!is.list(a)) a <- list(a)
   a <- do.call(cbind, a)
-  if(ncol(a)>1)
-    switch(multiple,
-           paste =  apply(a, 1, paste, collapse="."),
-           matrix = a,
-           stop = ergm_Init_abort("This term does not accept multiple vertex attributes or matrix vertex attribute functions."))
-  else c(a)
+  structure(
+    if(ncol(a)>1)
+      switch(multiple,
+             paste =  apply(a, 1, paste, collapse="."),
+             matrix = a,
+             stop = ergm_Init_abort("This term does not accept multiple vertex attributes or matrix vertex attribute functions."))
+    else c(a),
+    name = name)
 }
 
 .rightsize_vattr <- function(a, df){
@@ -138,6 +141,13 @@ ergm.ego_get_vattr <- function(object, df, accept="character", multiple=if(accep
                 positive = x>0)
 
   if(!OK) ergm_Init_abort("Attribute ", NVL3(xspec, paste0(sQuote(paste(deparse(.),collapse="\n")), " ")), "is not ", ACCNAME[[accept]], " vector as required.")
+  if(any(is.na(x))) ergm_Init_abort("Attribute ", NVL3(xspec, paste0(sQuote(paste(deparse(.),collapse="\n")), " ")), "has missing data, which is not currently supported by ergm.")
+  if(is.matrix(x) && !is.null(cn <- colnames(x))){
+    if(any(cn=="")){
+      ergm_Init_warn("Attribute specification ", NVL3(xspec, paste0(sQuote(paste(deparse(.),collapse="\n")), " ")), "is a matrix with some column names set and others not; you may need to set them manually. See example(nodal_attributes) for more information.")
+      colnames(x) <- NULL
+    }
+  }
   x
 }
 

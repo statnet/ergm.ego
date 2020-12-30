@@ -27,10 +27,10 @@
 #' the sum of these rounded freqencies.}
 #' \item{"sample"}{Resample in proportion to \eqn{w_i}.} }
 #' 
-#' @param SAN.control A list of control parameters for \code{\link[ergm]{san}}
+#' @param SAN A list of control parameters for \code{\link[ergm]{san}}
 #' constructed by \code{\link[ergm]{control.ergm}}, called to construct a
 #' pseudopopulation network consistent with the data.
-#' @param simulate.control A list of control parameters for
+#' @param simulate A list of control parameters for
 #' \code{\link[ergm]{simulate.formula}} constructed by
 #' \code{\link[ergm]{control.simulate}}, called to simulate from the model fit.
 #' @param \dots Not used at this time.
@@ -41,9 +41,12 @@
 #' @export
 control.simulate.ergm.ego <- function(
   ppop.wt = c("round","sample"),
-  SAN.control = control.san(),
-  simulate.control = control.simulate(),
+  SAN = control.san(),
+  simulate = control.simulate(),
   ...){
+  old.controls <- list(SAN.control="SAN",
+                       simulate.control="simulate")
+
   match.arg.pars <- c("ppop.wt")
 
   control<-list()
@@ -51,7 +54,15 @@ control.simulate.ergm.ego <- function(
   formal.args[["..."]]<-NULL
   for(arg in names(formal.args))
     control[arg]<-list(get(arg))
-  if(length(list(...))) stop("Unrecognized control parameter: ",arg,".")
+
+  for(arg in names(list(...))){
+    if(!is.null(old.controls[[arg]])){
+      warning("Passing ",arg," to control.simulate.ergm.ego(...) is deprecated and may be removed in a future version. Specify it as control.ergm(",old.controls[[arg]],"=...) instead.")
+      control[old.controls[[arg]]]<-list(list(...)[[arg]])
+    }else{
+      stop("Unrecognized control parameter: ",arg,".")
+    }
+  }
 
   for(arg in match.arg.pars)
     control[arg]<-list(match.arg(control[[arg]][1],eval(formal.args[[arg]])))

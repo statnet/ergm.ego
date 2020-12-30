@@ -6,8 +6,8 @@
 \usage{
 control.simulate.ergm.ego(
   ppop.wt = c("round", "sample"),
-  SAN.control = control.san(),
-  simulate.control = control.simulate(),
+  SAN = control.san(),
+  simulate = control.simulate(),
   ...
 )
 }
@@ -24,11 +24,11 @@ round it to the nearest integer. Then, the \eqn{|N'|} actually used will be
 the sum of these rounded freqencies.}
 \item{"sample"}{Resample in proportion to \eqn{w_i}.} }}
 
-\item{SAN.control}{A list of control parameters for \code{\link[ergm]{san}}
+\item{SAN}{A list of control parameters for \code{\link[ergm]{san}}
 constructed by \code{\link[ergm]{control.ergm}}, called to construct a
 pseudopopulation network consistent with the data.}
 
-\item{simulate.control}{A list of control parameters for
+\item{simulate}{A list of control parameters for
 \code{\link[ergm]{simulate.formula}} constructed by
 \code{\link[ergm]{control.simulate}}, called to simulate from the model fit.}
 

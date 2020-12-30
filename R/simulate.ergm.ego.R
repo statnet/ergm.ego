@@ -24,9 +24,9 @@
 #'   of actors.
 #' @param control A \code{\link{control.simulate.ergm.ego}} control list.
 #' 
-#' @param output one of `"network"`, `"stats"`, `"edgelist"`, or
-#'   `"pending_update_network"`. See help for [simulate.ergm()] for
-#'   explanation.
+#' @param output one of `"network"`, `"stats"`, `"edgelist"`,
+#'   `"pending_update_network"`, or, for future compatibility,
+#'   `"ergm_state"`. See help for [simulate.ergm()] for explanation.
 #' 
 #' @param constraints,\dots Additional arguments passed to \code{\link[ergm]{san}} and
 #' \code{\link[ergm]{simulate.formula}}.
@@ -59,14 +59,14 @@
 #' data(fmhfit)
 #' colMeans(egosim <- simulate(fmhfit, popsize=300,nsim=50,
 #'                        output="stats", control=control.simulate.ergm.ego(
-#'                        simulate.control=control.simulate.formula(MCMC.burnin=2e6))))
+#'                        simulate=control.simulate.formula(MCMC.burnin=2e6))))
 #' colMeans(egosim)/attr(egosim,"ppopsize")*network.size(faux.mesa.high)
 #' summary(faux.mesa.high~edges+degree(0:3)+nodefactor("Race")+nodematch("Race")
 #'            +nodefactor("Sex")+nodematch("Sex")+absdiff("Grade"))
 #'
 #' @importFrom stats simulate
 #' @export
-simulate.ergm.ego <- function(object, nsim = 1, seed = NULL, constraints=object$constraints, popsize=if(object$popsize==1) object$ppopsize else object$popsize, control=control.simulate.ergm.ego(), output=c("network","stats","edgelist","pending_update_network"), ..., verbose=FALSE){
+simulate.ergm.ego <- function(object, nsim = 1, seed = NULL, constraints=object$constraints, popsize=if(object$popsize==1) object$ppopsize else object$popsize, control=control.simulate.ergm.ego(), output=c("network","stats","edgelist","pending_update_network", "ergm_state"), ..., verbose=FALSE){
   statnet.common::check.control.class("simulate.ergm.ego", "simulate.ergm.ego")
   output <- match.arg(output)
   
@@ -88,10 +88,10 @@ simulate.ergm.ego <- function(object, nsim = 1, seed = NULL, constraints=object$
     if(length(object$target.stats)>nparam(object, offset=FALSE)) object$target.stats[!object$etamap$offsettheta]
     else object$target.stats
   # TODO: Make it work with ergm_state output.
-  if(popsize != object$ppopsize) popnw <- san(object$formula, target.stats = san.stats/object$ppopsize*ppopsize,verbose=verbose, constraints=constraints, basis=popnw, control=control$SAN.control, ..., output="network")
+  if(popsize != object$ppopsize) popnw <- san(object$formula, target.stats = san.stats/object$ppopsize*ppopsize,verbose=verbose, constraints=constraints, basis=popnw, control=control$SAN, ..., output="network")
   ergm.formula <- nonsimp_update.formula(object$formula,object$netsize.adj)
 
-  out <- simulate(ergm.formula, nsim=nsim, seed=seed, verbose=verbose, coef=c(netsize.adj=-log(ppopsize/object$popsize),object$coef[-1]), constraints=constraints, control=control$simulate.control, basis=popnw, ..., output=output)
+  out <- simulate(ergm.formula, nsim=nsim, seed=seed, verbose=verbose, coef=c(netsize.adj=-log(ppopsize/object$popsize),object$coef[-1]), constraints=constraints, control=control$simulate, basis=popnw, ..., output=output)
   if(is.matrix(out)){
     out <- out[,-1,drop=FALSE]
     attr(out, "ppopsize") <- ppopsize

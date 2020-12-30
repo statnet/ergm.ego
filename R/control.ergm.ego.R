@@ -77,7 +77,7 @@
 #' @param ignore.max.alters if `TRUE`, ignores any constraints on the
 #'   number of nominations.
 #' 
-#' @param ergm.control Control parameters for the \code{\link[ergm]{ergm}} call
+#' @param ergm Control parameters for the \code{\link[ergm]{ergm}} call
 #' to fit the model, constructed by \code{\link[ergm]{control.ergm}}.
 #' @param \dots Not used at this time.
 #' @return A list with arguments as components.
@@ -101,8 +101,10 @@ control.ergm.ego <- function(
   stats.est = c("survey","asymptotic", "bootstrap", "jackknife", "naive"),
   boot.R = 10000,
   ignore.max.alters = FALSE,
-  ergm.control = control.ergm(),
+  ergm = control.ergm(),
   ...){
+  old.controls <- list(ergm.control="ergm")
+
   match.arg.pars <- c("stats.est", "ppop.wt", "stats.wt", if(is.character(ppopsize)) "ppopsize")
 
   control<-list()
@@ -110,7 +112,15 @@ control.ergm.ego <- function(
   formal.args[["..."]]<-NULL
   for(arg in names(formal.args))
     control[arg]<-list(get(arg))
-  if(length(list(...))) stop("Unrecognized control parameter: ",arg,".")
+
+  for(arg in names(list(...))){
+    if(!is.null(old.controls[[arg]])){
+      warning("Passing ",arg," to control.ergm.ego(...) is deprecated and may be removed in a future version. Specify it as control.ergm(",old.controls[[arg]],"=...) instead.")
+      control[old.controls[[arg]]]<-list(list(...)[[arg]])
+    }else{
+      stop("Unrecognized control parameter: ",arg,".")
+    }
+  }
 
   for(arg in match.arg.pars)
     control[arg]<-list(match.arg(control[[arg]][1],eval(formal.args[[arg]])))

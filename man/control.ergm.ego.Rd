@@ -12,7 +12,7 @@ control.ergm.ego(
   stats.est = c("survey", "asymptotic", "bootstrap", "jackknife", "naive"),
   boot.R = 10000,
   ignore.max.alters = FALSE,
-  ergm.control = control.ergm(),
+  ergm = control.ergm(),
   ...
 )
 }
@@ -81,7 +81,7 @@ fixed.} }}
 \item{ignore.max.alters}{if \code{TRUE}, ignores any constraints on the
 number of nominations.}
 
-\item{ergm.control}{Control parameters for the \code{\link[ergm]{ergm}} call
+\item{ergm}{Control parameters for the \code{\link[ergm]{ergm}} call
 to fit the model, constructed by \code{\link[ergm]{control.ergm}}.}
 
 \item{\dots}{Not used at this time.}
