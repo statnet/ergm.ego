@@ -228,7 +228,7 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, ..., control=control.
   
   if(do.fit){
 
-    ergm.fit <- ergm(ergm.formula, target.stats=m, offset.coef=ergm.offset.coef,..., eval.loglik=FALSE,control=control$ergm.control)
+    ergm.fit <- ergm(ergm.formula, target.stats=m, offset.coef=ergm.offset.coef,..., eval.loglik=FALSE,control=control$ergm)
 
     ## Workaround to keep mcmc.diagnostics from failing. Should be removed after fix is released.
     if(inherits(ergm.fit$sample,"mcmc.list")){

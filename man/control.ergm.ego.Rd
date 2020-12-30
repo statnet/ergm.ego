@@ -11,7 +11,7 @@ control.ergm.ego(
   stats.wt = c("data", "ppop"),
   stats.est = c("asymptotic", "bootstrap", "jackknife", "naive"),
   boot.R = 10000,
-  ergm.control = control.ergm(),
+  ergm = control.ergm(),
   ...
 )
 }
@@ -76,7 +76,7 @@ resampling egos, using \code{R} replications.}
 \item{"naive"}{"Naive" estimator, assuming that weights are
 fixed.} }}
 
-\item{ergm.control}{Control parameters for the \code{\link[ergm]{ergm}} call
+\item{ergm}{Control parameters for the \code{\link[ergm]{ergm}} call
 to fit the model, constructed by \code{\link[ergm]{control.ergm}}.}
 
 \item{\dots}{Not used at this time.}

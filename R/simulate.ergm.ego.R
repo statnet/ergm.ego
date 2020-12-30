@@ -61,7 +61,7 @@
 #'                popsize=network.size(faux.mesa.high))
 #' colMeans(egosim <- simulate(egofit, popsize=300,nsim=50,
 #'                        output="stats", control=control.simulate.ergm.ego(
-#'                        simulate.control=control.simulate.formula(MCMC.burnin=2e6))))
+#'                        simulate=control.simulate.formula(MCMC.burnin=2e6))))
 #' colMeans(egosim)/attr(egosim,"ppopsize")*network.size(faux.mesa.high)
 #' summary(faux.mesa.high~edges+degree(0:3)+nodefactor("Race")+nodematch("Race")
 #'            +nodefactor("Sex")+nodematch("Sex")+absdiff("Grade"))
@@ -93,10 +93,10 @@ simulate.ergm.ego <- function(object, nsim = 1, seed = NULL, constraints=object$
   san.stats <-
     if(length(object$target.stats)>nparam(object, offset=FALSE)) object$target.stats[!object$etamap$offsettheta]
     else object$target.stats
-  if(popsize != object$ppopsize) popnw <- san(object$formula, target.stats = san.stats/object$ppopsize*ppopsize,verbose=verbose, constraints=constraints, basis=popnw, control=control$SAN.control, ..., output=if(utils::packageVersion("ergm")>="4") "ergm_state" else "pending_update_network")
+  if(popsize != object$ppopsize) popnw <- san(object$formula, target.stats = san.stats/object$ppopsize*ppopsize,verbose=verbose, constraints=constraints, basis=popnw, control=control$SAN, ..., output=if(utils::packageVersion("ergm")>="4") "ergm_state" else "pending_update_network")
   ergm.formula <- nonsimp_update.formula(object$formula,.~offset(netsize.adj)+.)
 
-  out <- simulate(ergm.formula, nsim=nsim, seed=seed, verbose=verbose, coef=c(netsize.adj=-log(ppopsize/object$popsize),object$coef[-1]), constraints=constraints, control=control$simulate.control, basis=popnw, ..., output=output)
+  out <- simulate(ergm.formula, nsim=nsim, seed=seed, verbose=verbose, coef=c(netsize.adj=-log(ppopsize/object$popsize),object$coef[-1]), constraints=constraints, control=control$simulate, basis=popnw, ..., output=output)
   if(is.matrix(out)){
     out <- out[,-1,drop=FALSE]
     attr(out, "ppopsize") <- ppopsize
