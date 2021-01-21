@@ -202,7 +202,6 @@ mixingmatrix.egor <- function(object, attrname, rowprob = FALSE, weight = TRUE, 
   if(rowprob){
     mxmat <- mxmat/rowSums(mxmat)
   }
-  mxmat
+  structure(mxmat, class = c("mixingmatrix", "table"), directed = FALSE,
+            bipartite = FALSE)
 }
-  
-  
