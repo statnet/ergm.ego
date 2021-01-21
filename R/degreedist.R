@@ -183,7 +183,7 @@ degreedist.egor <- function(object, freq = FALSE, prob = !freq,
 #' (mm <- mixingmatrix(faux.mesa.high,"Grade"))
 #' (mm.ego <- mixingmatrix(fmh.ego,"Grade"))
 #' 
-#' stopifnot(isTRUE(all.equal({tmp<-unclass(mm$matrix); diag(tmp) <- diag(tmp)*2;
+#' stopifnot(isTRUE(all.equal({tmp<-unclass(mm); diag(tmp) <- diag(tmp)*2;
 #' tmp}, mm.ego, check.attributes=FALSE)))
 #' 
 #' @export
