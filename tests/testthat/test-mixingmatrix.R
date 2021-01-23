@@ -78,3 +78,19 @@ for ( v in varnames ) {
 #   expect_identical( rownames(mm), levels(x))
 # })
 
+test_that("mixing matrices for FMH and egoFMH are equivalent", {
+  data("faux.mesa.high")
+  fmh.ego <- as.egor(faux.mesa.high)
+  expect_equal(
+    {
+      mm.ego <- mixingmatrix(fmh.ego, "Grade")
+      names(dimnames(mm.ego)) <- c("From", "To")
+      mm.ego
+    },
+    {
+      mm <- mixingmatrix(faux.mesa.high, "Grade")
+      diag(mm) <- diag(mm) * 2
+      mm
+    }
+  )
+})

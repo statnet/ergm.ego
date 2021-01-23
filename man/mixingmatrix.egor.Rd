@@ -42,9 +42,6 @@ fmh.ego <- as.egor(faux.mesa.high)
 (mm <- mixingmatrix(faux.mesa.high,"Grade"))
 (mm.ego <- mixingmatrix(fmh.ego,"Grade"))
 
-stopifnot(isTRUE(all.equal({tmp<-unclass(mm$matrix); diag(tmp) <- diag(tmp)*2;
-tmp}, mm.ego, check.attributes=FALSE)))
-
 }
 \seealso{
 \code{\link[network]{mixingmatrix}}, \code{\link[ergm]{nodemix}},
