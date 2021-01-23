@@ -25,21 +25,24 @@ e <- egodata(data.frame(egoID=1:4, x=letters[c(1,1,2,2)]),
              egoIDcol="egoID")
 
 test_that("weighted degreedist", {
-  expect_equal(unclass(degreedist(e, plot=FALSE)), c(1/2,1/2), ignore_attr=TRUE)
+  expect_equivalent(
+    unclass(degreedist(e, plot=FALSE)), 
+    c(1/2,1/2)
+  )
 })
 
 test_that("weighted degreedist by attribute", {
-  expect_equal(unclass(degreedist(e, plot=FALSE, by="x")), rbind(c(2/3,1/3),
-                                                                 c(1/3,2/3)),
-               ignore_attr=TRUE)
+  expect_equivalent(
+    unclass(degreedist(e, plot=FALSE, by="x")), 
+    rbind(c(2/3,1/3), c(1/3,2/3))
+  )
 })
 
 test_that("weighted degreedist with weights disabled", {
-  expect_equal(unclass(degreedist(e, plot=FALSE, weight=FALSE)), c(1/2,1/2), ignore_attr=TRUE)
+  expect_equivalent(unclass(degreedist(e, plot=FALSE, weight=FALSE)), c(1/2,1/2))
 })
 
 test_that("weighted degreedist by attribute with weights disabled", {
-  expect_equal(unclass(degreedist(e, plot=FALSE, by="x", weight=FALSE)), rbind(c(1/2,1/2),
-                                                                               c(1/2,1/2)),
-               ignore_attr=TRUE)
+  expect_equivalent(unclass(degreedist(e, plot=FALSE, by="x", weight=FALSE)), rbind(c(1/2,1/2),
+                                                                               c(1/2,1/2)))
 })
