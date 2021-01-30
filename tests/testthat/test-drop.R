@@ -14,7 +14,7 @@ nw <- network.initialize(20,directed=FALSE)
 nw %v% "a" <- rep(1:2, each=10)
 nw[1:10,11:20] <- 0:1
 
-repeat test_that("dropped ergm terms", {
+test_that("dropped ergm terms", {
   local_edition(3)
   out.coef <- coef(ergm.ego(as.egor(nw)~edges+nodematch("a")))
   out.coef <- c(sum(out.coef[1:2]),out.coef[3])
