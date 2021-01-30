@@ -110,11 +110,12 @@ ergm.ego_get_vattr <- function(object, df, accept="character", multiple=if(accep
 }
 
 .rightsize_vattr <- function(a, df){
+  name <- attr(a, "name")
   rep_len_warn <- function(x, length.out){
     if(length.out%%NVL(nrow(x), length(x))) ergm_Init_warn("Length of vertex attribute vector is not a multiple of network size.")
     if(is.null(nrow(x))) rep_len(x, length.out) else apply(x, 2, rep_len, length.out)
   }
-  rep_len_warn(a, nrow(df))
+  structure(rep_len_warn(a, nrow(df)), name=name)
 }
 
 .check_acceptable <- function(x, accept=c("character", "numeric", "logical", "integer", "natural", "0natural", "nonnegative"), xspec=NULL){
@@ -173,11 +174,19 @@ ergm.ego_get_vattr.character <- function(object, df, accept="character", multipl
 ergm.ego_get_vattr.function <- function(object, df, accept="character", multiple=if(accept=="character") "paste" else "stop", ...){
   multiple <- match.arg(multiple, ERGM_GET_VATTR_MULTIPLE_TYPES)
 
-  ERRVL(try(object(df, ...) %>%
-            .rightsize_vattr(df) %>% .handle_multiple(multiple=multiple) %>%
-            structure(name=strtrim(despace(paste(deparse(body(object)),collapse="\n")),80)),
-            silent=TRUE),
-        ergm_Init_abort(.)) %>%
+  args <- list()
+  for(aname in c("accept", "multiple"))
+    if('...' %in% names(formals(object)) || aname %in% names(formals(object)))
+      args[[aname]] <- get(aname)
+  args <- c(list(df), list(...), args)
+
+  ERRVL(try({
+    a <- do.call(object, args)
+    while(is(a,'formula')||is(a,'function')) a <- ergm.ego_get_vattr(a, df, accept=accept, multiple=multiple, ...)
+    a %>% .rightsize_vattr(df) %>% .handle_multiple(multiple=multiple) %>%
+      structure(., name=NVL(attr(.,"name"), strtrim(despace(paste(deparse(body(object)),collapse="\n")),80)))
+  }, silent=TRUE),
+  ergm_Init_abort(.)) %>%
     .check_acceptable(accept=accept)
 }
 
@@ -193,11 +202,12 @@ ergm.ego_get_vattr.formula <- function(object, df, accept="character", multiple=
   vlist <- c(a %>% map(~df[[.]]) %>% set_names(a),
              lst(`.`=df, .df=df, ...))
 
-  e <- object[[length(object)]]
+  e <- ult(object)
   ERRVL(try({
-    eval(e, envir=vlist, enclos=environment(object)) %>%
-      .rightsize_vattr(df) %>% .handle_multiple(multiple=multiple) %>%
-      structure(name=if(length(object)>2) eval_lhs.formula(object) else despace(paste(deparse(e),collapse="\n")))
+    a <- eval(e, envir=vlist, enclos=environment(object))
+    while(is(a,'formula')||is(a,'function')) a <- ergm.ego_get_vattr(a, df, accept=accept, multiple=multiple, ...)
+      a %>% .rightsize_vattr(df) %>% .handle_multiple(multiple=multiple) %>%
+      structure(., name=NVL(attr(.,"name"), if(length(object)>2) eval_lhs.formula(object) else despace(paste(deparse(e),collapse="\n"))))
   }, silent=TRUE),
   ergm_Init_abort(.)) %>%
     .check_acceptable(accept=accept, xspec=object)
@@ -252,6 +262,44 @@ ergm.ego_attr_levels.NULL <- function(object, attr, egodata, levels=sort(unique(
 
 #' @rdname nodal_attributes-API
 #' @export
+ergm.ego_attr_levels.matrix <- function(object, attr, egodata, levels=sort(unique(attr)), ...){
+
+  # This should get the levels in the right order.
+  ol <- levels %>% map(1L) %>% unique
+  nol <- length(ol)
+  il <- levels %>% map(2L) %>% unique
+  nil <- length(il)
+
+  # Construct a matrix indicating where on the levels list does each
+  # element go. Then, indexing elements of m with either a logical
+  # matrix or a two-column matrix of cell indices will produce a list
+  # of level indices selected along with 0s, which can then be
+  # dropped.
+  ol2c <- match(levels%>%map(1L), ol)
+  il2c <- match(levels%>%map(2L), il)
+  m <- matrix(0L, nol, nil)
+  m[cbind(ol2c,il2c)] <- seq_along(levels)
+
+  sel <- switch(mode(object),
+                logical = { # Binary matrix
+                  if(any(dim(object)!=c(nol,nil))) ergm_Init_abort("Level combination selection binary matrix should have dimension ", nol, " by ", nil, " but has dimension ", nrow(object), " by ", ncol(object), ".") # Check dimension.
+                  if(identical(ol,il)) object <- object | t(object) # Symmetrize, if appropriate.
+                  object
+                },
+                numeric = { # Two-column index matrix
+                  if(ncol(object)!=2) ergm_Init_abort("Level combination selection two-column index matrix should have two columns but has ", ncol(object), ".")
+                  if(identical(ol,il)) object <- rbind(object, object[,2:1,drop=FALSE]) # Symmetrize, if appropriate.
+                  object
+                },
+                ergm_Init_abort("Level combination selection matrix must be either numeric or logical.")
+                )
+
+  sel <- m[sel] %>% keep(`!=`,0L) %>% sort %>% unique
+  levels[sel]
+}
+
+#' @rdname nodal_attributes-API
+#' @export
 ergm.ego_attr_levels.function <- function(object, attr, egodata, levels=sort(unique(attr)), ...){
   object <- if('...' %in% names(formals(object))) object(levels, attr, egodata, ...)
             else switch(length(formals(object)),
@@ -265,8 +313,27 @@ ergm.ego_attr_levels.function <- function(object, attr, egodata, levels=sort(uni
 #' @export
 ergm.ego_attr_levels.formula <- function(object, attr, egodata, levels=sort(unique(attr)), ...){
   vlist <- lst(`.`=levels, .levels=levels, .attr=attr, .egodata=egodata, ...)
-  e <- object[[length(object)]]
+  e <- ult(object)
   object <- eval(e, envir=vlist, enclos=environment(object))  
   ergm.ego_attr_levels(object, attr, egodata, levels, ...)
 }
 
+#' @describeIn nodal_attributes-API
+#'
+#' A version of [ergm::COLLAPSE_SMALLEST()] that can handle both [`network`] and [`egodata`] objects.
+#' @export
+COLLAPSE_SMALLEST <- function(object, n, into){
+  attr <- object
+  function(.x, ...){
+    vattr <- if(is.network(.x)) ergm_get_vattr(attr, .x, ...)
+             else if(is.data.frame(.x)){
+               ergm_Init_warn(paste(sQuote("COLLAPSE_SMALLEST()"), " may behave unpredictably with egocentric data and is not recommended at this time."))
+               ergm.ego_get_vattr(attr, .x, ...)
+             }else stop("Unrecognised data type. This indicates a bug.")
+    lvls <- unique(vattr)
+    vattr.codes <- match(vattr,lvls)
+    smallest <- which(order(tabulate(vattr.codes), decreasing=FALSE)<=n)
+    vattr[vattr.codes %in% smallest] <- into
+    vattr
+  }
+}
