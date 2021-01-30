@@ -327,7 +327,7 @@ EgoStat.nodematch <- function(egor, attr, diff=FALSE, keep=NULL, levels=NULL){
   h
 }
 
-EgoStat.nodemix <- function(egor, attr, base=NULL, levels=NULL, levels2=NULL){
+EgoStat.nodemix <- function(egor, attr, base=NULL, levels=NULL, levels2=-1){
   if(!missing(base)) message("In term `nodemix' in package `ergm.ego': Argument \"base\" has been superseded by \"levels2\" and it is recommended to use the latter.  Note that its interpretation may be different.")
   
   egos <- as_tibble(egor$ego)
@@ -661,7 +661,7 @@ EgoStat.gwdegree <- function(egor, decay=NULL, fixed=FALSE, cutoff=30){
   hv
 }
 
-EgoStat.mm <- function(egor, attrs, levels=NULL, levels2=NULL){
+EgoStat.mm <- function(egor, attrs, levels=NULL, levels2=-1){
   egor <- as_nested_egor(egor)
 
   aei <- rep(seq_len(nrow(egor)), map_int(egor$.alts, nrow))

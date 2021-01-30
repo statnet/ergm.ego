@@ -12,8 +12,10 @@
 \alias{ergm.ego_attr_levels.AsIs}
 \alias{ergm.ego_attr_levels.character}
 \alias{ergm.ego_attr_levels.NULL}
+\alias{ergm.ego_attr_levels.matrix}
 \alias{ergm.ego_attr_levels.function}
 \alias{ergm.ego_attr_levels.formula}
+\alias{COLLAPSE_SMALLEST}
 \title{Helper functions for specifying nodal attribute levels}
 \usage{
 ergm.ego_get_vattr(
@@ -60,9 +62,13 @@ ergm.ego_attr_levels(object, attr, egor, levels = sort(unique(attr)), ...)
 
 \method{ergm.ego_attr_levels}{`NULL`}(object, attr, egor, levels = sort(unique(attr)), ...)
 
+\method{ergm.ego_attr_levels}{matrix}(object, attr, egor, levels = sort(unique(attr)), ...)
+
 \method{ergm.ego_attr_levels}{`function`}(object, attr, egor, levels = sort(unique(attr)), ...)
 
 \method{ergm.ego_attr_levels}{formula}(object, attr, egor, levels = sort(unique(attr)), ...)
+
+COLLAPSE_SMALLEST(object, n, into)
 }
 \arguments{
 \item{object}{An argument specifying the nodal attribute to select
@@ -150,6 +156,11 @@ beconverted to character).}
 
 }
 }
+\section{Functions}{
+\itemize{
+\item \code{COLLAPSE_SMALLEST}: A version of \code{\link[ergm:nodal_attributes]{ergm::COLLAPSE_SMALLEST()}} that can handle both \code{\link{network}} and \code{\link{egodata}} objects.
+}}
+
 \examples{
 data(florentine)
 flomego <- as.egor(flomarriage)
