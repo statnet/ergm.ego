@@ -221,7 +221,7 @@ EgoStat.nodematch <- function(egodata, attr, diff=FALSE, keep=NULL, levels=NULL)
 }
 
 
-EgoStat.nodemix <- function(egodata, attr, base=NULL, levels=NULL, levels2=NULL){
+EgoStat.nodemix <- function(egodata, attr, base=NULL, levels=NULL, levels2=-1){
   if(!missing(base)) message("In term `nodemix' in package `ergm.ego': Argument \"base\" has been superseded by \"levels2\" and it is recommended to use the latter.  Note that its interpretation may be different.")
   
   egos <- egodata$egos
@@ -553,7 +553,7 @@ EgoStat.degree1.5 <- function(egodata){
   h[match(egodata$egos[[egoIDcol]],rownames(h)),,drop=FALSE]
 }
 
-EgoStat.mm <- function(egodata, attrs, levels=NULL, levels2=NULL){
+EgoStat.mm <- function(egodata, attrs, levels=NULL, levels2=-1){
   egos <- egodata$egos
   alters <- egodata$alters
   egoIDcol <- egodata$egoIDcol
