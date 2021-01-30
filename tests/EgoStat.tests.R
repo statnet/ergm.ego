@@ -16,6 +16,8 @@ ds <- c(10,15,5,20)
 
 y <- network.initialize(n, directed=FALSE)
 y %v% "a" <- sample(1:3+6,n,replace=TRUE)
+aM <- matrix(FALSE, 3, 3)
+aM[1,1] <- aM[1,3] <- TRUE
 y %v% "b" <- sample(letters[1:4],n,replace=TRUE)
 y %v% "c" <- sample(runif(10),n,replace=TRUE)
 y %v% "d" <- runif(n)
@@ -28,7 +30,7 @@ f <- ~ edges +
   
   nodefactor("a", levels=NULL) + nodefactor("a", levels=-1) + nodefactor("a", levels=1) + nodefactor("a", levels=-2) + nodefactor("b", levels=c("c")) + 
   nodefactor("b", levels=c("c", "a")) + nodefactor("b", levels=c("c", "e", "a")) + nodefactor("b", levels=c("c", "e")) + nodefactor(~a, levels = 2:3) + 
-  nodefactor(c("b", "c"), levels = -(5:10)) + offset(nodefactor(c("b", "c"), levels = -(5:10))) + 
+  nodefactor(c("b", "c"), levels = -(5:10)) + offset(nodefactor(c("a", "b"), levels = -(5:10))) +
   
   nodematch("a") + nodematch("a", TRUE) + nodematch("a", TRUE, levels=2) + nodematch(c("a", "b"), TRUE, levels = 5:10) + nodematch(~2*a) + offset(nodematch(~a^2)) + 
   
@@ -61,13 +63,13 @@ f <- ~ edges +
   
   degree1.5 + offset(degree1.5) + 
   
-  nodemix("a") + nodemix("a", levels2=-1) + nodemix("a", levels2=1) + nodemix("b", levels = c("b"), levels2=1) + nodemix("a", levels2=-2) + nodemix("a", levels2=-(2:3)) + 
-  nodemix(c("a", "b"), levels = -(2:3)) + nodemix(c("a", "b"), levels = -(2:3), levels2 = -(3:4)) + nodemix("b", levels = -2, levels2 = -3) + 
+  nodemix("a", levels2=TRUE) + nodemix("a", levels2=-1) + nodemix("a", levels2=1) + nodemix("b", levels = c("b"), levels2=1) + nodemix("a", levels2=-2) + nodemix("a", levels2=-(2:3)) +
+  nodemix(c("a", "b"), levels = -(2:3)) + nodemix(c("a", "b"), levels = -(2:3), levels2 = -(3:4)) + nodemix("b", levels = -2, levels2 = -3) + nodemix("a",levels2=aM) +
   offset(nodemix("b", levels = -2, levels2 = -3)) + 
   
-  mm("a") + mm("a", levels2=~-1) + mm("a", levels2=-2) + mm("a", levels2=-(2:3)) + mm(~a>7) + mm(a~b) + mm(.~a) + offset(mm(.~a)) + mm("a", levels2 = 1) + 
+  mm("a", levels2=TRUE) + mm("a", levels2=~-1) + mm("a", levels2=-2) + mm("a", levels2=-(2:3)) + mm(~a>7) + mm(a~b) + mm(.~a) + offset(mm(.~a)) + mm("a", levels2 = 1) +
   mm("b", levels = c("a", "c", "e")) + mm("b", levels = c("a", "c", "e"), levels2 = 3) +
-
+  
   meandeg
 
 f.y <- statnet.common::nonsimp_update.formula(f, y~.)
