@@ -265,8 +265,6 @@ EgoStat.nodecov <- function(egor, attr){
     xal <- 0
   }
 
-  colnames(h.all) <- nodecov_names(xe, "nodecov")
-
   structure((xe + xal)/if(alt) 2 else 1, dimnames = list(NULL, paste("nodecov",attrnames,sep=".")), order=1)
 }
 
