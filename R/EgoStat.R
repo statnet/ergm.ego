@@ -352,11 +352,10 @@ EgoStat.nodemix <- function(egor, attr, base=NULL, levels=NULL, levels2=-1){
   levels2.list <- levels2.list[rowleqcol]
   indices2.grid <- indices2.grid[rowleqcol,]
   uun <- uun[rowleqcol]
-   
-  levels2.sel <- ergm.ego_attr_levels(levels2, list(row = c(xeval, xaval), col = c(xaval, xeval)), egor, levels2.list)
 
-  if(!is.null(base) && !identical(base,0) && missing(levels2)) levels2.sel <- levels2.sel[-base]
-    
+  levels2.sel <- if(!is.null(base) && !identical(base,0) && missing(levels2)) levels2.list[-base]
+                 else ergm.ego_attr_levels(levels2, list(row = c(xeval, xaval), col = c(xaval, xeval)), egor, levels2.list)
+
   rows2keep <- match(levels2.sel,levels2.list, NA)
   rows2keep <- rows2keep[!is.na(rows2keep)]
   
@@ -587,7 +586,7 @@ EgoStat.transitiveties <- function(egor, attr=NULL, diff=FALSE, levels=TRUE){
     xal <- NVL3(xa, split_alters_by_ego(., egor))
 
     if(is.null(xe) || is.null(xa)) .attrErr("transitiveties and cyclicalties", attrname, "both")
-    aal <- mapply(function(e, a, aa) aa[e==a$x[a$.altID==aa[,1]] & e==a$x[a$.altID==aa[,2]], , drop=FALSE], xe, xal, aal, SIMPLIFY=FALSE)
+    aal <- mapply(function(e, a, aa) aa[e==a$x[match(aa[,1],a$.altID)] & e==a$x[match(aa[,2],a$.altID)], , drop=FALSE], xe, xal, aal, SIMPLIFY=FALSE)
 
     nlevs <- length(levs)
     # Implement Krivitsky and Morris (2017, p. 490) This works
