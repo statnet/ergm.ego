@@ -17,6 +17,8 @@
 ## | 4  | 2      | b | 2        | a, b      |
 ## |----|--------|---|----------|-----------|
 
+library(ergm.ego)
+
 e <- egodata(data.frame(egoID=1:4, x=letters[c(1,1,2,2)]),
              alters=data.frame(egoID=c(1L,2L,2L,3L,4L,4L), x=letters[c(1,2,1,2,1,2)]),
              egoWt=c(2,1,1,2),

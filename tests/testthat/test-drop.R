@@ -8,6 +8,8 @@
 #  Copyright 2015-2020 Statnet Commons
 #######################################################################
 
+library(ergm.ego)
+
 nw <- network.initialize(20,directed=FALSE)
 
 # No homophilous ties; heterophilous density of 1/2.

@@ -1,6 +1,4 @@
-
-# Testing summary_formula.egodata() ---------------------------------------
-
+library(ergm.ego)
 
 test_that("summary statistics for egodata are identical to the complete network data", {
   data(faux.mesa.high)
