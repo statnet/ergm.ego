@@ -8,6 +8,8 @@
 #  Copyright 2015-2020 Statnet Commons
 #######################################################################
 
+library(ergm.ego)
+
 test_that("it just works for model without offsets", {
   data(faux.mesa.high, package="ergm")
   fmh.ego <- as.egor(faux.mesa.high)
