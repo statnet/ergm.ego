@@ -18,6 +18,7 @@
 ## |----|--------|---|----------|-----------|
 
 library(ergm.ego)
+local_edition(3)
 
 e <- egor(
   alters=tibble(x=c("a","b","a","b","a","b"),
