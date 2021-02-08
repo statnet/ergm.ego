@@ -30,12 +30,12 @@ e <- egor(
 
 test_that("degreedist() gives correct results on custom data", {
   expect_equal(
-    unclass(degreedist(e, plot=FALSE)), 
+    c(unclass(degreedist(e, plot=FALSE))),
     c(1/2,1/2),
     ignore_attr=TRUE
   )
 
-  expect_equivalent(
+  expect_equal(
     unclass(degreedist(e, plot=FALSE, by="x")), 
     rbind(c(2/3,1/3), c(1/3,2/3)),
     ignore_attr=TRUE
