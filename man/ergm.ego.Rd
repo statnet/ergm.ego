@@ -84,7 +84,7 @@ fmh.ego <- as.egor(faux.mesa.high)
 head(fmh.ego)
 
 egofit <- ergm.ego(fmh.ego~edges+degree(0:3)+nodefactor("Race")+nodematch("Race")
-                         +nodefactor("Sex")+nodematch("Sex")+absdiff("Grade")+transitiveties, 
+                         +nodefactor("Sex")+nodematch("Sex")+absdiff("Grade")+gwesp(0,fix=TRUE), 
                           popsize=network.size(faux.mesa.high))
 
 # Run convergence diagnostics

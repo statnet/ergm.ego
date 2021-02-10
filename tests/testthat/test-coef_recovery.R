@@ -6,13 +6,13 @@ test_that("complete ERGM and ergm.ego() give similar coef estimates",{
   
   fit <- ergm(
     faux.mesa.high ~ edges + degree(0:3) + nodefactor("Race") + nodematch("Race") + 
-      nodefactor("Sex") + nodematch("Sex") + absdiff("Grade") + transitiveties,
+      nodefactor("Sex") + nodematch("Sex") + absdiff("Grade") + gwesp(0,fix=TRUE),
     eval.loglik=FALSE
   )
   
   egofit <- ergm.ego(
     fmh.ego ~ edges + degree(0:3) + nodefactor("Race") + nodematch("Race") + 
-      nodefactor("Sex") + nodematch("Sex") + absdiff("Grade") + transitiveties,
+      nodefactor("Sex") + nodematch("Sex") + absdiff("Grade") + gwesp(0,fix=TRUE),
     popsize = network.size(faux.mesa.high),
     control = control.ergm.ego(
       ergm.control = control.ergm(

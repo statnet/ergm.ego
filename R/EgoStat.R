@@ -145,7 +145,7 @@ split_aaties_by_ego <- function(x, egor){
 #' @return A numeric matrix with `nrow(egor$ego)` rows.
 #' @noRd
 .eval.h <- function(egor, h, cn, order=1){
-  h <- apply(egor, 1, h)
+  h <- apply(strip_ego_design(egor), 1, h)
   if(is.matrix(h)) h <- t(h) # apply() builds a matrix with egos in columns
   else h <- cbind(h)
   colnames(h) <- cn

@@ -12,7 +12,7 @@ Authors@R: c(
 	    person("Chad", "Klumb", role=c("ctb"), email="cklumb@gmail.com"))
 Depends:
     R (>= 2.10),
-    ergm (>= 4.0),
+    ergm (> 3.11.0),
     egor,
     network (>= 1.15)
 LinkingTo: ergm
@@ -41,5 +41,5 @@ Remotes:
     github::statnet/rle@master,
     github::statnet/statnet.common@master,
     github::statnet/network@master,
-    github::statnet/ergm-private@dev,
+    github::statnet/ergm@master,
     github::tilltnet/egor

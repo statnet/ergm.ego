@@ -73,10 +73,12 @@ test_that("egostats are close to complete network stats", {
     
     mm("a", levels2=TRUE) + mm("a", levels2=~-1) + mm("a", levels2=-2) + mm("a", levels2=-(2:3)) + mm(~a>7) + mm(a~b) + mm(.~a) + offset(mm(.~a)) + mm("a", levels2 = 1) +
     mm("b", levels = c("a", "c", "e")) + mm("b", levels = c("a", "c", "e"), levels2 = 3) +
-    transitiveties + transitiveties("a") + esp(0:6) + gwesp(fix=FALSE) + gwesp(0.5, fix=TRUE) +
-    gwdegree(fix=FALSE) + gwdegree(0.5, fix=TRUE) +
-
+    esp(0:6) + gwesp(fix=FALSE) + gwesp(0.5, fix=TRUE) +
+    gwdegree(0.5, fix=TRUE) +
+    
     meandeg
+
+  if(packageVersion("ergm")>="4.0") f <- statnet.common::nonsimp_update.formula(f, . ~ . + transitiveties + transitiveties("a") + gwdegree(fix=FALSE)) # Not supported before ergm 4.0.
 
   f.y <- statnet.common::nonsimp_update.formula(f, y~.)
   # environment(f.y) <- globalenv()
@@ -135,14 +137,16 @@ test_that("egostats with alter missing data are close to complete network stats"
     
     nodemix("a") + nodemix("a", base=1) + nodemix("a", base=2) + nodemix("a", base=2:3) +
     
-    transitiveties + esp(0:6) + gwesp(fix=FALSE) + gwesp(0.5, fix=TRUE) +
+    esp(0:6) + gwesp(fix=FALSE) + gwesp(0.5, fix=TRUE) +
     
     mm("a") + mm("a", levels2=~-1) + mm("a", levels2=-2) + mm("a", levels2=-(2:3)) + mm(~a>7) + mm(a~b) + mm(.~a) +
     
-    gwdegree(fix=FALSE) + gwdegree(0.5, fix=TRUE) +
+    gwdegree(0.5, fix=TRUE) +
 
     meandeg
-  
+
+  if(packageVersion("ergm")>="4.0") f <- statnet.common::nonsimp_update.formula(f, . ~ . + transitiveties + gwdegree(fix=FALSE)) # Not supported before ergm 4.0.
+
   alter_l <- alters_by_ego(y.e)
   replicate(30,{
     y.em <- y.e

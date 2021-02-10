@@ -226,9 +226,9 @@ na.omit.egor <- function(object, relevant=TRUE, ...){
 #'
 #' # Summary function adjusts for weights:
 #' (summ.net <- summary(faux.mesa.high ~ edges + nodematch("Grade") +
-#'                      nodefactor("Race") + transitiveties))
+#'                      nodefactor("Race") + gwesp(0,fix=TRUE)))
 #' (summ.ego <- summary(s2000 ~ edges + nodematch("Grade") + 
-#'                      nodefactor("Race") + transitiveties,
+#'                      nodefactor("Race") + gwesp(0,fix=TRUE),
 #'                      scaleto=network.size(faux.mesa.high)))
 #'
 #' \dontshow{

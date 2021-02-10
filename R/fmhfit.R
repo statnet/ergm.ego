@@ -16,10 +16,10 @@
 #'   fmh.ego ~ edges + degree(0:3) + 
 #'     nodefactor("Race") + nodematch("Race")
 #'   + nodefactor("Sex")+nodematch("Sex")
-#'   + absdiff("Grade") + transitiveties, 
+#'   + absdiff("Grade") + gwesp(0, fix=TRUE), 
 #'   popsize = network.size(faux.mesa.high),
 #'   control = control.ergm.ego(
-#'     ergm.control = control.ergm(parallel=2)
+#'     ergm = control.ergm(parallel=2)
 #'   )
 #' )
 #' }
