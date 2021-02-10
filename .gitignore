@@ -38,3 +38,6 @@ vignettes/*.pdf
 *.bak
 *~
 *.orig
+
+# GDB history files
+.gdb_history
