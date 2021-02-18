@@ -65,8 +65,11 @@ NULL
 
 # copied from ergm
 nodecov_names <- function(nodecov, prefix=NULL){
-  cn <- if(is.matrix(nodecov)) NVL3(colnames(nodecov), ., paste(attr(nodecov, "name"), seq_len(ncol(nodecov)), sep="."))
-        else attr(nodecov, "name")
+  cn <- if(is.matrix(nodecov)){
+          cn <- colnames(nodecov)
+          if(is.null(cn) || all(cn==seq_along(cn))) paste(attr(nodecov, "name"), seq_along(cn), sep=".")
+          else cn
+        }else attr(nodecov, "name")
   NVL3(prefix, paste0(prefix,".",cn), cn)
 }
 LEVELS_BASE1 <- NULL
