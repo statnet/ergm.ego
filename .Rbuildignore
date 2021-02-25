@@ -12,3 +12,4 @@ appveyor.yml
 .*~$
 ^revdep$
 ^\.github$
+.gdb_history

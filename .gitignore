@@ -89,3 +89,6 @@ dkms.conf
 *~
 *.bak
 *.orig
+
+# GDB history files
+.gdb_history
