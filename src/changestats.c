@@ -21,11 +21,11 @@ C_CHANGESTAT_FN(c_netsize_adj) {
     cyties_coef = INPUT_PARAM[3];
 
   if(edges_coef!=0)
-    CHANGE_STAT[0] += edgeflag ? - edges_coef : edges_coef;
+    CHANGE_STAT[0] += edgestate ? - edges_coef : edges_coef;
 
   if(mutual_coef!=0)
     if(IS_OUTEDGE(head,tail)) /* otherwise, no change occurs */
-      CHANGE_STAT[0] += edgeflag ? - mutual_coef : mutual_coef;
+      CHANGE_STAT[0] += edgestate ? - mutual_coef : mutual_coef;
 
   if(trties_coef!=0){
     int  echange, ochange;
@@ -34,7 +34,7 @@ C_CHANGESTAT_FN(c_netsize_adj) {
   
     cumchange=0.0;
     L2th=0;
-    ochange = edgeflag ? -1 : 0;
+    ochange = edgestate ? -1 : 0;
     echange = 2*ochange + 1;
     /* step through outedges of head  */
     EXEC_THROUGH_OUTEDGES(head,  e,  u, {
@@ -83,7 +83,7 @@ C_CHANGESTAT_FN(c_netsize_adj) {
     /* *** don't forget tail -> head */    
     cumchange=0.0;
     L2th=0;
-    ochange = edgeflag ? -1 : 0;
+    ochange = edgestate ? -1 : 0;
     echange = 2*ochange + 1;
     /* step through outedges of head  */
     EXEC_THROUGH_OUTEDGES(head,  e,  u, {
@@ -139,16 +139,16 @@ D_CHANGESTAT_FN(d_netsize_adj) {
     int  echange, ochange;
     Vertex tail, head, u, v;
     Edge e, f;
-    Rboolean edgeflag = IS_OUTEDGE(tail=TAIL(i), head=HEAD(i));
+    Rboolean edgestate = IS_OUTEDGE(tail=TAIL(i), head=HEAD(i));
 
     if(edges_coef!=0)
-      CHANGE_STAT[0] += edgeflag ? - edges_coef : edges_coef;
+      CHANGE_STAT[0] += edgestate ? - edges_coef : edges_coef;
 
     if(DIRECTED && mutual_coef!=0)
       if(IS_OUTEDGE(head,tail)) /* otherwise, no change occurs */
-        CHANGE_STAT[0] += edgeflag ? - mutual_coef : mutual_coef;
+        CHANGE_STAT[0] += edgestate ? - mutual_coef : mutual_coef;
 
-    ochange = edgeflag ? -1 : 0;
+    ochange = edgestate ? -1 : 0;
     echange = 2*ochange + 1;
 
     if(DIRECTED){
