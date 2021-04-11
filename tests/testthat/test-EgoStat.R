@@ -154,9 +154,9 @@ test_that("egostats with alter missing data are close to complete network stats"
       N <- nrow(a)
       if(N){
         am <- a
-        am[-sample.int(N,1),] <- NA
-        am$.egoID <- a$.egoID
-        am$.altID <- a$.altID
+        keep <- sample.int(N,1)
+        am$a[-keep] <- NA_real_
+        am$b[-keep] <- NA_character_
         am
       }else a
     }) %>% bind_rows
