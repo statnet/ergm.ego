@@ -15,7 +15,7 @@ test_that("complete ERGM and ergm.ego() give similar coef estimates",{
       nodefactor("Sex") + nodematch("Sex") + absdiff("Grade") + gwesp(0,fix=TRUE),
     popsize = network.size(faux.mesa.high),
     control = control.ergm.ego(
-      ergm.control = control.ergm(
+      ergm = control.ergm(
         parallel=1
       )
     )

@@ -30,7 +30,7 @@ rm(varnames, v)
 
 
 set.seed(666)
-egodf <- dplyr::data_frame(
+egodf <- tibble(
   id_ego = seq(1, 5),
   num = rnorm(max(id_ego)),
   int = as.integer(sample(1:3, max(id_ego), replace=TRUE)),
@@ -38,7 +38,7 @@ egodf <- dplyr::data_frame(
   fac = factor(sample(LETTERS[1:3], max(id_ego), replace=TRUE), levels=LETTERS[1:3])
 )
 degs <- rpois(nrow(egodf), 2)
-alterdf <- dplyr::data_frame(
+alterdf <- tibble(
   id_ego = rep(egodf$id_ego, degs),
   id_alter = unlist(lapply(degs[degs>0], function(x) seq(1, x)))
 ) %>%

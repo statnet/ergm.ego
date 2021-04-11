@@ -115,7 +115,7 @@ control.ergm.ego <- function(
 
   for(arg in names(list(...))){
     if(!is.null(old.controls[[arg]])){
-      warning("Passing ",arg," to control.ergm.ego(...) is deprecated and may be removed in a future version. Specify it as control.ergm(",old.controls[[arg]],"=...) instead.")
+      warning("Passing ",arg," to control.ergm.ego(...) is deprecated and may be removed in a future version. Specify it as control.ergm.ego(",old.controls[[arg]],"=...) instead.")
       control[old.controls[[arg]]]<-list(list(...)[[arg]])
     }else{
       stop("Unrecognized control parameter: ",arg,".")

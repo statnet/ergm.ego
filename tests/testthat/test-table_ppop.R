@@ -26,7 +26,7 @@ test_that("estimation works", {
       popsize = network.size(faux.mesa.high),
       control = control.ergm.ego(
         ppopsize=ppop,
-        ergm.control = control.ergm(
+        ergm = control.ergm(
           MCMLE.maxit=2
         )
       )
