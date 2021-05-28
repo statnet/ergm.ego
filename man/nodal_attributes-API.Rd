@@ -92,6 +92,8 @@ specifying the attribute vector.}
 
 \item{levels}{Starting set of levels to use; defaults to the sorted
 list of unique attributes.}
+
+\item{n, into}{see \code{\link[ergm:nodal_attributes]{ergm::COLLAPSE_SMALLEST()}}.}
 }
 \value{
 \code{ergm.ego_get_vattr} returns a vector of length equal to the number of nodes giving the

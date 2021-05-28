@@ -321,8 +321,10 @@ ergm.ego_attr_levels.formula <- function(object, attr, egor, levels=sort(unique(
 }
 
 #' @describeIn nodal_attributes-API
-#'
 #' A version of [ergm::COLLAPSE_SMALLEST()] that can handle both [`network`] and [`egodata`] objects.
+#'
+#' @param n,into see [ergm::COLLAPSE_SMALLEST()].
+#'
 #' @export
 COLLAPSE_SMALLEST <- function(object, n, into){
   attr <- object
