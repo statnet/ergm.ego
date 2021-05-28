@@ -23,6 +23,6 @@ predict.ergm.ego <- function(object, ...) {
   frm <- statnet.common::nonsimp_update.formula(object$ergm.formula, net ~ .)
   assign("net", object$network, envir=environment(frm))
   # thetas
-  th <- ergm.eta(object$coef, object$etamap)
+  th <- ergm.eta(coef(object), object$etamap)
   predict(frm, theta=th, ...)
 }
