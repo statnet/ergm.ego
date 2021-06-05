@@ -70,7 +70,7 @@
 #' \url{http://niasra.uow.edu.au/publications/UOW190187.html}
 #' @keywords models
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' data(faux.mesa.high)
 #' fmh.ego <- as.egor(faux.mesa.high)
 #' 
