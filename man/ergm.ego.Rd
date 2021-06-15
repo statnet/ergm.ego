@@ -77,7 +77,7 @@ A wrapper around the \code{\link[ergm]{ergm}} to fit an ERGM to an
 \code{\link{egor}}.
 }
 \examples{
-\dontrun{
+\donttest{
 data(faux.mesa.high)
 fmh.ego <- as.egor(faux.mesa.high)
 

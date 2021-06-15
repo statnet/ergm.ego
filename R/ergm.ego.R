@@ -70,7 +70,7 @@
 #' \url{http://niasra.uow.edu.au/publications/UOW190187.html}
 #' @keywords models
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' data(faux.mesa.high)
 #' fmh.ego <- as.egor(faux.mesa.high)
 #' 
@@ -216,7 +216,7 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
   
   ergm.formula <- nonsimp_update.formula(formula,popnw~.,from.new="popnw")
 
-  ergm.names <- param_names(ergm_model(deoffset(ergm.formula)), offset=FALSE)
+  ergm.names <- param_names(ergm_model(ergm.formula), canonical=TRUE, offset=FALSE)
   if(!setequal(ergm.names,names(m))){
     ergm.not.ts <- setdiff(ergm.names, names(m))
     ts.not.ergm <- setdiff(names(m), ergm.names)
@@ -243,6 +243,7 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
   if(do.fit){
 
     ergm.fit <- ergm(ergm.formula, target.stats=m, offset.coef=ergm.offset.coef, constraints=constraints, ..., eval.loglik=FALSE,control=control$ergm)
+    if(is.curved(ergm.fit)) warning("Theory of egocentric inference and particularly of variance calculation for curved ERGMs is not well understood; standard errors might not be reliable.")
 
     ## Workaround to keep mcmc.diagnostics from failing. Should be removed after fix is released.
     if(inherits(ergm.fit$sample,"mcmc.list")){
@@ -254,7 +255,7 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
     coef <- coef(ergm.fit)
 
     oi <- ergm.fit$etamap$offsettheta
-    dropped <- oi[!ergm_model(ergm.formula)$etamap$offsettheta]
+    dropped <- ergm.fit$drop != 0
     
     DtDe <- -ergm.fit$hessian[!oi,!oi,drop=FALSE]
 
@@ -266,8 +267,17 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
     vcov <- matrix(NA, length(coef), length(coef))
 
     iDtDe <- solve(DtDe[!novar,!novar,drop=FALSE])
-    vcov[!oi,!oi] <- iDtDe%*%v[!dropped,!dropped,drop=FALSE][!novar,!novar,drop=FALSE]%*%iDtDe
+
+    # Augment the statistics covariance matrix with 0 rows and columns
+    # for offsets, then pre- and post-multiply it by the derivative of
+    # theta with to eta.
+    vdropped <- dropped[!oi | dropped]
+    vaug <- matrix(0, length(ergm.fit$etamap$offsetmap), length(ergm.fit$etamap$offsetmap))
+    vaug[!ergm.fit$etamap$offsetmap, !ergm.fit$etamap$offsetmap] <- v[!vdropped,!vdropped]
+    vaug <- ergm.etagradmult(coef, t(ergm.etagradmult(coef, vaug, ergm.fit$etamap)), ergm.fit$etamap)
     
+    vcov[!oi,!oi] <- iDtDe%*%vaug[!oi,!oi,drop=FALSE]%*%iDtDe
+
     rownames(vcov) <- colnames(vcov) <- names(coef)
 
     out <- c(out, list(covar=vcov, ergm.covar=ergm.fit$covar, DtDe=DtDe))
