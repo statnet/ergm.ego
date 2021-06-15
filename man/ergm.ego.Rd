@@ -96,12 +96,10 @@ summary(egofit)
 
 }
 \references{
-Pavel N. Krivitsky and Martina Morris. Inference for Social Network Models
-from Egocentrically-Sampled Data, with Application to Understanding
-Persistent Racial Disparities in HIV Prevalence in the US. Thechnical
-Report. National Institute for Applied Statistics Research Australia,
-University of Wollongong, 2015(05-15).
-\url{http://niasra.uow.edu.au/publications/UOW190187.html}
+\itemize{
+\item Pavel N. Krivitsky and Martina Morris (2017). "Inference for social network models from egocentrically sampled data, with application to understanding persistent racial disparities in HIV prevalence in the US." \emph{Annals of Applied Statistics}, 11(1): 427–455. \doi{10.1214/16-AOAS1010}
+\item Pavel N. Krivitsky, Martina Morris, and Michał Bojanowski (2019). "Inference for Exponential-Family Random Graph Models from Egocentrically-Sampled Data with Alter–Alter Relations." NIASRA Working Paper 08-19. \url{https://www.uow.edu.au/niasra/publications/}
+}
 }
 \author{
 Pavel N. Krivitsky

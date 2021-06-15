@@ -66,6 +66,11 @@ plot(modelgof)
 plot(deggof)
 
 }
+\references{
+\itemize{
+\item David R. Hunter, Steven M. Goodreau, and Mark S. Handcock (2008). "Goodness of Fit of Social Network Models." \emph{Journal of the American Statistical Association}, 103:481: 248–258. \doi{10.1198/016214507000000446}
+}
+}
 \seealso{
 For examples, see \code{\link{ergm.ego}}.
 }
