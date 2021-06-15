@@ -36,4 +36,3 @@ BugReports: https://github.com/statnet/ergm.ego/issues
 RoxygenNote: 7.1.1
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8
-SystemRequirements: glpk (optional)
