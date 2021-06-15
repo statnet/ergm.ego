@@ -97,7 +97,7 @@ as.egor.network<-function(x,special.cols=c("na"),...){
 #' taking into accounts their sampling weights.
 #' 
 #' 
-#' @param x A \code{\link{egor}} object or a [`data.frame`].
+#' @param x A \code{\link{egor}} object.
 #' @param N The target number of vertices the output network should have.
 #' @param scaling If \code{\link{egor}} contains weights or \code{N} is not
 #' a multiple of number of egos in the sample, it may not be possible, for a
