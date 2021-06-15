@@ -7,7 +7,7 @@
 template_network(x, N, scaling = c("round", "sample"), ...)
 }
 \arguments{
-\item{x}{A \code{\link{egor}} object or a \code{\link{data.frame}}.}
+\item{x}{A \code{\link{egor}} object.}
 
 \item{N}{The target number of vertices the output network should have.}
 
