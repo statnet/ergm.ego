@@ -64,6 +64,61 @@
 
 %% }
 
+
+\section{Changes in version 0.9.0}{
+
+  \subsection{NEW FEATURES}{
+    \itemize{
+      \item{
+        This package now uses the \pkg{\link[egor:egor-package]{egor}} package's \code{egor} class for data storage and manipulation. A converter \code{\link{as.egor.egodata}()} is provided.
+      }
+      \item{
+        \code{\link{ergm.ego}()} now supports complex survey designs set on \code{\link[egor:egor-object]{egor}} objects.
+      }
+      \item{
+        \code{\link{ergm.ego}()} and the summary methods can now fit triadic effects (\code{gwesp}, \code{esp}, \code{transitiveties}) when alter-alter ties are available.
+      }
+      \item{
+        \code{\link{ergm.ego}()} can now handle missing alter attributes in some circumstances, and provided they are missing completely at random.
+      }
+      \item{
+        A number of new egostats have been implemented, including \code{gwdegree}
+      }
+      \item{
+        A number of improvements to the goodness-of-fit routines.
+      }
+      \item{
+        \code{\link{snctrl}()} UI for specifying control parameters is supported.
+      }
+      \item{
+        Curved ERGMs are now supported; this capability should be considered experimental, as uncertainty estimates have not been rigorously derived.
+      }
+    }
+  }
+
+
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item{
+        Various fixes to \code{\link[=degreedist.egor]{degreedist}()}, \code{\link[=mixingmatrix.egor]{mixingmatrix}()}, and other methods.
+      }
+    }
+  }
+
+
+  \subsection{OTHER USER-VISIBLE CHANGES}{
+    \itemize{
+      \item{
+        The function that was previously \code{as.network.egodata()} for constructing an empty network having the same composition as the egocentric dataset has been superseded by \code{\link{template_network}()}.
+      }
+      \item{
+        Manually specified pseudo-population is handled better.
+      }
+    }
+  }
+}
+
+
 \section{Changes in version 0.6.0}{
 
   \subsection{NEW FEATURES}{
