@@ -12,7 +12,7 @@
   by = NULL,
   brgmod = FALSE,
   main = NULL,
-  plot = TRUE,
+  plot = brgmod,
   weight = TRUE,
   ...
 )
@@ -32,8 +32,8 @@ observed.}
 
 \item{main}{Main title of the plot.}
 
-\item{plot}{Whether to plot the histogram; if \code{FALSE}, graphical
-parameters and \code{bgrmod} have no effect.}
+\item{plot}{Whether to plot the histogram; defaults to the same
+value as\code{brgmod}, i.e., \code{FALSE}.}
 
 \item{weight}{Whether sampling weights should be incorporated into
 the calculation (\code{TRUE}, the default) or ignored (\code{FALSE}).}

@@ -26,8 +26,8 @@
 #' according to a Bernoulli graph having the same expected density as the
 #' observed.
 #' @param main Main title of the plot.
-#' @param plot Whether to plot the histogram; if `FALSE`, graphical
-#'   parameters and `bgrmod` have no effect.
+#' @param plot Whether to plot the histogram; defaults to the same
+#'   value as`brgmod`, i.e., `FALSE`.
 #' @param weight Whether sampling weights should be incorporated into
 #'   the calculation (`TRUE`, the default) or ignored (`FALSE`).
 #' @param ... Additional arguments to [simulate.ergm.ego()].
@@ -51,7 +51,7 @@
 #' @importFrom methods is
 #' @export
 degreedist.egor <- function(object, freq = FALSE, prob = !freq, 
-                            by = NULL, brgmod = FALSE, main = NULL, plot = TRUE, weight = TRUE, ...){
+                            by = NULL, brgmod = FALSE, main = NULL, plot = brgmod, weight = TRUE, ...){
   color <- "#83B6E1"
   beside <- TRUE
 
@@ -183,9 +183,6 @@ degreedist.egor <- function(object, freq = FALSE, prob = !freq,
 #' (mm <- mixingmatrix(faux.mesa.high,"Grade"))
 #' (mm.ego <- mixingmatrix(fmh.ego,"Grade"))
 #' 
-#' stopifnot(isTRUE(all.equal({tmp<-unclass(mm$matrix); diag(tmp) <- diag(tmp)*2;
-#' tmp}, mm.ego, check.attributes=FALSE)))
-#' 
 #' @export
 mixingmatrix.egor <- function(object, attrname, rowprob = FALSE, weight = TRUE, ...){
   ds <- .degreeseq(object)
@@ -202,7 +199,6 @@ mixingmatrix.egor <- function(object, attrname, rowprob = FALSE, weight = TRUE, 
   if(rowprob){
     mxmat <- mxmat/rowSums(mxmat)
   }
-  mxmat
+  structure(mxmat, class = c("mixingmatrix", "table"), directed = FALSE,
+            bipartite = FALSE)
 }
-  
-  

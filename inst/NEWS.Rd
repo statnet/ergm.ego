@@ -93,6 +93,12 @@
       \item{
         Curved ERGMs are now supported; this capability should be considered experimental, as uncertainty estimates have not been rigorously derived.
       }
+      \item{
+        For nonscaling statistics such as \code{\link{meandeg}}, standard errors can now be computed.
+      }
+      \item{
+        Network size adjustment can now be disabled during fitting.
+      }
     }
   }
 
@@ -113,6 +119,12 @@
       }
       \item{
         Manually specified pseudo-population is handled better.
+      }
+      \item{
+        \code{\link[=degreedist.egor]{degreedist}()} method for egocentric data now defauts to not making plots.
+      }
+      \item{
+        \code{\link[=mixingmatrix.egor]{mixingmatrix}()} method for egocentric data now returns a \code{\link{table}}.
       }
     }
   }

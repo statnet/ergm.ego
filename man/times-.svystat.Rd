@@ -9,13 +9,13 @@
 \arguments{
 \item{x}{an object of class \verb{[svystat][survey::svymean]}.}
 
-\item{y}{a scalar (numeric vector of length 1).}
+\item{y}{a numeric vector equal in length to \code{x}; shorter vectors will be recycled.}
 }
 \value{
 a \verb{[svystat][survey::svymean]} object with the updated statistics and variance-covariance matrix.
 }
 \description{
-Multiply the values of survey statistics by the specified number, adjusting the variance.
+Multiply the values of survey statistics by a specified vector elementwise, adjusting the variance.
 }
 \examples{
 library(survey)

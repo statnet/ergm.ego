@@ -11,24 +11,25 @@ library(ergm.ego)
 library(purrr)
 library(dplyr)
 
+# Test data
+set.seed(0)
+n <- 100
+e <- 150
+ds <- c(10,15,5,20)
+
+y <- network.initialize(n, directed=FALSE)
+y %v% "a" <- sample(1:3+6,n,replace=TRUE)
+aM <- matrix(FALSE, 3, 3)
+aM[1,1] <- aM[1,3] <- TRUE
+y %v% "b" <- sample(letters[1:4],n,replace=TRUE)
+y %v% "c" <- sample(runif(10),n,replace=TRUE)
+y %v% "d" <- runif(n)
+y <- san(y~edges+degree(0:3), target.stats=c(e,ds))
+
+y.e <- as.egor(y)
+
+
 test_that("egostats are close to complete network stats", {
-  # Test data
-  set.seed(0)
-  n <- 100
-  e <- 150
-  ds <- c(10,15,5,20)
-
-  y <- network.initialize(n, directed=FALSE)
-  y %v% "a" <- sample(1:3+6,n,replace=TRUE)
-  aM <- matrix(FALSE, 3, 3)
-  aM[1,1] <- aM[1,3] <- TRUE
-  y %v% "b" <- sample(letters[1:4],n,replace=TRUE)
-  y %v% "c" <- sample(runif(10),n,replace=TRUE)
-  y %v% "d" <- runif(n)
-  y <- san(y~edges+degree(0:3), target.stats=c(e,ds))
-
-  y.e <- as.egor(y)
-
   f <- ~ edges +
     nodecov("a") + nodecov(c("a", "c")) + nodecov(c("a", "c", "d")) + nodecov(~c^2 + sin(d)) + offset(nodecov(~c^2 + sin(d))) + 
     
@@ -76,22 +77,44 @@ test_that("egostats are close to complete network stats", {
     esp(0:6) + gwesp(fix=FALSE) + gwesp(0.5, fix=TRUE) +
     gwdegree(0.5, fix=TRUE) +
     
-    meandeg
+    meandeg +
 
-  if(packageVersion("ergm")>="4.0") f <- statnet.common::nonsimp_update.formula(f, . ~ . + transitiveties + transitiveties("a") + gwdegree(fix=FALSE)) # Not supported before ergm 4.0.
+    transitiveties + transitiveties("a") + gwdegree(fix=FALSE)
 
   f.y <- statnet.common::nonsimp_update.formula(f, y~.)
-  # environment(f.y) <- globalenv()
   f.y.e <- statnet.common::nonsimp_update.formula(f, y.e~.)
-  # environment(f.y.e) <- globalenv()
+  s.e <- summary(f.y.e)
+
+  isMD <- names(s.e)=="meandeg"
+
+  expect_equal(c(s.e), summary(f.y))
   
-  expect_equivalent(
-    as.vector(summary(f.y)),
-    as.vector(summary(f.y.e))
-  )
+  expect_true(all(is.na(vcov(s.e)[!isMD, isMD])))
+  expect_true(all(is.na(vcov(s.e)[isMD, !isMD])))
+  expect_false(is.na(vcov(s.e)[isMD, isMD]))
+
+  expect_false(anyNA(vcov(s.e)[!isMD, !isMD]))
+
+  s.e2 <- s.e*2
+
+  expect_equal(as.vector(s.e2)[!isMD], as.vector(s.e)[!isMD]*2)
+  expect_equal(as.vector(s.e2)[isMD], as.vector(s.e)[isMD])
+
+  expect_equal(vcov(s.e2)[!isMD, !isMD], vcov(s.e)[!isMD, !isMD] * 4)
+  expect_equal(vcov(s.e2)[isMD, isMD], vcov(s.e)[isMD, isMD])
+
+  expect_warning(s.e3 <- s.e*seq_along(s.e), ".*attempting to scale a nonscalable ego statistic.*")
+  expect_equal(as.vector(s.e3)[!isMD], as.vector(s.e)[!isMD]*(seq_along(s.e))[!isMD])
+  expect_equal(as.vector(s.e3)[isMD], as.vector(s.e)[isMD])
+
+  expect_equal(vcov(s.e3)[!isMD, !isMD], t(vcov(s.e)[!isMD, !isMD] * (seq_along(s.e))[!isMD]) * (seq_along(s.e))[!isMD])
+  expect_equal(vcov(s.e3)[isMD, isMD], vcov(s.e)[isMD, isMD])
 })
 
-
+test_that("scaling and nonscaling egostats are combined correctly", {
+  expect_error(summary(y.e~edges + meandeg, individual=TRUE), ".onscaling statistic detected.*meaningless.*")
+  expect_silent(summary(y.e~meandeg, scaleto=1))
+})
 
 test_that("egostats with alter missing data are close to complete network stats", {
   
@@ -143,9 +166,9 @@ test_that("egostats with alter missing data are close to complete network stats"
     
     gwdegree(0.5, fix=TRUE) +
 
-    meandeg
+    meandeg +
 
-  if(packageVersion("ergm")>="4.0") f <- statnet.common::nonsimp_update.formula(f, . ~ . + transitiveties + gwdegree(fix=FALSE)) # Not supported before ergm 4.0.
+    transitiveties + gwdegree(fix=FALSE)
 
   alter_l <- alters_by_ego(y.e)
   replicate(30,{

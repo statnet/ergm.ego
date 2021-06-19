@@ -65,9 +65,11 @@
 #'
 #' @importFrom stats simulate
 #' @export
-simulate.ergm.ego <- function(object, nsim = 1, seed = NULL, constraints=object$constraints, popsize=if(object$popsize==1) object$ppopsize else object$popsize, control=control.simulate.ergm.ego(), output=c("network","stats","edgelist","pending_update_network", "ergm_state"), ..., verbose=FALSE){
+simulate.ergm.ego <- function(object, nsim = 1, seed = NULL, constraints=object$constraints, popsize=if(object$popsize==1 || object$popsize==0 || is(object$popsize, "AsIs")) object$ppopsize else object$popsize, control=control.simulate.ergm.ego(), output=c("network","stats","edgelist","pending_update_network", "ergm_state"), ..., verbose=FALSE){
   statnet.common::check.control.class("simulate.ergm.ego", "simulate.ergm.ego")
   output <- match.arg(output)
+
+  nsa <- !is.null(object$netsize.adj)
   
   if(is.data.frame(popsize)){ # If pseudopoluation composition is given in popsize, use that.
     popnw <- template_network(popsize, nrow(popsize))
@@ -78,8 +80,10 @@ simulate.ergm.ego <- function(object, nsim = 1, seed = NULL, constraints=object$
       else template_network(object$egor, popsize, scaling=control$ppop.wt)
   }
 
+  if(!nsa && network.size(popnw)!=object$ppopsize) warning("Simulation network size ", network.size(popnw), " different from fitted ", object$ppopsize,", with network size adjustment disabled. Simulation may not be meaningful.", immediate.=TRUE)
+
   ppopsize <- if(network.size(popnw)!=popsize){
-      message("Note: Constructed network has size ", network.size(popnw), " different from requested ", popsize,". Simulated statistics may need to be rescaled.")
+    message("Note: Constructed network has size ", network.size(popnw), " different from requested ", popsize,". Simulated statistics may need to be rescaled.")
     network.size(popnw)
   }else popsize
 
@@ -88,11 +92,15 @@ simulate.ergm.ego <- function(object, nsim = 1, seed = NULL, constraints=object$
     else object$target.stats
   # TODO: Make it work with ergm_state output.
   if(popsize != object$ppopsize) popnw <- san(object$formula, target.stats = san.stats/object$ppopsize*ppopsize,verbose=verbose, constraints=constraints, basis=popnw, control=control$SAN, ..., output="network")
-  ergm.formula <- nonsimp_update.formula(object$formula,object$netsize.adj)
 
-  out <- simulate(ergm.formula, nsim=nsim, seed=seed, verbose=verbose, coef=c(netsize.adj=-log(ppopsize/object$popsize),coef(object)[-1]), constraints=constraints, control=control$simulate, basis=popnw, ..., output=output)
+  ergm.formula <- if(nsa) nonsimp_update.formula(object$formula,object$netsize.adj) else object$formula
+
+  out <- simulate(ergm.formula, nsim=nsim, seed=seed, verbose=verbose,
+                  coef=c(netsize.adj=if(nsa) -log(ppopsize/object$popsize),
+                         coef(object)[if(nsa) -1 else TRUE]),
+                  constraints=constraints, control=control$simulate, basis=popnw, ..., output=output)
   if(is.matrix(out)){
-    out <- out[,-1,drop=FALSE]
+    out <- out[,if(nsa) -1 else TRUE, drop=FALSE]
     attr(out, "ppopsize") <- ppopsize
   }
   out

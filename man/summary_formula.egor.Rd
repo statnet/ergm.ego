@@ -5,10 +5,13 @@
 \alias{summary_formula.egodata}
 \alias{summary}
 \alias{summary_formula}
+\alias{*.ergm.ego_svystat}
 \title{Calculation of ERGM-style summary statistics for \code{\link{egor}}
 objects.}
 \usage{
 \method{summary_formula}{egor}(object, ..., basis = NULL, individual = FALSE, scaleto = NULL)
+
+\method{*}{ergm.ego_svystat}(x, y)
 }
 \arguments{
 \item{object}{An \code{\link[ergm]{ergm}}-style formula with a
@@ -31,9 +34,11 @@ specified network statistics.}
 
 \item{scaleto}{Size of a hypothetical network to which to scale the
 statistics. Defaults to the number of egos in the dataset.}
+
+\item{x, y}{see \code{\link{*.svystat}}.}
 }
 \value{
-If \code{individual==FALSE}, a \link[survey:surveysummary]{svystat} object---effectively a named vector of statistics. If
+If \code{individual==FALSE}, an \code{ergm.ego_svystat} object, which is a subclass of \link[survey:surveysummary]{svystat}---effectively a named vector of statistics. If
 \code{individual==TRUE}, a matrix with a row for each ego, giving that ego's
 contribution to the network statistic.
 }
@@ -41,6 +46,11 @@ contribution to the network statistic.
 Used to calculate the specified network statistics inferred from a
 \code{\link{egor}} object.
 }
+\section{Functions}{
+\itemize{
+\item \code{*.ergm.ego_svystat}: A multiplication method that takes into account which statistics are scalable.
+}}
+
 \examples{
 
 data(faux.mesa.high)
@@ -53,6 +63,13 @@ fmh.ego <- as.egor(faux.mesa.high)
                      scaleto=network.size(faux.mesa.high)))
 
 stopifnot(isTRUE(all.equal(as.vector(nw.summ),as.vector(ego.summ))))
+
+
+(ego.summ2 <- summary(fmh.ego ~ edges + meandeg + degree(0:2)))
+vcov(ego.summ2)
+
+ego.summ2 * 2 # edges and degrees scales, meandeg doesn't
+vcov(ego.summ2 * 2)
 
 }
 \references{

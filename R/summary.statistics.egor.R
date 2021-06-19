@@ -31,7 +31,7 @@
 #' specified network statistics.
 #' @param scaleto Size of a hypothetical network to which to scale the
 #' statistics. Defaults to the number of egos in the dataset.
-#' @return If \code{individual==FALSE}, a [svystat][survey::svymean] object---effectively a named vector of statistics. If
+#' @return If \code{individual==FALSE}, an `ergm.ego_svystat` object, which is a subclass of [svystat][survey::svymean]---effectively a named vector of statistics. If
 #' \code{individual==TRUE}, a matrix with a row for each ego, giving that ego's
 #' contribution to the network statistic.
 #' @author Pavel N. Krivitsky
@@ -65,13 +65,7 @@ summary_formula.egor <- function(object,..., basis=NULL, individual=FALSE, scale
     if(!is.null(basis)) basis
     else eval_lhs.formula(object)
 
-  scaling.stats <- NULL
-  scaling.pos <- c(0)
-  nonscaling.stats <- c()
-  nonscaling.pos <- c(0)
-  orders <- c()
-  
-  for(trm in list_rhs.formula(object)){
+  stats <- lapply(list_rhs.formula(object), function(trm){
     if(is.call(trm)){
       egostat <- locate_prefixed_function(trm[[1]], "EgoStat", "Egocentric statistic", env=environment(object))
       init.call <- list(egostat, egor=egor)
@@ -81,63 +75,76 @@ summary_formula.egor <- function(object,..., basis=NULL, individual=FALSE, scale
       init.call <- list(egostat, egor=egor)
     }
     stat <- eval(as.call(init.call), environment(object))
-    if(attr(stat, "order")==0){
-      if(individual) stop("Nonscaling statistic detected. Individual contributions are meaningless.")
-      nonscaling.stats <- c(nonscaling.stats, stat)
-      nonscaling.pos <- c(nonscaling.pos, max(scaling.pos,nonscaling.pos) + seq_len(length(stat)))
-    }else{
-      orders <- c(orders, attr(stat, "order"))
-      scaling.stats<-cbind(scaling.stats,stat)
-      scaling.pos <- c(scaling.pos, max(scaling.pos,nonscaling.pos) + seq_len(ncol(stat)))
-    }
-  }
+    if(attr(stat, "order")==0 && individual)
+      stop("Nonscaling statistic detected. Individual contributions are meaningless.")
+    stat
+  })
+
+  orders <- sapply(stats, attr, "order")
+
+  scaling <- rep.int(orders != 0, ifelse(orders == 0, lengths(stats), sapply(stats, ncol)))
   
   stats <-
     if(!individual){
-      if(length(scaling.stats)){
-        scaleto <- if(is.null(scaleto)) nrow(egor$ego) else scaleto
-        scaling.stats <- NVL3(ego_design(egor),
-                              svymean(scaling.stats, ., ...),
-                              structure(colMeans(scaling.stats),
-                                        var=cov(scaling.stats)/nrow(scaling.stats),
+      if(any(scaling)){
+        s <- do.call(cbind, stats[orders!=0])
+        s <- NVL3(ego_design(egor),
+                              svymean(s, ., ...),
+                              structure(colMeans(s),
+                                        var=cov(s)/nrow(s),
                                         statistic="mean", class="svystat")
-                              )
-        scaling.stats <- scaling.stats*scaleto
-      }
-      
-      stats <- numeric(max(scaling.pos,nonscaling.pos))
-      scaling.pos <- scaling.pos[scaling.pos>0]
-      nonscaling.pos <- nonscaling.pos[nonscaling.pos>0]
-      
-      stats[scaling.pos] <- scaling.stats
-      stats[nonscaling.pos] <- nonscaling.stats
-      
-      names(stats)[scaling.pos] <- names(scaling.stats)
-      names(stats)[nonscaling.pos] <- names(nonscaling.stats)
+                       )
+      }else s <- NULL
 
-      attr(stats, "var") <- matrix(NA, max(scaling.pos,nonscaling.pos), max(scaling.pos,nonscaling.pos))
-      attr(stats, "var")[scaling.pos,scaling.pos] <- attr(scaling.stats, "var")
-      dimnames(attr(stats, "var")) <- rep(list(names(stats)), 2)
+      if(any(!scaling)) s <- combine_stats(c(list(s), stats[orders==0]))
 
-      attr(stats, "statistic") <- paste("scaled mean")
-      
-      class(stats) <- class(scaling.stats)
-      
-      stats
+      # Permutation that maps scaling and nonscaling stats back to their original positions:
+      p <- integer(length(scaling))
+      p[scaling] <- seq_len(sum(scaling))
+      p[!scaling] <- sum(scaling) + seq_len(sum(!scaling))
+
+      s <- structure(s[p], var = attr(s, "var")[p,p],
+                     statistic="scaled mean", class="svystat")
+
+      attr(s,"order") <- unique(orders)
+      attr(s,"scaling") <- scaling
+      class(s) <- c("ergm.ego_svystat", "svystat")
+
+      scaleto <- if(is.null(scaleto)) nrow(egor$ego) else scaleto
+      s * scaleto
     }else{
-      scaling.stats
+      structure(do.call(cbind, stats), order = unique(orders))
     }
+}
 
-  attr(stats,"order") <- unique(orders)
-  stats
+combine_stats <- function(l){
+  l <- lapply(compact(l), function(stat){
+    if(inherits(stat, "svystat")) stat
+    else structure(stat,
+                   var=matrix(NA, length(stat), length(stat)),
+                   statistic="mean", class="svystat")
+  })
+
+  lens <- lengths(l)
+  starts <- cumsum(c(0, lens))
+  v <- matrix(NA, sum(lens), sum(lens))
+  for(i in seq_along(l)){
+    v[starts[i]+seq_len(lens[i]), starts[i]+seq_len(lens[i])] <- attr(l[[i]], "var")
+  }
+
+  stats <- do.call(c, l)
+  rownames(v) <- colnames(v) <- names(stats)
+
+  structure(stats, var = v,
+            statistic = "mean", class="svystat")
 }
 
 #' A scalar multiplication method for `svystat`
 #'
-#' Multiply the values of survey statistics by the specified number, adjusting the variance.
+#' Multiply the values of survey statistics by a specified vector elementwise, adjusting the variance.
 #'
 #' @param x an object of class `[svystat][survey::svymean]`.
-#' @param y a scalar (numeric vector of length 1).
+#' @param y a numeric vector equal in length to `x`; shorter vectors will be recycled.
 #'
 #' @return a `[svystat][survey::svymean]` object with the updated statistics and variance-covariance matrix.
 #'
@@ -160,11 +167,36 @@ summary_formula.egor <- function(object,..., basis=NULL, individual=FALSE, scale
 #' }
 #' @export
 `*.svystat` <- function(x, y){
-  if(!is.numeric(y) || length(y)!=1) stop("At this time, only scalar multiplication of ",sQuote("svystat")," objects is supported.")
+  if(!is.numeric(y)) stop("At this time, only multiplication of ",sQuote("svystat")," by a numeric vector is supported.")
+  if(length(x) %% length(y)) warning("length of ", sQuote("x"), " is not an integer multiple of length of ", sQuote("y"))
+  y <- rep_len(y, length(x))
   o <- unclass(x);
-  attr(o, "statistic") <- paste("scaled", attr(o, "statistic"))
+  if(!startsWith(attr(o, "statistic"), "scaled")) attr(o, "statistic") <- paste("scaled", attr(o, "statistic"))
   o <- o * y
-  attr(o, "var") <- attr(x, "var") * y^2
+  attr(o, "var") <- t(attr(x, "var") * y) * y
   class(o) <- class(x)
   o
+}
+
+
+#' @describeIn summary_formula.egor A multiplication method that takes into account which statistics are scalable.
+#'
+#' @param x,y see [`*.svystat`].
+#'
+#' @examples
+#'
+#' (ego.summ2 <- summary(fmh.ego ~ edges + meandeg + degree(0:2)))
+#' vcov(ego.summ2)
+#'
+#' ego.summ2 * 2 # edges and degrees scales, meandeg doesn't
+#' vcov(ego.summ2 * 2)
+#'
+#' @export
+`*.ergm.ego_svystat` <- function(x, y){
+  if(!is.numeric(y)) stop("At this time, only multiplication of ",sQuote("svystat")," by a numeric vector is supported.")
+  if(length(x) %% length(y)) warning("length of ", sQuote("x"), " is not an integer multiple of length of ", sQuote("y"))
+  if(length(y) == length(x) && any(y != 1 & !attr(x, "scaling"))) warning("attempting to scale a nonscalable ego statistic: scale will be ignored")
+  y <- rep_len(y, length(x))
+  y[!attr(x, "scaling")] <- 1
+  NextMethod()
 }

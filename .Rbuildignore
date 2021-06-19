@@ -13,3 +13,4 @@ appveyor.yml
 ^revdep$
 ^\.github$
 .gdb_history
+^README.md$
