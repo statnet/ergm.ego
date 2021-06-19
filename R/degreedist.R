@@ -27,7 +27,7 @@
 #' observed.
 #' @param main Main title of the plot.
 #' @param plot Whether to plot the histogram; defaults to the same
-#'   value as`bgrmod`, i.e., `FALSE`.
+#'   value as`brgmod`, i.e., `FALSE`.
 #' @param weight Whether sampling weights should be incorporated into
 #'   the calculation (`TRUE`, the default) or ignored (`FALSE`).
 #' @param ... Additional arguments to [simulate.ergm.ego()].
@@ -51,7 +51,7 @@
 #' @importFrom methods is
 #' @export
 degreedist.egor <- function(object, freq = FALSE, prob = !freq, 
-                            by = NULL, brgmod = FALSE, main = NULL, plot = bgrmod, weight = TRUE, ...){
+                            by = NULL, brgmod = FALSE, main = NULL, plot = brgmod, weight = TRUE, ...){
   color <- "#83B6E1"
   beside <- TRUE
 
