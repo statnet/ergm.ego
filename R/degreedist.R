@@ -183,9 +183,6 @@ degreedist.egor <- function(object, freq = FALSE, prob = !freq,
 #' (mm <- mixingmatrix(faux.mesa.high,"Grade"))
 #' (mm.ego <- mixingmatrix(fmh.ego,"Grade"))
 #' 
-#' stopifnot(isTRUE(all.equal({tmp<-unclass(mm$matrix); diag(tmp) <- diag(tmp)*2;
-#' tmp}, mm.ego, check.attributes=FALSE)))
-#' 
 #' @export
 mixingmatrix.egor <- function(object, attrname, rowprob = FALSE, weight = TRUE, ...){
   ds <- .degreeseq(object)
@@ -202,7 +199,6 @@ mixingmatrix.egor <- function(object, attrname, rowprob = FALSE, weight = TRUE, 
   if(rowprob){
     mxmat <- mxmat/rowSums(mxmat)
   }
-  mxmat
+  structure(mxmat, class = c("mixingmatrix", "table"), directed = FALSE,
+            bipartite = FALSE)
 }
-  
-  
