@@ -103,8 +103,8 @@ summary_formula.egor <- function(object,..., basis=NULL, individual=FALSE, scale
       p[scaling] <- seq_len(sum(scaling))
       p[!scaling] <- sum(scaling) + seq_len(sum(!scaling))
 
-      structure(s[p], var = attr(s, "var")[p,p],
-                statistic="scaled mean", class="svystat")
+      s <- structure(s[p], var = attr(s, "var")[p,p],
+                     statistic="scaled mean", class="svystat")
 
       attr(s,"order") <- unique(orders)
       attr(s,"scaling") <- scaling
