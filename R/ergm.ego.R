@@ -25,11 +25,18 @@
 #' @param constraints A one-sided formula \code{\link{formula}} giving
 #'   the sample space constraints. See \code{\link[ergm]{ergm}} for
 #'   details and examples.
-#' @param popsize The size \eqn{|N|} of the finite population network from
-#' which the egocentric sample was taken; only affects the shift in the
-#' coefficients of the terms modeling the overall propensity to have ties.
-#' Setting it to 1 (the default) essentially uses the \eqn{-\log |N'|} offset
-#' on the edges term.
+#'
+#' @param popsize The size \eqn{|N|} of the finite population network
+#'   from which the egocentric sample was taken; only affects the
+#'   shift in the coefficients of the terms modeling the overall
+#'   propensity to have ties.  Setting it to 1 (the default)
+#'   essentially uses the \eqn{-\log |N'|} offset on the edges
+#'   term. Passing 0 disables network size adjustment and uses the
+#'   egocentric sample size; passing [`I(N)`][I] uses the specified
+#'   size `N` (though can be overridden by the `ppop`
+#'   [control.ergm.ego()] option) and disables network size
+#'   adjustment.
+#'
 #' @param offset.coef A vector of coefficients for the offset terms.
 #' @param na.action How to handle missing actor attributes in egos or alters,
 #' when the terms need them for  models that scale.
@@ -101,9 +108,13 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
     else if(is.data.frame(control$ppopsize)) nrow(control$ppopsize)
     else if(is.numeric(control$ppopsize)) control$ppopsize
     else switch(control$ppopsize,
-                auto = if(missing(popsize) || popsize==1) sampsize*control$ppopsize.mul else popsize*control$ppopsize.mul,  
+                auto = if(is(popsize, "AsIs")) popsize
+                else if(popsize == 0) sampsize*control$ppopsize.mul
+                else if(missing(popsize) || popsize==1) sampsize*control$ppopsize.mul else popsize*control$ppopsize.mul,
                 samp = sampsize*control$ppopsize.mul,
                 pop = popsize*control$ppopsize.mul)
+
+  nsa <- !is(popsize, "AsIs") && popsize > 0
   
   if(ppopsize < sampsize && !is.data.frame(control$ppopsize)) warning("Using a smaller pseudopopulation size than sample size usually does not make sense.")
   else if(ppopsize == sampsize && var(weights(egor))>sqrt(.Machine$double.eps))
@@ -120,7 +131,8 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
     }
 
   if(network.size(popnw)!=ppopsize){
-    message("Note: Constructed network has size ", network.size(popnw), ", different from requested ", ppopsize,". Estimation should not be meaningfully affected.")
+    if(nsa) message("Note: Constructed network has size ", network.size(popnw), ", different from requested ", ppopsize,". Estimation should not be meaningfully affected.")
+    else warning("Constructed network has size ", network.size(popnw), ", different from requested ", ppopsize,", with network size adjustment disabled; estimation may be affected.", immediate.=TRUE)
     ppopsize <- network.size(popnw)
   }
 
@@ -224,8 +236,8 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
     stop("There appears to be a mismatch between estimated statistic and the sufficient statistic of the ERGM: ", errstr, " A common cause of this is that egos and alters do not have a consistent set of levels for one or more factors.")
   }
   
-  ergm.formula <- nonsimp_update.formula(ergm.formula,adj.update)
-  ergm.offset.coef <- c(-log(ppopsize/popsize),offset.coef)
+  if(nsa) ergm.formula <- nonsimp_update.formula(ergm.formula,adj.update)
+  ergm.offset.coef <- c(if(nsa) -log(ppopsize/popsize),offset.coef)
 
   # If nominations were limited, represent the cap a degree bound.
   constraints <- if(!control$ignore.max.alters && alter_design(egor)$max<Inf){
@@ -236,7 +248,7 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
       append_rhs.formula(constraints, list_rhs.formula(newterm))
   }else constraints
   
-  out <- list(v=v, m=m, formula=formula, ergm.formula=ergm.formula, offset.coef=offset.coef, ergm.offset.coef=ergm.offset.coef, egor=egor, ppopsize=ppopsize, popsize=popsize, constraints=constraints, netsize.adj=adj.update)
+  out <- list(v=v, m=m, formula=formula, ergm.formula=ergm.formula, offset.coef=offset.coef, ergm.offset.coef=ergm.offset.coef, egor=egor, ppopsize=ppopsize, popsize=popsize, constraints=constraints, netsize.adj=if(nsa) adj.update)
 
   if(do.fit){
 

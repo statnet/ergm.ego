@@ -25,11 +25,16 @@ object. See \code{\link[ergm]{ergm}} for details and examples.
 For a list of currently implemented egocentric terms for the RHS, see
 \code{\link{ergm.ego-terms}}.}
 
-\item{popsize}{The size \eqn{|N|} of the finite population network from
-which the egocentric sample was taken; only affects the shift in the
-coefficients of the terms modeling the overall propensity to have ties.
-Setting it to 1 (the default) essentially uses the \eqn{-\log |N'|} offset
-on the edges term.}
+\item{popsize}{The size \eqn{|N|} of the finite population network
+from which the egocentric sample was taken; only affects the
+shift in the coefficients of the terms modeling the overall
+propensity to have ties.  Setting it to 1 (the default)
+essentially uses the \eqn{-\log |N'|} offset on the edges
+term. Passing 0 disables network size adjustment and uses the
+egocentric sample size; passing \code{\link[=I]{I(N)}} uses the specified
+size \code{N} (though can be overridden by the \code{ppop}
+\code{\link[=control.ergm.ego]{control.ergm.ego()}} option) and disables network size
+adjustment.}
 
 \item{offset.coef}{A vector of coefficients for the offset terms.}
 
