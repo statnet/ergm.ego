@@ -47,7 +47,7 @@ An object of class \code{\link{gof.ergm.ego}}, inheriting from \code{\link[ergm:
 An enhanced plotting method is also provided, giving uncertainty bars for the observed statistics as well.
 }
 \examples{
-
+\donttest{
 data(faux.mesa.high)
 fmh.ego <- as.egor(faux.mesa.high)
 
@@ -64,7 +64,7 @@ plot(modelgof)
 # Check whether the model reconstructs the degree distribution:
 (deggof <- gof(egofit, GOF="degree"))
 plot(deggof)
-
+}
 }
 \references{
 \itemize{

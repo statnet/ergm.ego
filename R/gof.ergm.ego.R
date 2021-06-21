@@ -104,7 +104,7 @@
 #' @seealso For examples, see \code{\link{ergm.ego}}.
 #' @keywords models
 #' @examples
-#' 
+#' \donttest{
 #' data(faux.mesa.high)
 #' fmh.ego <- as.egor(faux.mesa.high)
 #' 
@@ -121,7 +121,7 @@
 #' # Check whether the model reconstructs the degree distribution:
 #' (deggof <- gof(egofit, GOF="degree"))
 #' plot(deggof)
-#'
+#' }
 #' @import ergm stats
 #' @method gof ergm.ego
 #'
