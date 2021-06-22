@@ -84,37 +84,36 @@ summary_formula.egor <- function(object,..., basis=NULL, individual=FALSE, scale
 
   scaling <- rep.int(orders != 0, ifelse(orders == 0, lengths(stats), sapply(stats, ncol)))
   
-  stats <-
-    if(!individual){
-      if(any(scaling)){
-        s <- do.call(cbind, stats[orders!=0])
-        s <- NVL3(ego_design(egor),
-                              svymean(s, ., ...),
-                              structure(colMeans(s),
-                                        var=cov(s)/nrow(s),
-                                        statistic="mean", class="svystat")
-                       )
-      }else s <- NULL
+  if(!individual){
+    if(any(scaling)){
+      s <- do.call(cbind, stats[orders!=0])
+      s <- NVL3(ego_design(egor),
+                svymean(s, ., ...),
+                structure(colMeans(s),
+                          var=cov(s)/nrow(s),
+                          statistic="mean", class="svystat")
+                )
+    }else s <- NULL
 
-      if(any(!scaling)) s <- combine_stats(c(list(s), stats[orders==0]))
+    if(any(!scaling)) s <- combine_stats(c(list(s), stats[orders==0]))
 
-      # Permutation that maps scaling and nonscaling stats back to their original positions:
-      p <- integer(length(scaling))
-      p[scaling] <- seq_len(sum(scaling))
-      p[!scaling] <- sum(scaling) + seq_len(sum(!scaling))
+    # Permutation that maps scaling and nonscaling stats back to their original positions:
+    p <- integer(length(scaling))
+    p[scaling] <- seq_len(sum(scaling))
+    p[!scaling] <- sum(scaling) + seq_len(sum(!scaling))
 
-      s <- structure(s[p], var = attr(s, "var")[p,p],
-                     statistic="scaled mean", class="svystat")
+    s <- structure(s[p], var = attr(s, "var")[p,p],
+                   statistic="scaled mean", class="svystat")
 
-      attr(s,"order") <- unique(orders)
-      attr(s,"scaling") <- scaling
-      class(s) <- c("ergm.ego_svystat", "svystat")
+    attr(s,"order") <- unique(orders)
+    attr(s,"scaling") <- scaling
+    class(s) <- c("ergm.ego_svystat", "svystat")
 
-      scaleto <- if(is.null(scaleto)) nrow(egor$ego) else scaleto
-      s * scaleto
-    }else{
-      structure(do.call(cbind, stats), order = unique(orders))
-    }
+    scaleto <- if(is.null(scaleto)) nrow(egor$ego) else scaleto
+    s * scaleto
+  }else{
+    structure(do.call(cbind, stats), order = unique(orders))
+  }
 }
 
 combine_stats <- function(l){
