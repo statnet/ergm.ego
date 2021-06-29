@@ -105,7 +105,9 @@
 #' @export
 ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., control=control.ergm.ego(), na.action=na.fail, na.rm=FALSE, do.fit=TRUE){
   statnet.common::check.control.class("ergm.ego","ergm.ego")
-  
+
+  ergm.ego_call <- match.call(ergm)
+
   stats.est <- control$stats.est
   stats.wt <- control$stats.wt
   egor <- eval_lhs.formula(formula)
@@ -255,7 +257,7 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
       append_rhs.formula(constraints, list_rhs.formula(newterm))
   }else constraints
   
-  out <- list(v=v, m=m, formula=formula, ergm.formula=ergm.formula, offset.coef=offset.coef, ergm.offset.coef=ergm.offset.coef, egor=egor, ppopsize=ppopsize, popsize=popsize, constraints=constraints, netsize.adj=if(nsa) adj.update)
+  out <- list(v=v, m=m, formula=formula, ergm.formula=ergm.formula, offset.coef=offset.coef, ergm.offset.coef=ergm.offset.coef, egor=egor, ppopsize=ppopsize, popsize=popsize, constraints=constraints, netsize.adj=if(nsa) adj.update, call=ergm.ego_call)
 
   if(do.fit){
 
@@ -297,7 +299,7 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
 
     rownames(vcov) <- colnames(vcov) <- names(coef)
 
-    out <- c(out, list(covar=vcov, ergm.covar=ergm.fit$covar, DtDe=DtDe))
+    out <- c(out, list(covar=vcov, ergm.covar=ergm.fit$covar, DtDe=DtDe, ergm.call=ergm.fit$call))
     out <- modifyList(ergm.fit, out)
   }
   class(out) <- c("ergm.ego","ergm")
