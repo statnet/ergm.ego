@@ -117,7 +117,7 @@ as.egor.network<-function(x,special.cols=c("na"),...){
 #' @examples
 #' 
 #' 
-#' data(faux.mesa.high)
+#' data(faux.mesa.high, package="statnet.data")
 #' summary(faux.mesa.high, print.adj = FALSE)
 #' 
 #' fmh.ego <- as.egor(faux.mesa.high)
@@ -211,7 +211,7 @@ na.omit.egor <- function(object, relevant=TRUE, ...){
 #'
 #' @examples
 #'
-#' data(faux.mesa.high)
+#' data(faux.mesa.high, package="statnet.data")
 #' fmh.ego <- as.egor(faux.mesa.high)
 #'
 #' # Create a tiny weighted sample:

@@ -164,7 +164,7 @@ beconverted to character).}
 }}
 
 \examples{
-data(florentine)
+data(flomarriage, package="statnet.data")
 flomego <- as.egor(flomarriage)
 ergm.ego_get_vattr("priorates", flomego)
 ergm.ego_get_vattr(~priorates, flomego)

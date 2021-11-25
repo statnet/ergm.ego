@@ -83,7 +83,7 @@ A wrapper around the \code{\link[ergm]{ergm}} to fit an ERGM to an
 }
 \examples{
 \donttest{
-data(faux.mesa.high)
+data(faux.mesa.high, package="statnet.data")
 fmh.ego <- as.egor(faux.mesa.high)
 
 head(fmh.ego)

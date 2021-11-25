@@ -36,7 +36,7 @@ of each group nominates an alter of each group.
 }
 \examples{
 
-data(faux.mesa.high)
+data(faux.mesa.high, package="statnet.data")
 fmh.ego <- as.egor(faux.mesa.high)
 
 (mm <- mixingmatrix(faux.mesa.high,"Grade"))
