@@ -7,7 +7,7 @@
 #
 #  Copyright 2015-2021 Statnet Commons
 ################################################################################
-data(sampson, package="ergm")
+data(sampson, package="statnet.data")
 
 for(i in 1:10) {
   set.seed(i)
@@ -30,7 +30,7 @@ for(i in 1:10) {
   })
 }
 
-data(faux.mesa.high, package="ergm")
+data(faux.mesa.high, package="statnet.data")
 
 for(i in 1:10) {
   set.seed(i)

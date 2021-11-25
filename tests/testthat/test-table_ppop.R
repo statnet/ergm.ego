@@ -11,7 +11,7 @@ test_that("estimation works", {
   
   skip("Not yet fixed")
   
-  data(faux.mesa.high)
+  data(faux.mesa.high, package="statnet.data")
   fmh.ego <- as.egor(faux.mesa.high)
   ppop <- rbind(fmh.ego, fmh.ego)
   ppop$.alts <- NULL

@@ -69,7 +69,7 @@ test_that("degreedist() works on egor::egor32 data with `by=sex` (a factor)", {
 
 # Tests using ergm::faux.mesa.high data -----------------------------------
 
-data(faux.mesa.high, package="ergm")
+data(faux.mesa.high, package="statnet.data")
 fmh.ego <- as.egor(faux.mesa.high)
 
 test_that("degreedist() works on data based on faux.mesa.high", {

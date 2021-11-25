@@ -79,7 +79,7 @@ for ( v in varnames ) {
 # })
 
 test_that("mixing matrices for FMH and egoFMH are equivalent", {
-  data("faux.mesa.high")
+  data("faux.mesa.high", package="statnet.data")
   fmh.ego <- as.egor(faux.mesa.high)
   expect_equal(
     {

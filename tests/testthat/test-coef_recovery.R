@@ -10,7 +10,7 @@
 test_that("complete ERGM and ergm.ego() give similar coef estimates",{
   ergm.ego:::long_test()
 
-  data(faux.mesa.high)
+  data(faux.mesa.high, package="statnet.data")
   fmh.ego <- egor::as.egor(faux.mesa.high)
   
   fit <- ergm(
