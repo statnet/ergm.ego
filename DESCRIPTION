@@ -34,7 +34,7 @@ Description: Utilities for managing egocentrically sampled network data and a wr
 License: GPL-3 + file LICENSE
 URL: https://statnet.org
 BugReports: https://github.com/statnet/ergm.ego/issues
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8
 Remotes:
