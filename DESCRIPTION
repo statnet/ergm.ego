@@ -25,7 +25,8 @@ Imports:
     dplyr,
     survey,
     stats,
-    methods
+    methods,
+    statnet.data
 Suggests:
     testthat (>= 2.1.1),
     covr (>= 3.2.1)
@@ -41,4 +42,5 @@ Remotes:
     github::statnet/statnet.common@master,
     github::statnet/network@master,
     github::statnet/ergm@master,
-    github::tilltnet/egor
+    github::tilltnet/egor,
+    github::statnet/statnet.data
