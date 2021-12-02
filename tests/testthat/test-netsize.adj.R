@@ -7,7 +7,7 @@
 #
 #  Copyright 2015-2021 Statnet Commons
 ################################################################################
-data(sampson, package="statnet.data")
+data(samplike, package="statnet.data")
 
 for(i in 1:10) {
   set.seed(i)
