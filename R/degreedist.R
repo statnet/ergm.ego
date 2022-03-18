@@ -173,7 +173,7 @@ degreedist.egor <- function(object, freq = FALSE, prob = !freq,
 #' \emph{nominations}, not ties. This means that under an egocentric census,
 #' the diagonal of \code{mixingmatrix.egor} will be twice that returned by
 #' \code{\link[network]{mixingmatrix}} for the original undirected network.
-#' @seealso \code{\link[network]{mixingmatrix}}, \code{\link[ergm]{nodemix}},
+#' @seealso \code{\link[network]{mixingmatrix}}, \code{\link[ergm]{nodemix-ergmTerm}},
 #' \code{\link[ergm.ego]{summary}} method for egocentric data
 #' @examples
 #' 

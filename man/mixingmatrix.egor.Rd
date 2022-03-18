@@ -44,6 +44,6 @@ fmh.ego <- as.egor(faux.mesa.high)
 
 }
 \seealso{
-\code{\link[network]{mixingmatrix}}, \code{\link[ergm]{nodemix}},
+\code{\link[network]{mixingmatrix}}, \code{\link[ergm]{nodemix-ergmTerm}},
 \code{\link[ergm.ego]{summary}} method for egocentric data
 }
