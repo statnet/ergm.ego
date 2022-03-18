@@ -100,7 +100,7 @@
 #' summary(egofit)
 #' }
 #' 
-#' @import ergm stats
+#' @import ergm
 #' @importFrom utils modifyList
 #' @export
 ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., control=control.ergm.ego(), na.action=na.fail, na.rm=FALSE, do.fit=TRUE){
