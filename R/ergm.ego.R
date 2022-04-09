@@ -264,13 +264,6 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
     ergm.fit <- ergm(ergm.formula, target.stats=m, offset.coef=ergm.offset.coef, constraints=constraints, ..., eval.loglik=FALSE,control=control$ergm)
     if(is.curved(ergm.fit)) warning("Theory of egocentric inference and particularly of variance calculation for curved ERGMs is not well understood; standard errors might not be reliable.")
 
-    ## Workaround to keep mcmc.diagnostics from failing. Should be removed after fix is released.
-    if(inherits(ergm.fit$sample,"mcmc.list")){
-      for(thread in 1:coda::nchain(ergm.fit$sample))
-        ergm.fit$sample[[thread]][,1] <- 0
-    } else ergm.fit$sample[,1] <- 0
-    ergm.fit$drop[1] <- 0
-
     coef <- coef(ergm.fit)
 
     oi <- ergm.fit$etamap$offsettheta
