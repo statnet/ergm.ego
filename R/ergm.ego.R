@@ -260,6 +260,7 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
   out <- list(v=v, m=m, formula=formula, ergm.formula=ergm.formula, offset.coef=offset.coef, ergm.offset.coef=ergm.offset.coef, egor=egor, ppopsize=ppopsize, popsize=popsize, constraints=constraints, netsize.adj=if(nsa) adj.update, call=ergm.ego_call)
 
   if(do.fit){
+    control$ergm$force.main <- TRUE
 
     ergm.fit <- ergm(ergm.formula, target.stats=m, offset.coef=ergm.offset.coef, constraints=constraints, ..., eval.loglik=FALSE,control=control$ergm)
     if(is.curved(ergm.fit)) warning("Theory of egocentric inference and particularly of variance calculation for curved ERGMs is not well understood; standard errors might not be reliable.")
