@@ -35,7 +35,7 @@ taking into accounts their sampling weights.
 \examples{
 
 
-data(faux.mesa.high)
+data(faux.mesa.high, package="statnet.data")
 summary(faux.mesa.high, print.adj = FALSE)
 
 fmh.ego <- as.egor(faux.mesa.high)

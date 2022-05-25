@@ -47,7 +47,7 @@
 #'
 #' @examples
 #' 
-#' data(faux.mesa.high)
+#' data(faux.mesa.high, package="statnet.data")
 #' fmh.ego <- as.egor(faux.mesa.high)
 #' (nw.summ <- summary(faux.mesa.high~edges+degree(0:3)+nodematch("Race")+
 #'                     nodematch("Sex")+absdiff("Grade")+nodemix("Grade")))

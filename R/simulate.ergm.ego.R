@@ -53,7 +53,7 @@
 #' @keywords models
 #' @examples
 #' 
-#' data(faux.mesa.high)
+#' data(faux.mesa.high, package="statnet.data")
 #' fmh.ego <- as.egor(faux.mesa.high)
 #' data(fmhfit)
 #' colMeans(egosim <- simulate(fmhfit, popsize=300,nsim=50,

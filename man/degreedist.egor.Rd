@@ -53,7 +53,7 @@ graph.
 }
 \examples{
 
-data(faux.mesa.high)
+data(faux.mesa.high, package="statnet.data")
 fmh.ego <- as.egor(faux.mesa.high)
 
 degreedist(fmh.ego,by="Grade",brgmod=TRUE)

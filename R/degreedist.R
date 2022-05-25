@@ -40,7 +40,7 @@
 #' \code{\link[ergm:summary_formula]{summary}}
 #' @examples
 #' 
-#' data(faux.mesa.high)
+#' data(faux.mesa.high, package="statnet.data")
 #' fmh.ego <- as.egor(faux.mesa.high)
 #' 
 #' degreedist(fmh.ego,by="Grade",brgmod=TRUE)
@@ -177,7 +177,7 @@ degreedist.egor <- function(object, freq = FALSE, prob = !freq,
 #' \code{\link[ergm.ego]{summary}} method for egocentric data
 #' @examples
 #' 
-#' data(faux.mesa.high)
+#' data(faux.mesa.high, package="statnet.data")
 #' fmh.ego <- as.egor(faux.mesa.high)
 #' 
 #' (mm <- mixingmatrix(faux.mesa.high,"Grade"))

@@ -58,7 +58,7 @@ test_that("GOF='espartners' works", {
 
 
 test_that("GOF='espartners' works if `esp` term is in the model", {
-  data("faux.mesa.high", package="ergm")
+  data("faux.mesa.high", package="statnet.data")
   edata <- as.egor(faux.mesa.high)
   fit <- ergm.ego(
     edata ~ edges + esp(1), 

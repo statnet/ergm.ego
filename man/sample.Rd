@@ -33,7 +33,7 @@ data-frame-alikes as arguments.
 }
 \examples{
 
-data(faux.mesa.high)
+data(faux.mesa.high, package="statnet.data")
 fmh.ego <- as.egor(faux.mesa.high)
 
 # Create a tiny weighted sample:

@@ -11,7 +11,7 @@
 library(ergm.ego)
 
 test_that("it just works for model without offsets", {
-  data(faux.mesa.high, package="ergm")
+  data(faux.mesa.high, package="statnet.data")
   fmh.ego <- as.egor(faux.mesa.high)
   egofit <- ergm.ego(
     fmh.ego~edges+degree(0:3)+nodefactor("Race")+nodematch("Race")
@@ -26,7 +26,7 @@ test_that("it just works for model without offsets", {
 
 
 test_that("it just works for model with offsets", {
-  data("faux.mesa.high", package="ergm")
+  data("faux.mesa.high", package="statnet.data")
   fmhego <- as.egor(faux.mesa.high)
   fit <- ergm.ego(
     fmhego ~ edges 

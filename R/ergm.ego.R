@@ -84,7 +84,7 @@
 #' @seealso \code{\link[ergm]{ergm}()}
 #' @examples
 #' \donttest{
-#' data(faux.mesa.high)
+#' data(faux.mesa.high, package="statnet.data")
 #' fmh.ego <- as.egor(faux.mesa.high)
 #' 
 #' head(fmh.ego)

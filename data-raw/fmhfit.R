@@ -1,6 +1,6 @@
 library(ergm.ego)
 
-data(faux.mesa.high)
+data(faux.mesa.high, package="statnet.data")
 fmh.ego <- egor::as.egor(faux.mesa.high)
 fmhfit <- ergm.ego(
   fmh.ego ~ edges + degree(0:3) + 

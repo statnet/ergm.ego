@@ -8,7 +8,7 @@
 #  Copyright 2015-2021 Statnet Commons
 ################################################################################
 
-data(faux.mesa.high)
+data(faux.mesa.high, package="statnet.data")
 fmh.ego <- as.egor(faux.mesa.high)
 
 
