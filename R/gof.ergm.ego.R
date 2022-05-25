@@ -122,8 +122,7 @@
 #' (deggof <- gof(egofit, GOF="degree"))
 #' plot(deggof)
 #' }
-#' @import ergm
-#' @rawNamespace import(stats, except=c(var))
+#' @import ergm stats
 #' @method gof ergm.ego
 #'
 #' @references
