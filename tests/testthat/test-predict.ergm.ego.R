@@ -14,7 +14,8 @@ test_that("it just works for model without offsets", {
   egofit <- ergm.ego(
     fmh.ego~edges+degree(0:3)+nodefactor("Race")+nodematch("Race")
     +nodefactor("Sex")+nodematch("Sex")+absdiff("Grade"), 
-    popsize=network.size(faux.mesa.high)
+    popsize=network.size(faux.mesa.high),
+    control=snctrl(MCMLE.maxit=2)
   )
   expect_silent(
     p <- predict(egofit)
@@ -33,7 +34,8 @@ test_that("it just works for model with offsets", {
     + offset(nodematch("Sex",
                        diff = TRUE,
                        levels = c(1, 2))),
-    offset.coef = rep(-Inf, 2)
+    offset.coef = rep(-Inf, 2),
+    control=snctrl(MCMLE.maxit=2)
   )
   expect_silent(
     p <- predict(fit) # data frame
