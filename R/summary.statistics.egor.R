@@ -5,7 +5,7 @@
 #  open source, and has the attribution requirements (GPL Section 7) at
 #  https://statnet.org/attribution .
 #
-#  Copyright 2015-2021 Statnet Commons
+#  Copyright 2015-2022 Statnet Commons
 ################################################################################
 #' Calculation of ERGM-style summary statistics for \code{\link{egor}}
 #' objects.
