@@ -54,7 +54,6 @@
 #' @examples
 #' 
 #' data(faux.mesa.high)
-#' fmh.ego <- as.egor(faux.mesa.high)
 #' data(fmhfit)
 #' colMeans(egosim <- simulate(fmhfit, popsize=300,nsim=50,
 #'                        output="stats", control=control.simulate.ergm.ego(
