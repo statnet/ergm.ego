@@ -7,7 +7,6 @@
 #
 #  Copyright 2015-2022 Statnet Commons
 ################################################################################
-library(ergm.ego)
 library(purrr)
 library(dplyr)
 
