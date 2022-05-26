@@ -46,7 +46,7 @@ test_that("coefs are equal", {
   
   # plot(est, tgt); abline(a=0, b=1, lty=2)
   
-  expect_equivalent(
+  expect_equal(ignore_attr=TRUE,
     unname(est)[-(1:2)],
     tgt,
     tolerance = 0.1

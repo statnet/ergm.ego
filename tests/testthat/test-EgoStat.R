@@ -117,8 +117,6 @@ test_that("scaling and nonscaling egostats are combined correctly", {
 
 test_that("egostats with alter missing data are close to complete network stats", {
   
-  ergm.ego:::long_test()
-  
   # Test data
   set.seed(0)
   n <- 100
@@ -157,7 +155,7 @@ test_that("egostats with alter missing data are close to complete network stats"
     
     degree1.5 +
     
-    nodemix("a") + nodemix("a", base=1) + nodemix("a", base=2) + nodemix("a", base=2:3) +
+    nodemix("a") + nodemix("a", levels2=-1) + nodemix("a", levels2=-2) + nodemix("a", levels2=-c(2:3)) +
     
     esp(0:6) + gwesp(fix=FALSE) + gwesp(0.5, fix=TRUE) +
     
