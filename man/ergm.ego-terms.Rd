@@ -33,9 +33,9 @@ parameters. The simplest way to do this is usually via \code{? TERM}.
 \describe{ \item{Special-purpose terms:}{ \describe{
 \item{netsize.adj(edges=+1, mutual=0, transitiveties=0,
 cyclicalties=0)}{A special-purpose term equivalent to a linear
-combination of \code{\link[ergm]{edges}},
-\code{\link[ergm]{mutual}}, \code{\link[ergm]{transitiveties}}, and
-\code{\link[ergm]{cyclicalties}}, to house the network-size
+combination of \code{\link[ergm]{edges-ergmTerm}},
+\code{\link[ergm]{mutual-ergmTerm}}, \code{\link[ergm]{transitiveties-ergmTerm}}, and
+\code{\link[ergm]{cyclicalties-ergmTerm}}, to house the network-size
 adjustment offset. This term is added to the model automatically
 and should not be used in the model formula directly.  } } }
 

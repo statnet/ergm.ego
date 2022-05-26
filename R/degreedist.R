@@ -5,7 +5,7 @@
 #  open source, and has the attribution requirements (GPL Section 7) at
 #  https://statnet.org/attribution .
 #
-#  Copyright 2015-2021 Statnet Commons
+#  Copyright 2015-2022 Statnet Commons
 ################################################################################
 
 
@@ -173,7 +173,7 @@ degreedist.egor <- function(object, freq = FALSE, prob = !freq,
 #' \emph{nominations}, not ties. This means that under an egocentric census,
 #' the diagonal of \code{mixingmatrix.egor} will be twice that returned by
 #' \code{\link[network]{mixingmatrix}} for the original undirected network.
-#' @seealso \code{\link[network]{mixingmatrix}}, \code{\link[ergm]{nodemix}},
+#' @seealso \code{\link[network]{mixingmatrix}}, \code{\link[ergm]{nodemix-ergmTerm}},
 #' \code{\link[ergm.ego]{summary}} method for egocentric data
 #' @examples
 #' 

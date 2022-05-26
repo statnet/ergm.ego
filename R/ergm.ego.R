@@ -5,7 +5,7 @@
 #  open source, and has the attribution requirements (GPL Section 7) at
 #  https://statnet.org/attribution .
 #
-#  Copyright 2015-2021 Statnet Commons
+#  Copyright 2015-2022 Statnet Commons
 ################################################################################
 
 
@@ -69,11 +69,19 @@
 #' @author Pavel N. Krivitsky
 #' @references
 #' 
-#' * Pavel N. Krivitsky and Martina Morris (2017). "Inference for social network models from egocentrically sampled data, with application to understanding persistent racial disparities in HIV prevalence in the US." *Annals of Applied Statistics*, 11(1): 427–455. \doi{10.1214/16-AOAS1010}
+#' 
+#' Pavel N. Krivitsky and Martina Morris (2017). "Inference for social network models from egocentrically sampled data, with application to understanding persistent racial disparities in HIV prevalence in the US." *Annals of Applied Statistics*, 11(1): 427–455. \doi{10.1214/16-AOAS1010}
 #'
-#' * Pavel N. Krivitsky, Martina Morris, and Michał Bojanowski (2019). "Inference for Exponential-Family Random Graph Models from Egocentrically-Sampled Data with Alter–Alter Relations." NIASRA Working Paper 08-19. \url{https://www.uow.edu.au/niasra/publications/}
+#' Pavel N. Krivitsky, Martina Morris, and Michał Bojanowski (2019). "Inference for Exponential-Family Random Graph Models from Egocentrically-Sampled Data with Alter–Alter Relations." NIASRA Working Paper 08-19. \url{https://www.uow.edu.au/niasra/publications/}
+#'
+#' Pavel N. Krivitsky, Michał Bojanowski, and Martina Morris (2020). "Impact of survey design on estimation of exponential-family random graph models from egocentrically-sampled data." *Social Networks*, to appear. \doi{10.1016/j.socnet.2020.10.001}
+#' 
+#' Pavel N. Krivitsky, Mark S. Handcock, and Martina Morris (2011). "Adjusting for
+#' Network Size and Composition Effects in Exponential-Family Random Graph
+#' Models." \emph{Statistical Methodology}, 8(4): 319–339. \doi{10.1016/j.stamet.2011.01.005}
 #'
 #' @keywords models
+#' @seealso \code{\link[ergm]{ergm}()}
 #' @examples
 #' \donttest{
 #' data(faux.mesa.high)
@@ -92,12 +100,14 @@
 #' summary(egofit)
 #' }
 #' 
-#' @import ergm stats
+#' @import ergm
 #' @importFrom utils modifyList
 #' @export
 ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., control=control.ergm.ego(), na.action=na.fail, na.rm=FALSE, do.fit=TRUE){
   statnet.common::check.control.class("ergm.ego","ergm.ego")
-  
+
+  ergm.ego_call <- match.call(ergm)
+
   stats.est <- control$stats.est
   stats.wt <- control$stats.wt
   egor <- eval_lhs.formula(formula)
@@ -247,19 +257,11 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
       append_rhs.formula(constraints, list_rhs.formula(newterm))
   }else constraints
   
-  out <- list(v=v, m=m, formula=formula, ergm.formula=ergm.formula, offset.coef=offset.coef, ergm.offset.coef=ergm.offset.coef, egor=egor, ppopsize=ppopsize, popsize=popsize, constraints=constraints, netsize.adj=if(nsa) adj.update)
+  out <- list(v=v, m=m, formula=formula, ergm.formula=ergm.formula, offset.coef=offset.coef, ergm.offset.coef=ergm.offset.coef, egor=egor, ppopsize=ppopsize, popsize=popsize, constraints=constraints, netsize.adj=if(nsa) adj.update, call=ergm.ego_call)
 
   if(do.fit){
-
     ergm.fit <- ergm(ergm.formula, target.stats=m, offset.coef=ergm.offset.coef, constraints=constraints, ..., eval.loglik=FALSE,control=control$ergm)
     if(is.curved(ergm.fit)) warning("Theory of egocentric inference and particularly of variance calculation for curved ERGMs is not well understood; standard errors might not be reliable.")
-
-    ## Workaround to keep mcmc.diagnostics from failing. Should be removed after fix is released.
-    if(inherits(ergm.fit$sample,"mcmc.list")){
-      for(thread in 1:coda::nchain(ergm.fit$sample))
-        ergm.fit$sample[[thread]][,1] <- 0
-    } else ergm.fit$sample[,1] <- 0
-    ergm.fit$drop[1] <- 0
 
     coef <- coef(ergm.fit)
 
@@ -289,7 +291,7 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
 
     rownames(vcov) <- colnames(vcov) <- names(coef)
 
-    out <- c(out, list(covar=vcov, ergm.covar=ergm.fit$covar, DtDe=DtDe))
+    out <- c(out, list(covar=vcov, ergm.covar=ergm.fit$covar, DtDe=DtDe, ergm.call=ergm.fit$call))
     out <- modifyList(ergm.fit, out)
   }
   class(out) <- c("ergm.ego","ergm")

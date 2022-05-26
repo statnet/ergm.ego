@@ -101,10 +101,18 @@ summary(egofit)
 
 }
 \references{
-\itemize{
-\item Pavel N. Krivitsky and Martina Morris (2017). "Inference for social network models from egocentrically sampled data, with application to understanding persistent racial disparities in HIV prevalence in the US." \emph{Annals of Applied Statistics}, 11(1): 427–455. \doi{10.1214/16-AOAS1010}
-\item Pavel N. Krivitsky, Martina Morris, and Michał Bojanowski (2019). "Inference for Exponential-Family Random Graph Models from Egocentrically-Sampled Data with Alter–Alter Relations." NIASRA Working Paper 08-19. \url{https://www.uow.edu.au/niasra/publications/}
+Pavel N. Krivitsky and Martina Morris (2017). "Inference for social network models from egocentrically sampled data, with application to understanding persistent racial disparities in HIV prevalence in the US." \emph{Annals of Applied Statistics}, 11(1): 427–455. \doi{10.1214/16-AOAS1010}
+
+Pavel N. Krivitsky, Martina Morris, and Michał Bojanowski (2019). "Inference for Exponential-Family Random Graph Models from Egocentrically-Sampled Data with Alter–Alter Relations." NIASRA Working Paper 08-19. \url{https://www.uow.edu.au/niasra/publications/}
+
+Pavel N. Krivitsky, Michał Bojanowski, and Martina Morris (2020). "Impact of survey design on estimation of exponential-family random graph models from egocentrically-sampled data." \emph{Social Networks}, to appear. \doi{10.1016/j.socnet.2020.10.001}
+
+Pavel N. Krivitsky, Mark S. Handcock, and Martina Morris (2011). "Adjusting for
+Network Size and Composition Effects in Exponential-Family Random Graph
+Models." \emph{Statistical Methodology}, 8(4): 319–339. \doi{10.1016/j.stamet.2011.01.005}
 }
+\seealso{
+\code{\link[ergm]{ergm}()}
 }
 \author{
 Pavel N. Krivitsky

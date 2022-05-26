@@ -5,7 +5,7 @@
 %  open source, and has the attribution requirements (GPL Section 7) at
 %  https://statnet.org/attribution .
 %
-%  Copyright 2015-2021 Statnet Commons
+%  Copyright 2015-2022 Statnet Commons
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \name{NEWS}
 \title{NEWS file for the \code{\link[=ergm.ego-package]{ergm.ego}} package}
@@ -63,6 +63,28 @@
   % }
 
 %% }
+
+\section{Changes in version 1.0.1}{
+
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item{
+        Documentation fixes, particularly for compatibility with \pkg{ergm} 4.2.
+      }
+      \item{
+        Summary for \code{\link{ergm.ego}} fits now displays the original call rather than the instrumental \code{\link{ergm}()} call.
+      }
+    }
+  }
+
+  \subsection{OTHER USER-VISIBLE CHANGES}{
+    \itemize{
+      \item{
+        \code{\link{control.ergm.ego}()} praameter \code{ignore.max.alters=} now defaults to \code{TRUE}, since simulation studies (Krivitsky, et al. 2020) showed that they did more harm than good.
+      }
+    }
+  }
+}
 
 
 \section{Changes in version 1.0.0}{

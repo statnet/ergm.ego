@@ -5,7 +5,7 @@
 [![Coverage status](https://codecov.io/gh/statnet/ergm.ego/branch/master/graph/badge.svg)](https://codecov.io/github/statnet/ergm.ego?branch=master)
 [![R build status](https://github.com/statnet/ergm.ego/workflows/R-CMD-check/badge.svg)](https://github.com/statnet/ergm.ego/actions)
 
-Utilities for managing egocentrically sampled network data and a wrapper around the 'ergm' package to facilitate ERGM inference and simulation from such data.
+Utilities for managing egocentrically sampled network data and a wrapper around the 'ergm' package to facilitate ERGM inference and simulation from such data. See Krivitsky and Morris (2017) <doi:10.1214/16-AOAS1010>.
 
 ## Public and Private repositories
 

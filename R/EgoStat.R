@@ -5,7 +5,7 @@
 #  open source, and has the attribution requirements (GPL Section 7) at
 #  https://statnet.org/attribution .
 #
-#  Copyright 2015-2021 Statnet Commons
+#  Copyright 2015-2022 Statnet Commons
 ################################################################################
 # An EgoStat.* function takes an egor object and returns a matrix of
 # h(e[i]) values, with egos in rows and elements of h(e[i]) in
@@ -178,9 +178,9 @@ split_aaties_by_ego <- function(x, egor){
 #' \describe{ \item{Special-purpose terms:}{ \describe{
 #' \item{netsize.adj(edges=+1, mutual=0, transitiveties=0,
 #' cyclicalties=0)}{A special-purpose term equivalent to a linear
-#' combination of \code{\link[ergm]{edges}},
-#' \code{\link[ergm]{mutual}}, \code{\link[ergm]{transitiveties}}, and
-#' \code{\link[ergm]{cyclicalties}}, to house the network-size
+#' combination of \code{\link[ergm]{edges-ergmTerm}},
+#' \code{\link[ergm]{mutual-ergmTerm}}, \code{\link[ergm]{transitiveties-ergmTerm}}, and
+#' \code{\link[ergm]{cyclicalties-ergmTerm}}, to house the network-size
 #' adjustment offset. This term is added to the model automatically
 #' and should not be used in the model formula directly.  } } }
 #' 
