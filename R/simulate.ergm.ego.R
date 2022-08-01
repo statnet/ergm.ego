@@ -17,12 +17,13 @@
 #' 
 #' @param object An \code{\link{ergm.ego}} fit.
 #' @param nsim Number of realizations to simulate.
-#' @param seed Random seed.
-#' @param popsize Either network size to which to scale the model for
-#'   simulation or a [`data.frame`] with at least those ego attributes
-#'   required to estimate the model, to simulate over a specific set
-#'   of actors.
+#' @template seed
+#' @param popsize A network size to which to scale the model for
+#'   simulation; a [`data.frame`] with at least those ego attributes
+#'   used to estimate the model to simulate over a specific set
+#'   of actors; or a [`network`] object to use as is.
 #' @param control A \code{\link{control.simulate.ergm.ego}} control list.
+#' @template basis
 #' 
 #' @param output one of `"network"`, `"stats"`, `"edgelist"`,
 #'   `"pending_update_network"`, or, for future compatibility,
@@ -30,7 +31,7 @@
 #' 
 #' @param constraints,\dots Additional arguments passed to \code{\link[ergm]{san}} and
 #' \code{\link[ergm]{simulate.formula}}.
-#' @param verbose Verbosity of output.
+#' @template verbose
 #' @return The ouput has the same format (with the same options) as
 #' \code{\link[ergm]{simulate.formula}}. If \code{output="stats"} is passed, an
 #' additional attribute, \code{"ppopsize"} is set, giving the actual size of
@@ -70,7 +71,10 @@ simulate.ergm.ego <- function(object, nsim = 1, seed = NULL, constraints=object$
 
   nsa <- !is.null(object$netsize.adj)
   
-  if(is.data.frame(popsize)){ # If pseudopoluation composition is given in popsize, use that.
+  if(is.network(popsize)){
+    popnw <- popsize
+    popsize <- network.size(popsize)
+  }else if(is.data.frame(popsize)){ # If pseudopoluation composition is given in popsize, use that.
     popnw <- template_network(popsize, nrow(popsize))
     popsize <- nrow(popsize)
   }else{

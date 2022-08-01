@@ -37,6 +37,7 @@
 #'   [control.ergm.ego()] option) and disables network size
 #'   adjustment.
 #'
+#' @template basis
 #' @param offset.coef A vector of coefficients for the offset terms.
 #' @param na.action How to handle missing actor attributes in egos or alters,
 #' when the terms need them for  models that scale.
@@ -103,14 +104,14 @@
 #' @import ergm
 #' @importFrom utils modifyList
 #' @export
-ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., control=control.ergm.ego(), na.action=na.fail, na.rm=FALSE, do.fit=TRUE){
+ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., basis=eval_lhs.formula(formula), control=control.ergm.ego(), na.action=na.fail, na.rm=FALSE, do.fit=TRUE){
   statnet.common::check.control.class("ergm.ego","ergm.ego")
 
   ergm.ego_call <- match.call(ergm)
 
   stats.est <- control$stats.est
   stats.wt <- control$stats.wt
-  egor <- eval_lhs.formula(formula)
+  egor <- basis
 
   sampsize <- nrow(egor$ego)
   ppopsize <-
@@ -233,9 +234,9 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
                 )
   }
   
-  ergm.formula <- nonsimp_update.formula(formula,popnw~.,from.new="popnw")
+  ergm.formula <- formula
 
-  ergm.names <- param_names(ergm_model(ergm.formula), canonical=TRUE, offset=FALSE)
+  ergm.names <- param_names(ergm_model(ergm.formula, popnw), canonical=TRUE, offset=FALSE)
   if(!setequal(ergm.names,names(m))){
     ergm.not.ts <- setdiff(ergm.names, names(m))
     ts.not.ergm <- setdiff(names(m), ergm.names)
@@ -257,10 +258,10 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., c
       append_rhs.formula(constraints, list_rhs.formula(newterm))
   }else constraints
   
-  out <- list(v=v, m=m, formula=formula, ergm.formula=ergm.formula, offset.coef=offset.coef, ergm.offset.coef=ergm.offset.coef, egor=egor, ppopsize=ppopsize, popsize=popsize, constraints=constraints, netsize.adj=if(nsa) adj.update, call=ergm.ego_call)
+  out <- list(v=v, m=m, formula=formula, ergm.formula=ergm.formula, popnw=popnw, offset.coef=offset.coef, ergm.offset.coef=ergm.offset.coef, egor=egor, ppopsize=ppopsize, popsize=popsize, constraints=constraints, netsize.adj=if(nsa) adj.update, call=ergm.ego_call)
 
   if(do.fit){
-    ergm.fit <- ergm(ergm.formula, target.stats=m, offset.coef=ergm.offset.coef, constraints=constraints, ..., eval.loglik=FALSE,control=control$ergm)
+    ergm.fit <- ergm(ergm.formula, target.stats=m, offset.coef=ergm.offset.coef, constraints=constraints, ..., basis=popnw, eval.loglik=FALSE, control=control$ergm)
     if(is.curved(ergm.fit)) warning("Theory of egocentric inference and particularly of variance calculation for curved ERGMs is not well understood; standard errors might not be reliable.")
 
     coef <- coef(ergm.fit)

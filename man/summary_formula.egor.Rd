@@ -48,9 +48,9 @@ Used to calculate the specified network statistics inferred from a
 }
 \section{Functions}{
 \itemize{
-\item \code{*.ergm.ego_svystat}: A multiplication method that takes into account which statistics are scalable.
-}}
+\item \code{ * }: A multiplication method that takes into account which statistics are scalable.
 
+}}
 \examples{
 
 data(faux.mesa.high)

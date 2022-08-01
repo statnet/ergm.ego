@@ -12,7 +12,7 @@ Authors@R: c(
 	    person("Chad", "Klumb", role=c("ctb"), email="cklumb@gmail.com"))
 Depends:
     R (>= 2.10),
-    ergm (>= 4.2.0),
+    ergm (>= 4.3.0),
     egor,
     network (>= 1.17.1)
 LinkingTo: ergm
@@ -32,7 +32,7 @@ Description: Utilities for managing egocentrically sampled network data and a wr
 License: GPL-3 + file LICENSE
 URL: https://statnet.org
 BugReports: https://github.com/statnet/ergm.ego/issues
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8
 LazyData: true

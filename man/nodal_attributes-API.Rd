@@ -160,9 +160,9 @@ beconverted to character).}
 }
 \section{Functions}{
 \itemize{
-\item \code{COLLAPSE_SMALLEST}: A version of \code{\link[ergm:nodal_attributes]{ergm::COLLAPSE_SMALLEST()}} that can handle both \code{\link{network}} and \code{\link{egodata}} objects.
-}}
+\item \code{COLLAPSE_SMALLEST()}: A version of \code{\link[ergm:nodal_attributes]{ergm::COLLAPSE_SMALLEST()}} that can handle both \code{\link{network}} and \code{\link{egodata}} objects.
 
+}}
 \examples{
 data(florentine)
 flomego <- as.egor(flomarriage)

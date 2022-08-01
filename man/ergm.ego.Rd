@@ -11,6 +11,7 @@ ergm.ego(
   offset.coef = NULL,
   constraints = ~.,
   ...,
+  basis = eval_lhs.formula(formula),
   control = control.ergm.ego(),
   na.action = na.fail,
   na.rm = FALSE,
@@ -43,6 +44,8 @@ the sample space constraints. See \code{\link[ergm]{ergm}} for
 details and examples.}
 
 \item{\dots}{Additional arguments passed to \code{\link[ergm]{ergm}}.}
+
+\item{basis}{a value (usually an \code{\link{egor}}) to override the LHS of the formula.}
 
 \item{control}{A \code{\link{control.ergm.ego}} control list.}
 

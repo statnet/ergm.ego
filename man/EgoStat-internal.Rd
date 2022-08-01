@@ -58,37 +58,37 @@ Helper functions of EgoStats. Some may be documented and exported in the future.
 }
 \section{Functions}{
 \itemize{
-\item \code{.attrErr}: Construct and throw an error message about ego or alter attributes being missing.
+\item \code{.attrErr()}: Construct and throw an error message about ego or alter attributes being missing.
 
-\item \code{.unfactor}: Convert a factor to its "ordinary" vector representation.
+\item \code{.unfactor()}: Convert a factor to its "ordinary" vector representation.
 
-\item \code{.degreeseq}: Degree sequence of the egos.
+\item \code{.degreeseq()}: Degree sequence of the egos.
 
-\item \code{.alterEgos}: Ego index (i.e., row) associated with each alter.
+\item \code{.alterEgos()}: Ego index (i.e., row) associated with each alter.
 
-\item \code{.exsum}: As \code{\link[=sum]{sum()}}, but "extrapolating" the \code{NA}s.
+\item \code{.exsum()}: As \code{\link[=sum]{sum()}}, but "extrapolating" the \code{NA}s.
 
-\item \code{.extabulate}: As \code{\link[=tabulate]{tabulate()}}, but "extrapolating" the \code{NA}s.
+\item \code{.extabulate()}: As \code{\link[=tabulate]{tabulate()}}, but "extrapolating" the \code{NA}s.
 
-\item \code{.matchNA}: As \code{\link[base:match]{base::match()}}, but \code{NA}s are passed through.
+\item \code{.matchNA()}: As \code{\link[base:match]{base::match()}}, but \code{NA}s are passed through.
 
-\item \code{.pasteNA}: As \code{\link[=paste]{paste()}}, but \code{NA}s are passed through rather than typeset.
+\item \code{.pasteNA()}: As \code{\link[=paste]{paste()}}, but \code{NA}s are passed through rather than typeset.
 
-\item \code{.sapply_col}: As \code{\link[=sapply]{sapply()}}, but if the function returns a vector, return those
+\item \code{.sapply_col()}: As \code{\link[=sapply]{sapply()}}, but if the function returns a vector, return those
 vectors in rows, and if it returns a scalar, return a column
 vector.
 
-\item \code{.mapply_col}: As \code{\link[=mapply]{mapply()}}, but if the function returns a vector, return those
+\item \code{.mapply_col()}: As \code{\link[=mapply]{mapply()}}, but if the function returns a vector, return those
 vectors in rows, and if it returns a scalar, return a column
 vector.
 
-\item \code{split_egos_by_ego}: Split an arbitrary vector or matrix by egos.
+\item \code{split_egos_by_ego()}: Split an arbitrary vector or matrix by egos.
 
-\item \code{split_alters_by_ego}: Split an arbitrary vector or matrix by egos.
+\item \code{split_alters_by_ego()}: Split an arbitrary vector or matrix by egos.
 
-\item \code{split_aaties_by_ego}: Split an arbitrary vector or matrix by egos.
+\item \code{split_aaties_by_ego()}: Split an arbitrary vector or matrix by egos.
 
-\item \code{.checkNA}: Pass through the input if it does not contain mising values; otherwise stop with given error. Arguments after the first are passed through to \code{\link[=stop]{stop()}}.
+\item \code{.checkNA()}: Pass through the input if it does not contain mising values; otherwise stop with given error. Arguments after the first are passed through to \code{\link[=stop]{stop()}}.
+
 }}
-
 \keyword{internal}
