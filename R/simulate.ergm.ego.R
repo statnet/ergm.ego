@@ -103,7 +103,12 @@ simulate.ergm.ego <- function(object, nsim = 1, seed = NULL, constraints=object$
                          coef(object)[if(nsa) -1 else TRUE]),
                   constraints=constraints, control=control$simulate, basis=popnw, ..., output=output)
   if(is.matrix(out)){
-    out <- out[,if(nsa) -1 else TRUE, drop=FALSE]
+    if(nsa)
+      out <- structure(out[,-1, drop=FALSE],
+                       monitored = attr(out, "monitored")[-1],
+                       formula = attr(out,"formula"), .Basis = attr(out,".Basis"), monitor = attr(out,"monitor"),
+                       constraints = attr(out,"constraints"), reference = attr(out,"reference"))
+
     attr(out, "ppopsize") <- ppopsize
   }
   out
