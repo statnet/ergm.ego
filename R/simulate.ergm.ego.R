@@ -90,11 +90,8 @@ simulate.ergm.ego <- function(object, nsim = 1, seed = NULL, constraints=object$
     network.size(popnw)
   }else popsize
 
-  san.stats <-
-    if(length(object$target.stats)>nparam(object, offset=FALSE)) object$target.stats[!object$etamap$offsettheta]
-    else object$target.stats
   # TODO: Make it work with ergm_state output.
-  if(popsize != object$ppopsize) popnw <- san(object$formula, target.stats = san.stats/object$ppopsize*ppopsize,verbose=verbose, constraints=constraints, basis=popnw, control=control$SAN, ..., output="network")
+  if(popsize != object$ppopsize) popnw <- san(object$formula, target.stats = object$target.stats/object$ppopsize*ppopsize,verbose=verbose, constraints=constraints, basis=popnw, control=control$SAN, ..., output="network")
 
   ergm.formula <- if(nsa) nonsimp_update.formula(object$formula,object$netsize.adj) else object$formula
 
