@@ -64,6 +64,65 @@
 
 %% }
 
+
+\section{Changes in version 1.1.0}{
+
+  \subsection{NEW FEATURES}{
+    \itemize{
+      \item \code{\link{ergm.ego}()} now has a \code{basis=} argument.
+
+      \item \code{\link{simulate.ergm.ego}()}'s \code{popsize=} argument can now be a network object, enabling simulation from any starting network.
+    }
+  }
+
+
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item{
+        \item \code{\link{gof.ergm.ego}(GOF="degree")} now handles the case in which the observed or simulated degree distribution is dense and the LHS network is small more gracefully.
+
+        \item \code{\link{gof.ergm.ego}()} was scrambling the the order of ESP terms.
+
+        \item \code{\link{simulate.ergm.ego}()} is now more robust to models with offsets and extreme \dQuote{dropped} statistics.
+      }
+    }
+  }
+
+
+  \subsection{OTHER USER-VISIBLE CHANGES}{
+    \itemize{
+      \item \code{\link{simulate.ergm.ego}()} now preserves some of the attributes attached by \code{\link{simulate.ergm}()} to the statistics matrix, including \code{"monitored"}.
+
+      \item \code{\link{simulate.ergm.ego}()} no longer supports \code{\link{ergm.ego}} objects fit under under \CRANpkg{ergm} < 4.
+    }
+  }
+
+  \subsection{C-LEVEL FACILITIES}{
+    \itemize{
+    }
+  }
+
+  \subsection{UTILITIES}{
+    \itemize{
+      \item Likewise, "UTILITIES" is probably unnecessary.
+    }
+  }
+
+  \subsection{INSTALLATION}{
+    \itemize{
+      \item ... as is "INSTALLATION".
+    }
+  }
+
+  \subsection{PACKAGE INSTALLATION}{
+    \itemize{
+      \item ditto.
+    }
+  }
+
+}
+
+
 \section{Changes in version 1.0.1}{
 
   \subsection{BUG FIXES}{
