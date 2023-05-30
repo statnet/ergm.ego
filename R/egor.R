@@ -91,7 +91,7 @@ as.egor.network<-function(x,special.cols=c("na"),...){
 
 #' Construct an Empty ``Template'' Network Consistent with an Egocentric Sample
 #' 
-#' Taking a \code{\link{egor}} object, constructs a
+#' Taking an object with ego information, constructs a
 #' \code{\link[network]{network}} object with no edges whose vertices have the
 #' attributes of the egos in the dataset, replicating the egos as needed, and
 #' taking into accounts their sampling weights.
@@ -132,9 +132,27 @@ as.egor.network<-function(x,special.cols=c("na"),...){
 #'
 #' @import network
 #' @export
-template_network<-function(x, N, scaling=c("round","sample"), ...){
-  scaling <- match.arg(scaling)
+template_network <- function(x, ...) UseMethod("template_network")
+
+#' @describeIn template_network method for [`data.frame`]s and [`tibble`]s, specifying ego composition directly.
+#' @export
+template_network.data.frame <- function(x, ...){
+  y0 <- network.initialize(nrow(x),directed=FALSE)
+
+  for(ego.col in names(x))
+    if(is.factor(x[[ego.col]]))
+      y0 <- set.vertex.attribute(y0,ego.col,as.character(x[[ego.col]]))
+    else
+      y0 <- set.vertex.attribute(y0,ego.col,x[[ego.col]])
+  y0 %v% ".ego.ind" <- seq_len(nrow(x))
+  y0
+}
+
+#' @describeIn template_network method for [`egor`] objects; weights, if any, are obtained from the `egor`'s design information.
+#' @export
+template_network.egor <- function(x, N, scaling=c("round","sample"), ...){
   w <- NVL(weights(x), rep(1,nrow(x)))
+  scaling <- match.arg(scaling)
   egoinds <- switch(scaling,
                     greedy={
                       .greedy.scaling(N,w)
@@ -147,17 +165,9 @@ template_network<-function(x, N, scaling=c("round","sample"), ...){
                     })
 
   N <- length(egoinds) # round scaling may modify N.
-  y0<-network.initialize(N,directed=FALSE)
+  x <- as_tibble(x)[egoinds,]
 
-  x <- as_tibble(x$ego)[egoinds,]
-  
-  for(ego.col in names(x))
-    if(is.factor(x[[ego.col]]))
-      y0 <- set.vertex.attribute(y0,ego.col,as.character(x[[ego.col]]))
-    else
-      y0 <- set.vertex.attribute(y0,ego.col,x[[ego.col]])
-  y0 %v% ".ego.ind" <- egoinds
-  y0
+  template_network(x, N=N, w=w, scaling=scaling, ...)
 }
 
 .greedy.scaling <- function(N, w){

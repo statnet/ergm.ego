@@ -2,12 +2,20 @@
 % Please edit documentation in R/egor.R
 \name{template_network}
 \alias{template_network}
+\alias{template_network.data.frame}
+\alias{template_network.egor}
 \title{Construct an Empty ``Template'' Network Consistent with an Egocentric Sample}
 \usage{
-template_network(x, N, scaling = c("round", "sample"), ...)
+template_network(x, ...)
+
+\method{template_network}{data.frame}(x, ...)
+
+\method{template_network}{egor}(x, N, scaling = c("round", "sample"), ...)
 }
 \arguments{
 \item{x}{A \code{\link{egor}} object.}
+
+\item{...}{Additional arguments, currently unused.}
 
 \item{N}{The target number of vertices the output network should have.}
 
@@ -20,18 +28,23 @@ setting, calculate \eqn{N w_i / w_\cdot} for each ego \eqn{i} and round it
 to the nearest integer. Then, the \code{N} actually used will be the sum of
 these rounded freqencies.} \item{"sample"}{Resample in
 proportion to \eqn{w_i}.} }}
-
-\item{...}{Additional arguments, currently unused.}
 }
 \value{
 A \code{\link[network]{network}} object.
 }
 \description{
-Taking a \code{\link{egor}} object, constructs a
+Taking an object with ego information, constructs a
 \code{\link[network]{network}} object with no edges whose vertices have the
 attributes of the egos in the dataset, replicating the egos as needed, and
 taking into accounts their sampling weights.
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{template_network(data.frame)}: method for \code{\link{data.frame}}s and \code{\link{tibble}}s, specifying ego composition directly.
+
+\item \code{template_network(egor)}: method for \code{\link{egor}} objects; weights, if any, are obtained from the \code{egor}'s design information.
+
+}}
 \examples{
 
 

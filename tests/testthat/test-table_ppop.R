@@ -7,67 +7,34 @@
 #
 #  Copyright 2015-2022 Statnet Commons
 ################################################################################
-test_that("estimation works", {
-  
-  skip("Not yet fixed")
-  
+test_that("estimation and simulation work", {
   data(faux.mesa.high)
   fmh.ego <- as.egor(faux.mesa.high)
-  ppop <- rbind(fmh.ego, fmh.ego)
-  ppop$.alts <- NULL
-  ppop$.aaties <- NULL
-  ppop <- as.data.frame(ppop)
-  
+  ppop <- fmh.ego$ego[rep(seq_len(nrow(fmh.ego$ego)), each=2),]
+
   set.seed(0)
-  expect_silent(
-    egofit <- ergm.ego(
-      fmh.ego ~ edges + degree(0:3) + nodefactor("Race") + nodematch("Race")
-      + nodefactor("Sex") + nodematch("Sex") + absdiff("Grade"), 
-      popsize = network.size(faux.mesa.high),
-      control = control.ergm.ego(
-        ppopsize=ppop,
-        ergm = control.ergm(
-          MCMLE.maxit=2
-        )
-      )
-    )
-  )
+  (egofit_egopop <- ergm.ego(
+     fmh.ego ~ edges + degree(0:3) + nodefactor("Race") + nodematch("Race")
+     + nodefactor("Sex") + nodematch("Sex") + absdiff("Grade"),
+     popsize = network.size(faux.mesa.high), estimate = "MPLE",
+     control = control.ergm.ego(
+       ppopsize=ppop
+     )
+   )) |> expect_error(NA) |> expect_warning(NA)
+
+  set.seed(0)
+  (egofit_scl <- ergm.ego(
+     fmh.ego ~ edges + degree(0:3) + nodefactor("Race") + nodematch("Race")
+     + nodefactor("Sex") + nodematch("Sex") + absdiff("Grade"),
+     popsize = network.size(faux.mesa.high), estimate = "MPLE",
+     control = control.ergm.ego(
+       ppopsize=2*network.size(faux.mesa.high)
+     )
+   )) |> expect_error(NA) |> expect_warning(NA)
+
+  expect_equal(coef(egofit_scl), coef(egofit_egopop))
+
+  ppop <- ppop[sample.int(nrow(ppop), nrow(ppop)*1.5, replace=TRUE),]
+  
+  (egosim <- simulate(egofit_scl, popsize=ppop)) |> expect_silent()
 })
-
-
-
-test_that("coefs are equal", {
-  skip("Not yet fixed")
-  
-  est <- coef(egofit)
-  tgt <-   c(## -0.8407,
-    2.3393, 1.4686, 0.6323, 0.5287, -1.3603, -1.0454,
-    -2.4998, -0.7207, 0.833, -0.1823, 0.6357, -1.3513)[-(1:2)]
-  
-  # plot(est, tgt); abline(a=0, b=1, lty=2)
-  
-  expect_equal(ignore_attr=TRUE,
-    unname(est)[-(1:2)],
-    tgt,
-    tolerance = 0.1
-  )
-})
-
-
-
-
-test_that("simulating works", {
-  
-  skip("Not yet fixed")
-  
-  ppop <- fmh.ego[sample.int(nrow(fmh.ego), nrow(fmh.ego)*1.5, replace=TRUE),]
-  ppop$.alts <- NULL
-  ppop$.aaties <- NULL
-  ppop <- as.data.frame(ppop)
-  
-  expect_silent(
-    egosim <- simulate(egofit, popsize=ppop)
-  )
-})
-
-
