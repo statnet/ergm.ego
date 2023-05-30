@@ -1,5 +1,5 @@
 Package: ergm.ego
-Version: 1.1-704
+Version: 1.1.0
 Date: 2023-05-30
 Title: Fit, Simulate and Diagnose Exponential-Family Random Graph Models to Egocentrically Sampled Network Data
 Authors@R: c(
@@ -38,9 +38,3 @@ Encoding: UTF-8
 LazyData: true
 Config/testthat/parallel: true
 Config/testthat/edition: 3
-Remotes:
-    github::statnet/rle@master,
-    github::statnet/statnet.common@master,
-    github::statnet/network@master,
-    github::statnet/ergm@master,
-    github::tilltnet/egor
