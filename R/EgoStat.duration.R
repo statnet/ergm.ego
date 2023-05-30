@@ -5,7 +5,7 @@
 #  open source, and has the attribution requirements (GPL Section 7) at
 #  https://statnet.org/attribution .
 #
-#  Copyright 2015-2022 Statnet Commons
+#  Copyright 2015-2023 Statnet Commons
 ################################################################################
 EgoStat.mean.age <- function(egor, emptyval=0){
   startcol <- attr(egor,"alter_design")$startcol
