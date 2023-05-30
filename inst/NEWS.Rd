@@ -69,12 +69,11 @@
 
   \subsection{NEW FEATURES}{
     \itemize{
-      \item \code{\link{ergm.ego}()} now has a \code{basis=} argument.
+      \item \code{\link{ergm.ego}()} now has a \code{basis=} argument. So does \code{\link{simulate.ergm.ego}()}, for consistency (as an alias for the \code{popsize=} argument).
 
       \item \code{\link{simulate.ergm.ego}()}'s \code{popsize=} argument can now be a network object, enabling simulation from any starting network.
     }
   }
-
 
   \subsection{BUG FIXES}{
     \itemize{
@@ -84,10 +83,11 @@
         \item \code{\link{gof.ergm.ego}()} was scrambling the the order of ESP terms.
 
         \item \code{\link{simulate.ergm.ego}()} is now more robust to models with offsets and extreme \dQuote{dropped} statistics.
+
+        \item \code{\link{ergm.ego}()} (via \code{\link{control.ergm.ego}(ppopsize=)}) and \code{\link{simulate.ergm.ego}(popsize=)} can once again take \code{\link{data.frame}}s and \code{\link{tibble}}s to specify the pseudopopulation network composition directly.
       }
     }
   }
-
 
   \subsection{OTHER USER-VISIBLE CHANGES}{
     \itemize{
@@ -96,30 +96,6 @@
       \item \code{\link{simulate.ergm.ego}()} no longer supports \code{\link{ergm.ego}} objects fit under under \CRANpkg{ergm} < 4.
     }
   }
-
-  \subsection{C-LEVEL FACILITIES}{
-    \itemize{
-    }
-  }
-
-  \subsection{UTILITIES}{
-    \itemize{
-      \item Likewise, "UTILITIES" is probably unnecessary.
-    }
-  }
-
-  \subsection{INSTALLATION}{
-    \itemize{
-      \item ... as is "INSTALLATION".
-    }
-  }
-
-  \subsection{PACKAGE INSTALLATION}{
-    \itemize{
-      \item ditto.
-    }
-  }
-
 }
 
 
