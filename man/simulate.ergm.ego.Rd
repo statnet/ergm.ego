@@ -14,6 +14,7 @@
   control = control.simulate.ergm.ego(),
   output = c("network", "stats", "edgelist", "pending_update_network", "ergm_state"),
   ...,
+  basis = NULL,
   verbose = FALSE
 )
 }
@@ -28,10 +29,12 @@
 \item{constraints, \dots}{Additional arguments passed to \code{\link[ergm]{san}} and
 \code{\link[ergm]{simulate.formula}}.}
 
-\item{popsize}{A network size to which to scale the model for
+\item{popsize, basis}{A network size to which to scale the model for
 simulation; a \code{\link{data.frame}} with at least those ego attributes
-used to estimate the model to simulate over a specific set
-of actors; or a \code{\link{network}} object to use as is.}
+used to estimate the model to simulate over a specific set of
+actors; or a \code{\link{network}} object to use as is. \code{basis} is provided
+for consistency with \code{\link[=ergm]{ergm()}}, \code{\link[=ergm.ego]{ergm.ego()}}, \code{\link[=simulate.ergm]{simulate.ergm()}},
+and others. If both are specified, \code{popsize} overrules.}
 
 \item{control}{A \code{\link{control.simulate.ergm.ego}} control list.}
 
@@ -44,8 +47,6 @@ progress and diagnostic information to be printed. \code{FALSE}/\code{0}
 produces minimal output, with higher values producing more
 detail. Note that very high values (5+) may significantly slow
 down processing.}
-
-\item{basis}{a value (usually an \code{\link{egor}}) to override the LHS of the formula.}
 }
 \value{
 The ouput has the same format (with the same options) as

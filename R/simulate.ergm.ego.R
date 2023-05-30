@@ -18,13 +18,13 @@
 #' @param object An \code{\link{ergm.ego}} fit.
 #' @param nsim Number of realizations to simulate.
 #' @template seed
-#' @param popsize A network size to which to scale the model for
+#' @param popsize,basis A network size to which to scale the model for
 #'   simulation; a [`data.frame`] with at least those ego attributes
-#'   used to estimate the model to simulate over a specific set
-#'   of actors; or a [`network`] object to use as is.
+#'   used to estimate the model to simulate over a specific set of
+#'   actors; or a [`network`] object to use as is. `basis` is provided
+#'   for consistency with [ergm()], [ergm.ego()], [simulate.ergm()],
+#'   and others. If both are specified, `popsize` overrules.
 #' @param control A \code{\link{control.simulate.ergm.ego}} control list.
-#' @template basis
-#' 
 #' @param output one of `"network"`, `"stats"`, `"edgelist"`,
 #'   `"pending_update_network"`, or, for future compatibility,
 #'   `"ergm_state"`. See help for [simulate.ergm()] for explanation.
@@ -65,12 +65,13 @@
 #'
 #' @importFrom stats simulate
 #' @export
-simulate.ergm.ego <- function(object, nsim = 1, seed = NULL, constraints=object$constraints, popsize=if(object$popsize==1 || object$popsize==0 || is(object$popsize, "AsIs")) object$ppopsize else object$popsize, control=control.simulate.ergm.ego(), output=c("network","stats","edgelist","pending_update_network", "ergm_state"), ..., verbose=FALSE){
+simulate.ergm.ego <- function(object, nsim = 1, seed = NULL, constraints=object$constraints, popsize=if(object$popsize==1 || object$popsize==0 || is(object$popsize, "AsIs")) object$ppopsize else object$popsize, control=control.simulate.ergm.ego(), output=c("network","stats","edgelist","pending_update_network", "ergm_state"), ..., basis=NULL, verbose=FALSE){
   statnet.common::check.control.class("simulate.ergm.ego", "simulate.ergm.ego")
   output <- match.arg(output)
 
   nsa <- !is.null(object$netsize.adj)
-  
+
+  if(!is.null(basis)) popsize <- basis
   if(is.network(popsize)){
     popnw <- popsize
     popsize <- network.size(popsize)
