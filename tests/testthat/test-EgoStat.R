@@ -40,7 +40,9 @@ test_that("egostats are close to complete network stats", {
     
     absdiff("a") + absdiff("a", 2) + absdiff(~a + 2*c - exp(d)) + 
     absdiff(function(x) if(is(x, "data.frame")) x[["a"]] + 2*x[["c"]] - exp(x[["d"]]) else (x %v% "a") + 2*(x %v% "c") - exp(x %v% "d")) + 
-    
+
+    absdiffcat("a") + absdiffcat("a", levels=-1) + absdiffcat("a", levels=2) +
+
     degree(0) + degree(3) + degree(0:6) +
     degree(0, by="a") + degree(3, by="a") + degree(0:6, by="a") +
     degree(0, by="a", homophily=TRUE) + degree(3, by="a", homophily=TRUE) + degree(0:6, by="a", homophily=TRUE) + degree(0:6, by="a", homophily=FALSE, levels = -1) + 
@@ -132,11 +134,12 @@ test_that("egostats with alter missing data are close to complete network stats"
   f <- ~ edges +
     nodecov("a") +
     
-    nodefactor("a", 0) + nodefactor("a", 1) + nodefactor("a", 2) +
+    nodefactor("a", levels=TRUE) + nodefactor("a", levels=-1) + nodefactor("a", levels=-2) +
     
-    nodematch("a") + nodematch("a", TRUE) + nodematch("a", TRUE, 2) +
+    nodematch("a") + nodematch("a", TRUE) + nodematch("a", TRUE, levels=-2) +
     
     absdiff("a") + absdiff("a", 2) +
+    absdiffcat("a") + absdiffcat("a", levels=-1) + absdiffcat("a", levels=I(2)) +
     
     degree(0) + degree(3) + degree(0:6) +
     degree(0, by="a") + degree(3, by="a") + degree(0:6, by="a") +

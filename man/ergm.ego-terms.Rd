@@ -48,6 +48,7 @@ and should not be used in the model formula directly.  } } }
 \item \code{nodematch}
 \item \code{nodemix}
 \item \code{absdiff}
+\item \code{absdiffcat}
 \item \code{degree}
 \item \code{degrange}
 \item \code{concurrent}
