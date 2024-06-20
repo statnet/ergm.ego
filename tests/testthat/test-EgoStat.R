@@ -120,7 +120,7 @@ test_that("scaling and nonscaling egostats are combined correctly", {
 test_that("egostats with alter missing data are close to complete network stats", {
   
   # Test data
-  set.seed(0)
+  set.seed(1)
   n <- 100
   e <- 150
   ds <- c(10,15,5,20)
