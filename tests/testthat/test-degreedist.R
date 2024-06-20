@@ -114,15 +114,15 @@ for(i in seq(1, nrow(arg_df))) {
               fmh.ego,
               prob = prob,
               brgmod = brgmod,
-              by = by[[1]],
+              by = by,
               plot = FALSE
             )
           )
           # Conditional probs sum to number of cat. of `by`
-          if(prob && !is.null(by[[1]])) 
+          if(prob && !is.null(by)) 
             expect_equal(sum(res), length(unique(fmh.ego$ego[[by]]))) 
           # Unconditional probs sum to 1
-          if(prob && is.null(by[[1]])) expect_equal(sum(res), 1)
+          if(prob && is.null(by)) expect_equal(sum(res), 1)
           # Counts sum to # of egos
           if(!prob) expect_equal(sum(res), nrow(fmh.ego$ego))
         }
