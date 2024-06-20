@@ -88,16 +88,13 @@ degreedist.egor <- function(object, freq = FALSE, prob = !freq,
   if(prob){
     if(is.null(by)){
       scaledeg <- sum(deg.ego)
-      deg.ego <- deg.ego/scaledeg
-      maxfreq <- max(deg.ego, na.rm = TRUE)
     } else {
       scaledeg <- rowSums(deg.ego)
-      deg.ego <- deg.ego/scaledeg
-      deg.ego <- deg.ego
-      maxfreq <- max(max(deg.ego, na.rm = TRUE))
       beside <- TRUE
     }
+    deg.ego <- deg.ego/scaledeg
   }
+  maxfreq <- max(deg.ego, na.rm=TRUE)
   
   if(plot){
     if(brgmod) {
