@@ -65,6 +65,59 @@
 %% }
 
 
+\section{Changes in version 1.1.1}{
+
+  \subsection{NEW FEATURES}{
+    \itemize{
+      \item{
+        An \code{\link{EgoStat}} for \code{\link[ergm:absdiffcat-ergmTerm]{absdiffcat()}} has been added.
+      }
+    }
+  }
+
+
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item{
+        \code{\link[ergm.ego:degreedist]{degreedist()}} has been fixed.
+      }
+    }
+  }
+
+
+  \subsection{OTHER USER-VISIBLE CHANGES}{
+    \itemize{
+      \item{
+      }
+    }
+  }
+
+  \subsection{C-LEVEL FACILITIES}{
+    \itemize{
+    }
+  }
+
+  \subsection{UTILITIES}{
+    \itemize{
+      \item Likewise, "UTILITIES" is probably unnecessary.
+    }
+  }
+
+  \subsection{INSTALLATION}{
+    \itemize{
+      \item ... as is "INSTALLATION".
+    }
+  }
+
+  \subsection{PACKAGE INSTALLATION}{
+    \itemize{
+      \item ditto.
+    }
+  }
+
+}
+
+
 \section{Changes in version 1.1.0}{
 
   \subsection{NEW FEATURES}{
