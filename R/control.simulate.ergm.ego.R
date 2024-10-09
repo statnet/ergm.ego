@@ -9,10 +9,10 @@
 ################################################################################
 
 
-#' Control parameters for \code{\link{simulate.ergm.ego}}.
+#' Control parameters for [simulate.ergm.ego()].
 #' 
 #' Constructs and checks the list of control parameters for simulation by
-#' \code{\link{simulate.ergm.ego}}.
+#' [simulate.ergm.ego()].
 #' 
 #' 
 #' @param ppop.wt Because each ego must be represented in the pseuodopopulation
@@ -27,12 +27,12 @@
 #' the sum of these rounded freqencies.}
 #' \item{"sample"}{Resample in proportion to \eqn{w_i}.} }
 #' 
-#' @param SAN A list of control parameters for \code{\link[ergm]{san}}
-#' constructed by \code{\link[ergm]{control.ergm}}, called to construct a
+#' @param SAN A list of control parameters for [san()]
+#' constructed by [control.ergm()], called to construct a
 #' pseudopopulation network consistent with the data.
 #' @param simulate A list of control parameters for
-#' \code{\link[ergm]{simulate.formula}} constructed by
-#' \code{\link[ergm]{control.simulate}}, called to simulate from the model fit.
+#' [simulate.formula()] constructed by
+#' [control.simulate()], called to simulate from the model fit.
 #' @param \dots Not used at this time.
 #' @return A list with arguments as components.
 #' @author Pavel N. Krivitsky

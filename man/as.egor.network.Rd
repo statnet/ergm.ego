@@ -2,25 +2,25 @@
 % Please edit documentation in R/egor.R
 \name{as.egor.network}
 \alias{as.egor.network}
-\title{Construct an Egocentric View of a \code{\link{network}} Object}
+\title{Construct an Egocentric View of a \code{\link[network:network]{network}} Object}
 \usage{
 \method{as.egor}{network}(x, special.cols = c("na"), ...)
 }
 \arguments{
-\item{x}{A \code{\link[network]{network}} object.}
+\item{x}{A \code{\link[network:network]{network}} object.}
 
 \item{special.cols}{Vertex attributes that should not be copied to the
 \code{egos} and \code{alters} tables. Defaults to attributes special to the
-\code{\link[network]{network}} objects.}
+\code{\link[network:network]{network}} objects.}
 
 \item{...}{Additional arguments, currently unused.}
 }
 \value{
-An \code{\link{egor}} object.
+An \code{\link[egor:egor]{egor}} object.
 }
 \description{
-Given a \code{\link[network]{network}} object, construct an
-\code{\link{egor}} object representing a census of all the actors in the
+Given a \code{\link[network:network]{network}} object, construct an
+\code{\link[egor:egor]{egor}} object representing a census of all the actors in the
 network. Used mainly for testing.
 }
 \examples{
@@ -28,7 +28,7 @@ network. Used mainly for testing.
 # See example(ergm.ego) and example(template_network).
 }
 \seealso{
-\code{\link{template_network}}, which performs the inverse
+\code{\link[=template_network]{template_network()}}, which performs the inverse
 operation (though drops the ties).
 }
 \author{

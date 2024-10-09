@@ -8,7 +8,7 @@
 \method{mixingmatrix}{egor}(object, attrname, rowprob = FALSE, weight = TRUE, ...)
 }
 \arguments{
-\item{object}{A \code{\link{egor}} object.}
+\item{object}{A \code{\link[egor:egor]{egor}} object.}
 
 \item{attrname}{A character vector containing the name of the network
 attribute whose mixing matrix is wanted.}
@@ -24,14 +24,14 @@ the calculation (\code{TRUE}, the default) or ignored (\code{FALSE}).}
 \value{
 A matrix with a row and a column for each level of \code{attrname}.
 
-Note that, unlike \code{\link[network]{mixingmatrix}}, what is counted are
+Note that, unlike \code{\link[network:mixingmatrix]{network::mixingmatrix()}}, what is counted are
 \emph{nominations}, not ties. This means that under an egocentric census,
 the diagonal of \code{mixingmatrix.egor} will be twice that returned by
-\code{\link[network]{mixingmatrix}} for the original undirected network.
+\code{\link[network:mixingmatrix]{network::mixingmatrix()}} for the original undirected network.
 }
 \description{
 A \code{\link[network]{mixingmatrix}} method for
-\code{\link{egor}} objects, to return counts of how often a ego
+\code{\link[egor:egor]{egor}} objects, to return counts of how often a ego
 of each group nominates an alter of each group.
 }
 \examples{
@@ -44,6 +44,6 @@ fmh.ego <- as.egor(faux.mesa.high)
 
 }
 \seealso{
-\code{\link[network]{mixingmatrix}}, \code{\link[ergm]{nodemix-ergmTerm}},
+\code{\link[network:mixingmatrix]{network::mixingmatrix()}}, \code{\link[ergm:nodemix-ergmTerm]{nodemix}} ERGM term,
 \code{\link[ergm.ego]{summary}} method for egocentric data
 }

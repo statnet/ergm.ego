@@ -18,7 +18,7 @@
 )
 }
 \arguments{
-\item{object}{A \code{\link{egor}} object.}
+\item{object}{A \code{\link[egor:egor]{egor}} object.}
 
 \item{freq, prob}{Whether to plot the raw frequencies or the conditional
 proportions of the degree values. Defaults to the latter.}
@@ -62,6 +62,5 @@ degreedist(faux.mesa.high)
 
 }
 \seealso{
-\code{\link{degreedist}},
-\code{\link[ergm:summary_formula]{summary}}
+\code{\link[=degreedist]{degreedist()}}, \code{\link[ergm:summary_formula]{summary}} for formulas.
 }

@@ -88,7 +88,7 @@ the formula's environment.}
 \item{attr}{A vector of length equal to the number of nodes,
 specifying the attribute vector.}
 
-\item{egor}{An \code{\link{egor}} object.}
+\item{egor}{An \code{\link[egor:egor]{egor}} object.}
 
 \item{levels}{Starting set of levels to use; defaults to the sorted
 list of unique attributes.}
@@ -111,12 +111,12 @@ intended to parallel \link[ergm:nodal_attributes-API]{ergm::nodal_attributes-API
 
 \code{ergm.ego_get_vattr} extracts and processes the specified
 nodal attribute vector. It is strongly recommended that
-\code{\link[=check.ErgmTerm]{check.ErgmTerm()}}'s corresponding
+\code{\link[ergm:check.ErgmTerm]{check.ErgmTerm()}}'s corresponding
 \code{vartype="function,formula,character"} (using the
 \code{ERGM_VATTR_SPEC} constant).
 
 \code{ergm.ego_attr_levels} filters the levels of the
-attribute.  It is strongly recommended that \code{\link[=check.ErgmTerm]{check.ErgmTerm()}}'s
+attribute.  It is strongly recommended that \code{\link[ergm:check.ErgmTerm]{check.ErgmTerm()}}'s
 corresponding
 \code{vartype="function,formula,character,numeric,logical,AsIs,NULL"} (using the
 \code{ERGM_LEVELS_SPEC} constant).
@@ -160,7 +160,7 @@ beconverted to character).}
 }
 \section{Functions}{
 \itemize{
-\item \code{COLLAPSE_SMALLEST()}: A version of \code{\link[ergm:nodal_attributes]{ergm::COLLAPSE_SMALLEST()}} that can handle both \code{\link{network}} and \code{\link{egodata}} objects.
+\item \code{COLLAPSE_SMALLEST()}: A version of \code{\link[ergm:nodal_attributes]{ergm::COLLAPSE_SMALLEST()}} that can handle both \code{\link[network:network]{network}} and \code{\link{egodata}} objects.
 
 }}
 \examples{

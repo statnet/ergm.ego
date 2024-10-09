@@ -13,13 +13,13 @@ template_network(x, ...)
 \method{template_network}{egor}(x, N, scaling = c("round", "sample"), ...)
 }
 \arguments{
-\item{x}{A \code{\link{egor}} object.}
+\item{x}{A \code{\link[egor:egor]{egor}} object.}
 
 \item{...}{Additional arguments, currently unused.}
 
 \item{N}{The target number of vertices the output network should have.}
 
-\item{scaling}{If \code{\link{egor}} contains weights or \code{N} is not
+\item{scaling}{If \code{\link[egor:egor]{egor}} contains weights or \code{N} is not
 a multiple of number of egos in the sample, it may not be possible, for a
 finite \code{N} to represent each ego exactly according to its relative
 weight, and \code{scaling} controls how the fractional egos are allocated:
@@ -30,19 +30,19 @@ these rounded freqencies.} \item{"sample"}{Resample in
 proportion to \eqn{w_i}.} }}
 }
 \value{
-A \code{\link[network]{network}} object.
+A \code{\link[network:network]{network}} object.
 }
 \description{
 Taking an object with ego information, constructs a
-\code{\link[network]{network}} object with no edges whose vertices have the
+\code{\link[network:network]{network}} object with no edges whose vertices have the
 attributes of the egos in the dataset, replicating the egos as needed, and
 taking into accounts their sampling weights.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{template_network(data.frame)}: method for \code{\link{data.frame}}s and \code{\link{tibble}}s, specifying ego composition directly.
+\item \code{template_network(data.frame)}: method for \code{\link{data.frame}}s and \code{\link[tibble:tibble]{tibble}}s, specifying ego composition directly.
 
-\item \code{template_network(egor)}: method for \code{\link{egor}} objects; weights, if any, are obtained from the \code{egor}'s design information.
+\item \code{template_network(egor)}: method for \code{\link[egor:egor]{egor}} objects; weights, if any, are obtained from the \code{egor}'s design information.
 
 }}
 \examples{
@@ -63,7 +63,7 @@ summary(fmh2.template, print.adj = FALSE)
 
 }
 \seealso{
-\code{\link{as.egor.network}}, which performs the inverse
+\code{\link[=as.egor.network]{as.egor.network()}}, which performs the inverse
 operation.
 }
 \author{

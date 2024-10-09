@@ -4,24 +4,22 @@
 \alias{as.egor.egodata}
 \alias{egodata}
 \alias{as_egor.egodata}
-\title{Convert (deprecated) \code{\link{egodata}} Objects to
-\code{\link{egor}} Objects}
+\title{Convert (deprecated) \code{\link{egodata}} Objects to \code{\link[egor:egor]{egor}} Objects}
 \usage{
 \method{as.egor}{egodata}(x, ...)
 
 as_egor.egodata(x, ...)
 }
 \arguments{
-\item{x}{a \code{\link{egodata}} object}
+\item{x}{an \code{\link{egodata}} object}
 
 \item{...}{additional arguments, currently unused.}
 }
 \value{
-An \code{\link{egor}} object.
+An \code{\link[egor:egor]{egor}} object.
 }
 \description{
-Convert (deprecated) \code{\link{egodata}} Objects to
-\code{\link{egor}} Objects
+Convert (deprecated) \code{\link{egodata}} Objects to \code{\link[egor:egor]{egor}} Objects
 }
 \author{
 Pavel N. Krivitsky

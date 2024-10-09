@@ -17,7 +17,7 @@
 #' graph.
 #' 
 #' @aliases degreedist
-#' @param object A \code{\link{egor}} object.
+#' @param object A [`egor`] object.
 #' @param freq,prob Whether to plot the raw frequencies or the conditional
 #' proportions of the degree values. Defaults to the latter.
 #' @param by A character vector giving the name of a vertex attribute; if
@@ -36,8 +36,7 @@
 #'   if `by=NULL` or a matrix with a row for each category if not. If
 #'   \code{plot==TRUE} returns invisibly.
 #' 
-#' @seealso \code{\link{degreedist}},
-#' \code{\link[ergm:summary_formula]{summary}}
+#' @seealso [degreedist()], \code{\link[ergm:summary_formula]{summary}} for formulas.
 #' @examples
 #' 
 #' data(faux.mesa.high)
@@ -151,12 +150,12 @@ degreedist.egor <- function(object, freq = FALSE, prob = !freq,
 #' Summarizing the mixing among groups in an egocentric dataset
 #' 
 #' A \code{\link[network]{mixingmatrix}} method for
-#' \code{\link{egor}} objects, to return counts of how often a ego
+#' [`egor`] objects, to return counts of how often a ego
 #' of each group nominates an alter of each group.
 #' 
 #' 
 #' @aliases mixingmatrix
-#' @param object A \code{\link{egor}} object.
+#' @param object A [`egor`] object.
 #' @param attrname A character vector containing the name of the network
 #' attribute whose mixing matrix is wanted.
 #' @param rowprob Whether the counts should be normalized by row sums. That is,
@@ -166,11 +165,11 @@ degreedist.egor <- function(object, freq = FALSE, prob = !freq,
 #' @param ... Additional arguments, currently unused.
 #' @return A matrix with a row and a column for each level of \code{attrname}.
 #' 
-#' Note that, unlike \code{\link[network]{mixingmatrix}}, what is counted are
+#' Note that, unlike [network::mixingmatrix()], what is counted are
 #' \emph{nominations}, not ties. This means that under an egocentric census,
 #' the diagonal of \code{mixingmatrix.egor} will be twice that returned by
-#' \code{\link[network]{mixingmatrix}} for the original undirected network.
-#' @seealso \code{\link[network]{mixingmatrix}}, \code{\link[ergm]{nodemix-ergmTerm}},
+#' [network::mixingmatrix()] for the original undirected network.
+#' @seealso [network::mixingmatrix()], \code{\link[ergm:nodemix-ergmTerm]{nodemix}} ERGM term,
 #' \code{\link[ergm.ego]{summary}} method for egocentric data
 #' @examples
 #' 

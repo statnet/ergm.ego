@@ -24,10 +24,10 @@ Model fit to Egocentrically Sampled Data}
 
 \item{GOF}{A string specifying the statistics whose goodness of fit is to be
 evaluated. Currently, only \dQuote{degree}, \dQuote{espartners} and \dQuote{model} are
-implemented; see \code{\link[ergm]{gof}} documentation for details.}
+implemented; see \code{\link[ergm:gof]{gof()}} documentation for details.}
 
 \item{control}{A list to control parameters, constructed using
-\code{\link{control.gof.formula}} or \code{\link{control.gof.ergm}} (which
+\code{\link[ergm:control.gof]{control.gof.formula()}} or \code{\link[ergm:control.gof]{control.gof.ergm()}} (which
 have different defaults).}
 
 \item{verbose}{Provide verbose information on the progress of the
@@ -38,10 +38,10 @@ simulation.}
 \item{ego.conf.level}{confidence level for the observed statistic estimates as well.}
 }
 \value{
-An object of class \code{\link{gof.ergm.ego}}, inheriting from \code{\link[ergm:gof.ergm]{gof.ergm}}.
+An object of class \code{\link{gof.ergm.ego}}, inheriting from \code{\link[ergm:gof]{gof.ergm()}}.
 }
 \description{
-\code{\link{gof.ergm.ego}} implements the \code{\link[ergm]{gof}} method for
+\code{\link[=gof.ergm.ego]{gof.ergm.ego()}} implements the \code{\link[ergm:gof]{gof()}} method for
 \code{\link{ergm.ego}} fit objects.
 
 An enhanced plotting method is also provided, giving uncertainty bars for the observed statistics as well.
@@ -72,7 +72,7 @@ plot(deggof)
 }
 }
 \seealso{
-For examples, see \code{\link{ergm.ego}}.
+For examples, see \code{\link[=ergm.ego]{ergm.ego()}}.
 }
 \author{
 Pavel N. Krivitsky

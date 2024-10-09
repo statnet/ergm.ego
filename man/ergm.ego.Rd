@@ -19,9 +19,9 @@ ergm.ego(
 )
 }
 \arguments{
-\item{formula}{An \code{\link{formula}} object, of the form \code{e
-  ~ <model terms>}, where \code{e} is a \code{\link{egor}}
-object. See \code{\link[ergm]{ergm}} for details and examples.
+\item{formula}{A \code{\link{formula}} object, of the form \code{e
+  ~ <model terms>}, where \code{e} is a \code{\link[egor:egor]{egor}}
+object. See \code{\link[ergm:ergm]{ergm()}} for details and examples.
 
 For a list of currently implemented egocentric terms for the RHS, see
 \code{\link{ergm.ego-terms}}.}
@@ -40,14 +40,14 @@ adjustment.}
 \item{offset.coef}{A vector of coefficients for the offset terms.}
 
 \item{constraints}{A one-sided formula \code{\link{formula}} giving
-the sample space constraints. See \code{\link[ergm]{ergm}} for
+the sample space constraints. See \code{\link[ergm:ergm]{ergm()}} for
 details and examples.}
 
-\item{\dots}{Additional arguments passed to \code{\link[ergm]{ergm}}.}
+\item{\dots}{Additional arguments passed to \code{\link[ergm:ergm]{ergm()}}.}
 
-\item{basis}{a value (usually an \code{\link{egor}}) to override the LHS of the formula.}
+\item{basis}{a value (usually an \code{\link[egor:egor]{egor}}) to override the LHS of the formula.}
 
-\item{control}{A \code{\link{control.ergm.ego}} control list.}
+\item{control}{A \code{\link[=control.ergm.ego]{control.ergm.ego()}} control list.}
 
 \item{na.action}{How to handle missing actor attributes in egos or alters,
 when the terms need them for  models that scale.}
@@ -55,19 +55,19 @@ when the terms need them for  models that scale.}
 \item{na.rm}{How to handle missing actor attributes in egos or alters,
 when the terms need them for models that do not scale.}
 
-\item{do.fit}{Whether to actually call \code{\link[ergm]{ergm}}}
+\item{do.fit}{Whether to actually call \code{\link[ergm:ergm]{ergm()}}}
 }
 \value{
-An object of class \code{ergm.ego} inheriting from
-\code{\link[ergm]{ergm}}, with the following additional or overridden
+An object of class \code{\link{ergm.ego}} inheriting from
+\code{\link[ergm:ergm]{ergm}}, with the following additional or overridden
 elements:
 \item{"v"}{Variance-covariance matrix of the estimate of the
 sufficient statistics}
 \item{"m"}{Estimate of the sufficient
 statistics}
-\item{"egor"}{The \code{\link{egor}} object passed}
+\item{"egor"}{The \code{\link[egor:egor]{egor}} object passed}
 \item{"popsize"}{Population network size used}
-\item{"ppopsize"}{Pseudopopulation size used, see \code{\link{control.ergm.ego}}}
+\item{"ppopsize"}{Pseudopopulation size used, see \code{\link[=control.ergm.ego]{control.ergm.ego()}}}
 \item{"coef"}{The
 coefficients, along with the network size adjustment \code{netsize.adj}
 coefficient.}
@@ -81,8 +81,8 @@ incorporating sampling).  }
 statistics with respect to the model parameters}
 }
 \description{
-A wrapper around the \code{\link[ergm]{ergm}} to fit an ERGM to an
-\code{\link{egor}}.
+A wrapper around the \code{\link[ergm:ergm]{ergm()}} to fit an ERGM to an
+\code{\link[egor:egor]{egor}}.
 }
 \examples{
 \donttest{
@@ -115,7 +115,7 @@ Network Size and Composition Effects in Exponential-Family Random Graph
 Models." \emph{Statistical Methodology}, 8(4): 319–339. \doi{10.1016/j.stamet.2011.01.005}
 }
 \seealso{
-\code{\link[ergm]{ergm}()}
+\code{\link[ergm:ergm]{ergm()}}
 }
 \author{
 Pavel N. Krivitsky

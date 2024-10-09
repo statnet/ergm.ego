@@ -2,7 +2,7 @@
 % Please edit documentation in R/simulate.ergm.ego.R
 \name{simulate.ergm.ego}
 \alias{simulate.ergm.ego}
-\title{Simulate from a \code{\link{ergm.ego}} fit.}
+\title{Simulate from a \code{\link[=ergm.ego]{ergm.ego()}} fit.}
 \usage{
 \method{simulate}{ergm.ego}(
   object,
@@ -26,21 +26,21 @@
 \item{seed}{Seed value (integer) for the random number generator.  See
 \code{\link[base]{set.seed}}.}
 
-\item{constraints, \dots}{Additional arguments passed to \code{\link[ergm]{san}} and
-\code{\link[ergm]{simulate.formula}}.}
+\item{constraints, \dots}{Additional arguments passed to \code{\link[ergm:san]{san()}} and
+\code{\link[ergm:simulate.formula]{simulate.formula()}}.}
 
 \item{popsize, basis}{A network size to which to scale the model for
 simulation; a \code{\link{data.frame}} with at least those ego attributes
 used to estimate the model to simulate over a specific set of
-actors; or a \code{\link{network}} object to use as is. \code{basis} is provided
-for consistency with \code{\link[=ergm]{ergm()}}, \code{\link[=ergm.ego]{ergm.ego()}}, \code{\link[=simulate.ergm]{simulate.ergm()}},
+actors; or a \code{\link[network:network]{network}} object to use as is. \code{basis} is provided
+for consistency with \code{\link[ergm:ergm]{ergm()}}, \code{\link[=ergm.ego]{ergm.ego()}}, \code{\link[ergm:simulate.ergm]{simulate.ergm()}},
 and others. If both are specified, \code{popsize} overrules.}
 
-\item{control}{A \code{\link{control.simulate.ergm.ego}} control list.}
+\item{control}{A \code{\link[=control.simulate.ergm.ego]{control.simulate.ergm.ego()}} control list.}
 
 \item{output}{one of \code{"network"}, \code{"stats"}, \code{"edgelist"},
 \code{"pending_update_network"}, or, for future compatibility,
-\code{"ergm_state"}. See help for \code{\link[=simulate.ergm]{simulate.ergm()}} for explanation.}
+\code{"ergm_state"}. See help for \code{\link[ergm:simulate.ergm]{simulate.ergm()}} for explanation.}
 
 \item{verbose}{A logical or an integer to control the amount of
 progress and diagnostic information to be printed. \code{FALSE}/\code{0}
@@ -50,15 +50,15 @@ down processing.}
 }
 \value{
 The ouput has the same format (with the same options) as
-\code{\link[ergm]{simulate.formula}}. If \code{output="stats"} is passed, an
+\code{\link[ergm:simulate.formula]{simulate.formula()}}. If \code{output="stats"} is passed, an
 additional attribute, \code{"ppopsize"} is set, giving the actual size of
 the network reconstructed, when the \code{pop.wt} control parameter is set
 to \code{"round"} and \code{"popsize"} is not a multiple of the egocentric
 sample size or the sampling weights.
 }
 \description{
-A wrapper around \code{\link[ergm]{simulate.formula}} to simulate networks
-from an ERGM fit using \code{\link{ergm.ego}}.
+A wrapper around \code{\link[ergm:simulate.formula]{simulate.formula()}} to simulate networks
+from an ERGM fit using \code{\link[=ergm.ego]{ergm.ego()}}.
 }
 \examples{
 
@@ -82,8 +82,7 @@ Models." \emph{Statistical Methodology}, 8(4): 319–339. \doi{10.1016/j.stamet.
 }
 }
 \seealso{
-\code{\link[ergm]{simulate.formula}},
-\code{\link[ergm]{simulate.ergm}}
+\code{\link[ergm:simulate.formula]{simulate.formula()}}, \code{\link[ergm:simulate.ergm]{simulate.ergm()}}
 }
 \author{
 Pavel N. Krivitsky

@@ -49,7 +49,7 @@ split_aaties_by_ego(x, egor)
 \arguments{
 \item{x, bin}{a vector.}
 
-\item{egor}{an \code{\link[=egor]{egor()}} object.}
+\item{egor}{an \code{\link[egor:egor]{egor()}} object.}
 
 \item{...}{Additional arguments to subroutines.}
 }

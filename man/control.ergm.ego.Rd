@@ -2,7 +2,7 @@
 % Please edit documentation in R/control.ergm.ego.R
 \name{control.ergm.ego}
 \alias{control.ergm.ego}
-\title{Control parameters for \code{\link{ergm.ego}}.}
+\title{Control parameters for \code{\link[=ergm.ego]{ergm.ego()}}.}
 \usage{
 control.ergm.ego(
   ppopsize = c("auto", "samp", "pop"),
@@ -34,7 +34,7 @@ as \code{"samp"}.}
 \item{a number}{set \eqn{|N'|} directly (\code{popsize.mul}
 ignored)}
 
-\item{a \code{\link{network}} object}{use the specified network as the
+\item{a \code{\link[network:network]{network}} object}{use the specified network as the
 pseudo-population network directly; use at your own risk}
 
 \item{a data frame}{use the specified data frame as the
@@ -82,8 +82,8 @@ fixed.} }}
 number of nominations. Used to be \code{FALSE}, now \code{TRUE} in light of
 the findings of Krivitsky et. al (2020).}
 
-\item{ergm}{Control parameters for the \code{\link[ergm]{ergm}()} call
-to fit the model, constructed by \code{\link[ergm]{control.ergm}()}.}
+\item{ergm}{Control parameters for the \code{\link[ergm:ergm]{ergm()}} call
+to fit the model, constructed by \code{\link[ergm:control.ergm]{control.ergm()}}.}
 
 \item{\dots}{Not used at this time.}
 }
@@ -92,7 +92,7 @@ A list with arguments as components.
 }
 \description{
 Constructs and checks the list of control parameters for estimation by
-\code{\link{ergm.ego}}.
+\code{\link[=ergm.ego]{ergm.ego()}}.
 }
 \references{
 Pavel N. Krivitsky and Martina Morris (2017). "Inference for social network models from egocentrically sampled data, with application to understanding persistent racial disparities in HIV prevalence in the US." \emph{Annals of Applied Statistics}, 11(1): 427–455. \doi{10.1214/16-AOAS1010}
@@ -106,7 +106,7 @@ Network Size and Composition Effects in Exponential-Family Random Graph
 Models." \emph{Statistical Methodology}, 8(4): 319–339. \doi{10.1016/j.stamet.2011.01.005}
 }
 \seealso{
-\code{\link[ergm]{control.ergm}()}
+\code{\link[ergm:control.ergm]{control.ergm()}}
 }
 \author{
 Pavel N. Krivitsky
