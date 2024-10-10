@@ -11,18 +11,18 @@
 \alias{terms-ergm}
 \alias{terms.ergm}
 \alias{EgoStat}
-\title{\code{\link[ergm]{ergm}} Terms Implemented for
-\code{\link{egor}}}
+\title{\code{\link[ergm:ergm]{ergm()}} Terms Implemented for
+\code{\link[egor:egor]{egor}}}
 \description{
-This page describes the \code{\link[ergm]{ergm}} terms (and hence network
+This page describes the \code{\link[ergm:ergm]{ergm()}} terms (and hence network
 statistics) for which inference based on egocentrically sampled data is
-implemented in \code{ergm.ego} package. Other packages may add their own
+implemented in \CRANpkg{ergm.ego} package. Other packages may add their own
 terms. These functions should not be called by the end-user.
 }
 \details{
 The current recommendation for any package implementing additional
 egocentric calculator terms is to create a help file with a name or alias
-\code{ergm.ego-terms}, so that \code{help("ergm.ego-terms")} will
+\code{\link{ergm.ego-terms}}, so that \code{help("ergm.ego-terms")} will
 list egocentric ERGM terms available from all loaded packages.
 }
 \section{Currently implemented egocentric statistics}{
@@ -33,9 +33,9 @@ parameters. The simplest way to do this is usually via \code{? TERM}.
 \describe{ \item{Special-purpose terms:}{ \describe{
 \item{netsize.adj(edges=+1, mutual=0, transitiveties=0,
 cyclicalties=0)}{A special-purpose term equivalent to a linear
-combination of \code{\link[ergm]{edges-ergmTerm}},
-\code{\link[ergm]{mutual-ergmTerm}}, \code{\link[ergm]{transitiveties-ergmTerm}}, and
-\code{\link[ergm]{cyclicalties-ergmTerm}}, to house the network-size
+combination of \code{\link[ergm:edges-ergmTerm]{edges}},
+\code{\link[ergm:mutual-ergmTerm]{mutual}}, \code{\link[ergm:transitiveties-ergmTerm]{transitiveties}}, and
+\code{\link[ergm:cyclicalties-ergmTerm]{cyclicalties}}, to house the network-size
 adjustment offset. This term is added to the model automatically
 and should not be used in the model formula directly.  } } }
 
@@ -48,6 +48,7 @@ and should not be used in the model formula directly.  } } }
 \item \code{nodematch}
 \item \code{nodemix}
 \item \code{absdiff}
+\item \code{absdiffcat}
 \item \code{degree}
 \item \code{degrange}
 \item \code{concurrent}
@@ -76,6 +77,6 @@ methods may not be applicable.
 }
 
 \seealso{
-\code{\link[ergm]{ergm-terms}}
+\code{\link[ergm:ergmTerm]{ergmTerm}}
 }
 \keyword{models}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/control.simulate.ergm.ego.R
 \name{control.simulate.ergm.ego}
 \alias{control.simulate.ergm.ego}
-\title{Control parameters for \code{\link{simulate.ergm.ego}}.}
+\title{Control parameters for \code{\link[=simulate.ergm.ego]{simulate.ergm.ego()}}.}
 \usage{
 control.simulate.ergm.ego(
   ppop.wt = c("round", "sample"),
@@ -24,13 +24,13 @@ round it to the nearest integer. Then, the \eqn{|N'|} actually used will be
 the sum of these rounded freqencies.}
 \item{"sample"}{Resample in proportion to \eqn{w_i}.} }}
 
-\item{SAN}{A list of control parameters for \code{\link[ergm]{san}}
-constructed by \code{\link[ergm]{control.ergm}}, called to construct a
+\item{SAN}{A list of control parameters for \code{\link[ergm:san]{san()}}
+constructed by \code{\link[ergm:control.ergm]{control.ergm()}}, called to construct a
 pseudopopulation network consistent with the data.}
 
 \item{simulate}{A list of control parameters for
-\code{\link[ergm]{simulate.formula}} constructed by
-\code{\link[ergm]{control.simulate}}, called to simulate from the model fit.}
+\code{\link[ergm:simulate.formula]{simulate.formula()}} constructed by
+\code{\link[ergm:control.simulate.ergm]{control.simulate()}}, called to simulate from the model fit.}
 
 \item{\dots}{Not used at this time.}
 }
@@ -39,7 +39,7 @@ A list with arguments as components.
 }
 \description{
 Constructs and checks the list of control parameters for simulation by
-\code{\link{simulate.ergm.ego}}.
+\code{\link[=simulate.ergm.ego]{simulate.ergm.ego()}}.
 }
 \seealso{
 control.simulate, control.san

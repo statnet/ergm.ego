@@ -5,19 +5,18 @@
 #  open source, and has the attribution requirements (GPL Section 7) at
 #  https://statnet.org/attribution .
 #
-#  Copyright 2015-2023 Statnet Commons
+#  Copyright 2015-2024 Statnet Commons
 ################################################################################
 
 
-#' Convert (deprecated) \code{\link{egodata}} Objects to
-#' \code{\link{egor}} Objects
+#' Convert (deprecated) [`egodata`] Objects to [`egor`] Objects
 #'
 #' @aliases egodata
 #' 
-#' @param x a \code{\link{egodata}} object
+#' @param x an [`egodata`] object
 #' @param ... additional arguments, currently unused.
 #'
-#' @return An \code{\link{egor}} object.
+#' @return An [`egor`] object.
 #' 
 #' @author Pavel N. Krivitsky
 #' @keywords manip methods
@@ -34,21 +33,21 @@ as.egor.egodata <- function(x, ...){
 #' @export
 as_egor.egodata <- as.egor.egodata
 
-#' Construct an Egocentric View of a \code{\link{network}} Object
+#' Construct an Egocentric View of a [`network`] Object
 #' 
-#' Given a \code{\link[network]{network}} object, construct an
-#' \code{\link{egor}} object representing a census of all the actors in the
+#' Given a [`network`] object, construct an
+#' [`egor`] object representing a census of all the actors in the
 #' network. Used mainly for testing.
 #' 
 #' 
-#' @param x A \code{\link[network]{network}} object.
+#' @param x A [`network`] object.
 #' @param special.cols Vertex attributes that should not be copied to the
 #' \code{egos} and \code{alters} tables. Defaults to attributes special to the
-#' \code{\link[network]{network}} objects.
+#' [`network`] objects.
 #' @param ... Additional arguments, currently unused.
-#' @return An \code{\link{egor}} object.
+#' @return An [`egor`] object.
 #' @author Pavel N. Krivitsky
-#' @seealso \code{\link{template_network}}, which performs the inverse
+#' @seealso [template_network()], which performs the inverse
 #' operation (though drops the ties).
 #' @keywords datagen manip
 #' @examples
@@ -92,14 +91,14 @@ as.egor.network<-function(x,special.cols=c("na"),...){
 #' Construct an Empty ``Template'' Network Consistent with an Egocentric Sample
 #' 
 #' Taking an object with ego information, constructs a
-#' \code{\link[network]{network}} object with no edges whose vertices have the
+#' [`network`] object with no edges whose vertices have the
 #' attributes of the egos in the dataset, replicating the egos as needed, and
 #' taking into accounts their sampling weights.
 #' 
 #' 
-#' @param x A \code{\link{egor}} object.
+#' @param x A [`egor`] object.
 #' @param N The target number of vertices the output network should have.
-#' @param scaling If \code{\link{egor}} contains weights or \code{N} is not
+#' @param scaling If [`egor`] contains weights or \code{N} is not
 #' a multiple of number of egos in the sample, it may not be possible, for a
 #' finite \code{N} to represent each ego exactly according to its relative
 #' weight, and \code{scaling} controls how the fractional egos are allocated:
@@ -109,9 +108,9 @@ as.egor.network<-function(x,special.cols=c("na"),...){
 #' these rounded freqencies.} \item{"sample"}{Resample in
 #' proportion to \eqn{w_i}.} }
 #' @param ... Additional arguments, currently unused.
-#' @return A \code{\link[network]{network}} object.
+#' @return A [`network`] object.
 #' @author Pavel N. Krivitsky
-#' @seealso \code{\link{as.egor.network}}, which performs the inverse
+#' @seealso [as.egor.network()], which performs the inverse
 #' operation.
 #' @keywords manip
 #' @examples

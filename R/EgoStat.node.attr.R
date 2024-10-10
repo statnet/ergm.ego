@@ -5,7 +5,7 @@
 #  open source, and has the attribution requirements (GPL Section 7) at
 #  https://statnet.org/attribution .
 #
-#  Copyright 2015-2023 Statnet Commons
+#  Copyright 2015-2024 Statnet Commons
 ################################################################################
 #' @name nodal_attributes-API
 #' @title Helper functions for specifying nodal attribute levels
@@ -13,7 +13,7 @@
 #' @description These functions are meant to be used in `EgoStat` and other
 #'   implementations to provide the user with a way to extract nodal attributes
 #'   and select their levels in standardized and flexible ways. They are
-#'   intended to parallel [ergm::nodal_attributes-API] of `ergm` package.
+#'   intended to parallel [`ergm::nodal_attributes-API`].
 #'
 #' @param object An argument specifying the nodal attribute to select
 #'   or which levels to include.
@@ -38,7 +38,7 @@
 #' \describe{
 #'
 #' \item{`"character"`}{Accept any mode or class (since it can
-#' beconverted to character).}
+#' be converted to character).}
 #' 
 #' \item{`"numeric"`}{Accept real, integer, or logical.}
 #' 
@@ -53,9 +53,16 @@
 #' \item{`"nonnegative"`}{Accept a nonnegative number or logical.}
 #'
 #' \item{`"positive"`}{Accept a strictly positive number or logical.}
+#'
+#' \item{`"index"`}{Mentioned here for completeness, it does not make
+#'   sense for egocentric data (since networks are constructed) and so
+#'   is not supported.}
+#'
 #' }
 #'
-#' \describe{
+#' Given that, the `multiple` argument controls how passing multiple
+#' attributes or functions that result in vectors of appropriate
+#' dimension are handled: \describe{
 #' 
 #' \item{`"paste"`}{Paste together with dot as the separator.}
 #' 
@@ -76,19 +83,23 @@ NULL
 #'   `vartype="function,formula,character"` (using the
 #'   `ERGM_VATTR_SPEC` constant).
 #' 
-#' @return `ergm.ego_get_vattr` returns a vector of length equal to the number of nodes giving the
-#'   selected attribute function. It may also have an attribute
-#'   `"name"`, which controls the suggested name of the attribute
-#'   combination.
+#' @return `ergm.ego_get_vattr` returns a vector of length equal to the
+#'   number of nodes giving the selected attribute function or, if
+#'   `multiple="matrix"`, a matrix whose number of row equals the
+#'   number of nodes. Either may also have an attribute `"name"`, which
+#'   controls the suggested name of the attribute combination.
 #'
 #' @examples
 #' data(florentine)
 #' flomego <- as.egor(flomarriage)
 #' ergm.ego_get_vattr("priorates", flomego)
 #' ergm.ego_get_vattr(~priorates, flomego)
+#' ergm.ego_get_vattr(~cbind(priorates, priorates^2), flomego, multiple="matrix")
 #' ergm.ego_get_vattr(c("wealth","priorates"), flomego)
+#' ergm.ego_get_vattr(c("wealth","priorates"), flomego, multiple="matrix")
 #' ergm.ego_get_vattr(~priorates>30, flomego)
 #' (a <- ergm.ego_get_vattr(~cut(priorates,c(-Inf,0,20,40,60,Inf),label=FALSE)-1, flomego))
+#' @keywords internal
 #' @export
 ergm.ego_get_vattr <- function(object, df, accept="character", multiple=if(accept=="character") "paste" else "stop", ...){
   multiple <- match.arg(multiple, ERGM_GET_VATTR_MULTIPLE_TYPES)
@@ -104,7 +115,7 @@ ergm.ego_get_vattr <- function(object, df, accept="character", multiple=if(accep
       switch(multiple,
              paste =  apply(a, 1, paste, collapse="."),
              matrix = a,
-             stop = ergm_Init_abort("This term does not accept multiple vertex attributes or matrix vertex attribute functions."))
+             stop = ergm_Init_stop("This term does not accept multiple vertex attributes or matrix vertex attribute functions."))
     else c(a),
     name = name)
 }
@@ -141,15 +152,20 @@ ergm.ego_get_vattr <- function(object, df, accept="character", multiple=if(accep
                 nonnegative = x>=0,
                 positive = x>0)
 
-  if(!OK) ergm_Init_abort("Attribute ", NVL3(xspec, paste0(sQuote(paste(deparse(.),collapse="\n")), " ")), "is not ", ACCNAME[[accept]], " vector as required.")
+  if(!OK) ergm_Init_stop("Attribute ", NVL3(xspec, paste0(sQuote(paste(deparse(.),collapse="\n")), " ")), "is not ", ACCNAME[[accept]], " vector as required.")
+  ## NB: Unlike the network version, missing values are handled by EgoStats.
   if(is.matrix(x) && !is.null(cn <- colnames(x))){
     if(any(cn=="")){
-      ergm_Init_warn("Attribute specification ", NVL3(xspec, paste0(sQuote(paste(deparse(.),collapse="\n")), " ")), "is a matrix with some column names set and others not; you may need to set them manually. See example(nodal_attributes) for more information.")
+      ergm_Init_warning("Attribute specification ", NVL3(xspec, paste0(sQuote(paste(deparse(.),collapse="\n")), " ")), "is a matrix with some column names set and others not; you may need to set them manually. See example(nodal_attributes) for more information.")
       colnames(x) <- NULL
     }
   }
   x
 }
+
+## Unlike the ergm version, AsIs input does not make sense, since the
+## user does not normally have direct control over the
+## pseudopopulation network.
 
 #' @rdname nodal_attributes-API
 #' @importFrom purrr "%>%" "map" "pmap_chr"
@@ -160,7 +176,7 @@ ergm.ego_get_vattr.character <- function(object, df, accept="character", multipl
 
   missing_attr <- setdiff(object, names(df))
   if(length(missing_attr)){
-    ergm_Init_abort(paste.and(sQuote(missing_attr)), " is/are not valid nodal attribute(s).")
+    ergm_Init_stop(paste.and(sQuote(missing_attr)), " is/are not valid nodal attribute(s).")
   }
 
   object %>% map(~df[[.]]) %>% set_names(object) %>% .handle_multiple(multiple=multiple) %>%
@@ -181,14 +197,12 @@ ergm.ego_get_vattr.function <- function(object, df, accept="character", multiple
       args[[aname]] <- get(aname)
   args <- c(list(df), list(...), args)
 
-  ERRVL(try({
+  ergm_Init_try({
     a <- do.call(object, args)
     while(is(a,'formula')||is(a,'function')) a <- ergm.ego_get_vattr(a, df, accept=accept, multiple=multiple, ...)
     a %>% .rightsize_vattr(df) %>% .handle_multiple(multiple=multiple) %>%
       structure(., name=NVL(attr(.,"name"), strtrim(despace(paste(deparse(body(object)),collapse="\n")),80)))
-  }, silent=TRUE),
-  ergm_Init_abort(.)) %>%
-    .check_acceptable(accept=accept)
+  }) %>% .check_acceptable(accept=accept)
 }
 
 
@@ -205,14 +219,12 @@ ergm.ego_get_vattr.formula <- function(object, df, accept="character", multiple=
              lst(`.`=df, .df=df, ...))
 
   e <- ult(object)
-  ERRVL(try({
+  ergm_Init_try({
     a <- eval(e, envir=vlist, enclos=environment(object))
     while(is(a,'formula')||is(a,'function')) a <- ergm.ego_get_vattr(a, df, accept=accept, multiple=multiple, ...)
       a %>% .rightsize_vattr(df) %>% .handle_multiple(multiple=multiple) %>%
       structure(., name=NVL(attr(.,"name"), if(length(object)>2) eval_lhs.formula(object) else despace(paste(deparse(e),collapse="\n"))))
-  }, silent=TRUE),
-  ergm_Init_abort(.)) %>%
-    .check_acceptable(accept=accept, xspec=object)
+  }) %>% .check_acceptable(accept=accept, xspec=object)
 }
 
 #' @rdname nodal_attributes-API
@@ -263,6 +275,12 @@ ergm.ego_attr_levels.NULL <- function(object, attr, egor, levels=sort(unique(att
 }
 
 #' @rdname nodal_attributes-API
+#'
+#' @note `ergm.ego_attr_levels.matrix()` expects `levels=` to be a
+#'   [`list`] with each element having length 2 and containing the
+#'   values of the two categorical attributes being crossed. It also
+#'   assumes that they are in the same order as the user would like
+#'   them in the matrix.
 #' @export
 ergm.ego_attr_levels.matrix <- function(object, attr, egor, levels=sort(unique(attr)), ...){
 
@@ -284,16 +302,16 @@ ergm.ego_attr_levels.matrix <- function(object, attr, egor, levels=sort(unique(a
 
   sel <- switch(mode(object),
                 logical = { # Binary matrix
-                  if(any(dim(object)!=c(nol,nil))) ergm_Init_abort("Level combination selection binary matrix should have dimension ", nol, " by ", nil, " but has dimension ", nrow(object), " by ", ncol(object), ".") # Check dimension.
+                  if(any(dim(object)!=c(nol,nil))) ergm_Init_stop("Level combination selection binary matrix should have dimension ", nol, " by ", nil, " but has dimension ", nrow(object), " by ", ncol(object), ".") # Check dimension.
                   if(identical(ol,il)) object <- object | t(object) # Symmetrize, if appropriate.
                   object
                 },
                 numeric = { # Two-column index matrix
-                  if(ncol(object)!=2) ergm_Init_abort("Level combination selection two-column index matrix should have two columns but has ", ncol(object), ".")
+                  if(ncol(object)!=2) ergm_Init_stop("Level combination selection two-column index matrix should have two columns but has ", ncol(object), ".")
                   if(identical(ol,il)) object <- rbind(object, object[,2:1,drop=FALSE]) # Symmetrize, if appropriate.
                   object
                 },
-                ergm_Init_abort("Level combination selection matrix must be either numeric or logical.")
+                ergm_Init_stop("Level combination selection matrix must be either numeric or logical.")
                 )
 
   sel <- m[sel] %>% keep(`!=`,0L) %>% sort %>% unique
@@ -320,6 +338,33 @@ ergm.ego_attr_levels.formula <- function(object, attr, egor, levels=sort(unique(
   ergm.ego_attr_levels(object, attr, egor, levels, ...)
 }
 
+
+## TODO: Export from `ergm` and remove from here:
+rank_cut <- function(x, n, tie_action = c("warning", "error"), top = FALSE){
+  ordrank <- if(top) function(r) length(x) + 1 - r else identity
+  s1 <- ordrank(rank(x, ties.method="min")) <= n
+  s2 <- ordrank(rank(x, ties.method="max")) <= n
+
+  if(identical(s1, s2)) which(s1)
+  else{
+    tie_action <- match.arg(tie_action)
+    msg <- paste0("Levels ", paste.and(sQuote(names(x)[s1!=s2])), " are tied.")
+    switch(tie_action,
+           error = ergm_Init_stop(msg, " Specify explicitly."),
+           warning = {
+             ergm_Init_warning(msg, " Using the order given.")
+             which(ordrank(rank(x, ties.method="first")) <= n)
+           })
+  }
+}
+
+levels_cut <- function(x, n, lvls = sort(unique(x)), top = FALSE, ...){
+  f <- setNames(tabulate(match(x, lvls)), lvls)
+  sel <- rank_cut(f, n, top=top, ...)
+  if(missing(lvls)) lvls[sel] else sel
+}
+
+
 #' @describeIn nodal_attributes-API
 #' A version of [ergm::COLLAPSE_SMALLEST()] that can handle both [`network`] and [`egodata`] objects.
 #'
@@ -331,13 +376,11 @@ COLLAPSE_SMALLEST <- function(object, n, into){
   function(.x, ...){
     vattr <- if(is.network(.x)) ergm_get_vattr(attr, .x, ...)
              else if(is.data.frame(.x)){
-               ergm_Init_warn(paste(sQuote("COLLAPSE_SMALLEST()"), " may behave unpredictably with egocentric data and is not recommended at this time."))
+               ergm_Init_warning(paste(sQuote("COLLAPSE_SMALLEST()"), " may behave unpredictably with egocentric data and is not recommended at this time."))
                ergm.ego_get_vattr(attr, .x, ...)
              }else stop("Unrecognised data type. This indicates a bug.")
-    lvls <- unique(vattr)
-    vattr.codes <- match(vattr,lvls)
-    smallest <- which(order(tabulate(vattr.codes), decreasing=FALSE)<=n)
-    vattr[vattr.codes %in% smallest] <- into
+    smallest <- levels_cut(vattr, n)
+    vattr[vattr %in% smallest] <- into
     vattr
   }
 }

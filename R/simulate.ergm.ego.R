@@ -5,17 +5,17 @@
 #  open source, and has the attribution requirements (GPL Section 7) at
 #  https://statnet.org/attribution .
 #
-#  Copyright 2015-2023 Statnet Commons
+#  Copyright 2015-2024 Statnet Commons
 ################################################################################
 
 
-#' Simulate from a \code{\link{ergm.ego}} fit.
+#' Simulate from a [ergm.ego()] fit.
 #' 
-#' A wrapper around \code{\link[ergm]{simulate.formula}} to simulate networks
-#' from an ERGM fit using \code{\link{ergm.ego}}.
-#' 
-#' 
-#' @param object An \code{\link{ergm.ego}} fit.
+#' A wrapper around [simulate.formula()] to simulate networks
+#' from an ERGM fit using [ergm.ego()].
+#'
+#'
+#' @param object An [`ergm.ego`] fit.
 #' @param nsim Number of realizations to simulate.
 #' @template seed
 #' @param popsize,basis A network size to which to scale the model for
@@ -24,23 +24,22 @@
 #'   actors; or a [`network`] object to use as is. `basis` is provided
 #'   for consistency with [ergm()], [ergm.ego()], [simulate.ergm()],
 #'   and others. If both are specified, `popsize` overrules.
-#' @param control A \code{\link{control.simulate.ergm.ego}} control list.
+#' @param control A [control.simulate.ergm.ego()] control list.
 #' @param output one of `"network"`, `"stats"`, `"edgelist"`,
 #'   `"pending_update_network"`, or, for future compatibility,
 #'   `"ergm_state"`. See help for [simulate.ergm()] for explanation.
 #' 
-#' @param constraints,\dots Additional arguments passed to \code{\link[ergm]{san}} and
-#' \code{\link[ergm]{simulate.formula}}.
+#' @param constraints,\dots Additional arguments passed to [san()] and
+#' [simulate.formula()].
 #' @template verbose
 #' @return The ouput has the same format (with the same options) as
-#' \code{\link[ergm]{simulate.formula}}. If \code{output="stats"} is passed, an
+#' [simulate.formula()]. If \code{output="stats"} is passed, an
 #' additional attribute, \code{"ppopsize"} is set, giving the actual size of
 #' the network reconstructed, when the \code{pop.wt} control parameter is set
 #' to \code{"round"} and \code{"popsize"} is not a multiple of the egocentric
 #' sample size or the sampling weights.
 #' @author Pavel N. Krivitsky
-#' @seealso \code{\link[ergm]{simulate.formula}},
-#' \code{\link[ergm]{simulate.ergm}}
+#' @seealso [simulate.formula()], [simulate.ergm()]
 #' @references
 #'
 #' * Pavel N. Krivitsky and Martina Morris (2017). "Inference for social network models from egocentrically sampled data, with application to understanding persistent racial disparities in HIV prevalence in the US." *Annals of Applied Statistics*, 11(1): 427–455. \doi{10.1214/16-AOAS1010}

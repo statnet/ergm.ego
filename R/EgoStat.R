@@ -5,7 +5,7 @@
 #  open source, and has the attribution requirements (GPL Section 7) at
 #  https://statnet.org/attribution .
 #
-#  Copyright 2015-2023 Statnet Commons
+#  Copyright 2015-2024 Statnet Commons
 ################################################################################
 # An EgoStat.* function takes an egor object and returns a matrix of
 # h(e[i]) values, with egos in rows and elements of h(e[i]) in
@@ -153,17 +153,17 @@ split_aaties_by_ego <- function(x, egor){
   h
 }
 
-#' \code{\link[ergm]{ergm}} Terms Implemented for
-#' \code{\link{egor}}
+#' [ergm()] Terms Implemented for
+#' [`egor`]
 #' 
-#' This page describes the \code{\link[ergm]{ergm}} terms (and hence network
+#' This page describes the [ergm()] terms (and hence network
 #' statistics) for which inference based on egocentrically sampled data is
-#' implemented in \code{ergm.ego} package. Other packages may add their own
+#' implemented in \CRANpkg{ergm.ego} package. Other packages may add their own
 #' terms. These functions should not be called by the end-user.
 #' 
 #' The current recommendation for any package implementing additional
 #' egocentric calculator terms is to create a help file with a name or alias
-#' \code{ergm.ego-terms}, so that \code{help("ergm.ego-terms")} will
+#' \code{\link{ergm.ego-terms}}, so that \code{help("ergm.ego-terms")} will
 #' list egocentric ERGM terms available from all loaded packages.
 #' 
 #' 
@@ -178,9 +178,9 @@ split_aaties_by_ego <- function(x, egor){
 #' \describe{ \item{Special-purpose terms:}{ \describe{
 #' \item{netsize.adj(edges=+1, mutual=0, transitiveties=0,
 #' cyclicalties=0)}{A special-purpose term equivalent to a linear
-#' combination of \code{\link[ergm]{edges-ergmTerm}},
-#' \code{\link[ergm]{mutual-ergmTerm}}, \code{\link[ergm]{transitiveties-ergmTerm}}, and
-#' \code{\link[ergm]{cyclicalties-ergmTerm}}, to house the network-size
+#' combination of \code{\link[ergm:edges-ergmTerm]{edges}},
+#' \code{\link[ergm:mutual-ergmTerm]{mutual}}, \code{\link[ergm:transitiveties-ergmTerm]{transitiveties}}, and
+#' \code{\link[ergm:cyclicalties-ergmTerm]{cyclicalties}}, to house the network-size
 #' adjustment offset. This term is added to the model automatically
 #' and should not be used in the model formula directly.  } } }
 #' 
@@ -192,6 +192,7 @@ split_aaties_by_ego <- function(x, egor){
 #' * `nodematch`
 #' * `nodemix`
 #' * `absdiff`
+#' * `absdiffcat`
 #' * `degree`
 #' * `degrange`
 #' * `concurrent`
@@ -215,7 +216,7 @@ split_aaties_by_ego <- function(x, egor){
 #' evaluated, some inferential results and standard error calculation
 #' methods may not be applicable.
 #'
-#' @seealso \code{\link[ergm]{ergm-terms}}
+#' @seealso [`ergmTerm`]
 #' @keywords models
 NULL
 
@@ -393,6 +394,36 @@ EgoStat.absdiff <- function(egor, attr, pow=1){
 
   h <- .mapply_col(function(e,a) .exsum(abs(e-a)^pow)/2, xe, xal, SIMPLIFY=TRUE)
   colnames(h) <- if(pow==1) paste("absdiff",attrname,sep=".") else paste("absdiff",pow,".",attrname,sep="")
+  attr(h, "order") <- 1
+  h
+}
+
+EgoStat.absdiffcat <- function(egor, attr, base=NULL, levels=NULL){
+  if(!missing(base)) message("In term `absdiffcat' in package `ergm.ego': Argument \"base\" has been superseded by \"levels\" and it is recommended to use the latter.  Note that its interpretation may be different.")
+
+  egos <- as_tibble(egor$ego)
+  alters <- egor$alter
+
+  xe <- ergm.ego_get_vattr(attr, egos)
+  xa <- ergm.ego_get_vattr(attr, alters)
+
+  attrname <- attributes(xe)$name
+
+  ux <- unique(c(xe,xa))
+  u <- sort(unique(as.vector(abs(outer(ux,ux,"-")))),na.last=NA)
+  u <- u[u>0]
+  if(missing(levels) && any(NVL(base,0)!=0)) u <- u[-base]
+
+  levs <- ergm.ego_attr_levels(levels, u, egor)
+  nlevs <- length(levs)
+
+  if (nlevs==0)
+    stop("Argument to `absdiffcat' has too few distinct differences.")
+
+  xal <- split_alters_by_ego(xa, egor)
+
+  h <- .mapply_col(function(e,a) .extabulate(.matchNA(abs(e-a), levs, 0), nbins=nlevs)/2, xe, xal, SIMPLIFY=TRUE)
+  colnames(h) <- paste("absdiff",attrname,levs,sep=".")
   attr(h, "order") <- 1
   h
 }

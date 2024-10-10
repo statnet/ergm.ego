@@ -5,23 +5,23 @@
 #  open source, and has the attribution requirements (GPL Section 7) at
 #  https://statnet.org/attribution .
 #
-#  Copyright 2015-2023 Statnet Commons
+#  Copyright 2015-2024 Statnet Commons
 ################################################################################
-#' Calculation of ERGM-style summary statistics for \code{\link{egor}}
+#' Calculation of ERGM-style summary statistics for [`egor`]
 #' objects.
 #' 
 #' Used to calculate the specified network statistics inferred from a
-#' \code{\link{egor}} object.
+#' [`egor`] object.
 #' 
 #' 
 #' @aliases summary_formula.egodata summary summary_formula
-#' @param object An \code{\link[ergm]{ergm}}-style formula with a
-#' \code{\link{egor}} object as the LHS.
+#' @param object An [ergm()]-style formula with a
+#' [`egor`] object as the LHS.
 #' 
 #' For a list of currently implemented egocentric terms for the RHS, see
-#' \code{\link{ergm.ego-terms}}.
+#' [`ergm.ego-terms`].
 #' @param \dots Not used at this time.
-#' @param basis An optional \code{\link{egor}} object relative to which the
+#' @param basis An optional [`egor`] object relative to which the
 #' statistics should be calculated.
 #' @param individual If \code{FALSE} (the default), calculate the estimated
 #' per-capita statistics, weighted according to the ego weights, then scale
@@ -35,8 +35,8 @@
 #' \code{individual==TRUE}, a matrix with a row for each ego, giving that ego's
 #' contribution to the network statistic.
 #' @author Pavel N. Krivitsky
-#' @seealso \code{\link[ergm]{summary_formula}},
-#' \code{\link[ergm]{summary_formula.ergm}}
+#' @seealso [summary_formula()],
+#' [summary_formula.ergm()]
 #' @references
 #'
 #' * Pavel N. Krivitsky and Martina Morris (2017). "Inference for social network models from egocentrically sampled data, with application to understanding persistent racial disparities in HIV prevalence in the US." *Annals of Applied Statistics*, 11(1): 427–455. \doi{10.1214/16-AOAS1010}

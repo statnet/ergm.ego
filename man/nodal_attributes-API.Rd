@@ -88,7 +88,7 @@ the formula's environment.}
 \item{attr}{A vector of length equal to the number of nodes,
 specifying the attribute vector.}
 
-\item{egor}{An \code{\link{egor}} object.}
+\item{egor}{An \code{\link[egor:egor]{egor}} object.}
 
 \item{levels}{Starting set of levels to use; defaults to the sorted
 list of unique attributes.}
@@ -96,10 +96,11 @@ list of unique attributes.}
 \item{n, into}{see \code{\link[ergm:nodal_attributes]{ergm::COLLAPSE_SMALLEST()}}.}
 }
 \value{
-\code{ergm.ego_get_vattr} returns a vector of length equal to the number of nodes giving the
-selected attribute function. It may also have an attribute
-\code{"name"}, which controls the suggested name of the attribute
-combination.
+\code{ergm.ego_get_vattr} returns a vector of length equal to the
+number of nodes giving the selected attribute function or, if
+\code{multiple="matrix"}, a matrix whose number of row equals the
+number of nodes. Either may also have an attribute \code{"name"}, which
+controls the suggested name of the attribute combination.
 
 \code{ergm.ego_attr_levels} returns a vector of levels to use and their order.
 }
@@ -107,16 +108,16 @@ combination.
 These functions are meant to be used in \code{EgoStat} and other
 implementations to provide the user with a way to extract nodal attributes
 and select their levels in standardized and flexible ways. They are
-intended to parallel \link[ergm:nodal_attributes-API]{ergm::nodal_attributes-API} of \code{ergm} package.
+intended to parallel \code{\link[ergm:nodal_attributes-API]{ergm::nodal_attributes-API}}.
 
 \code{ergm.ego_get_vattr} extracts and processes the specified
 nodal attribute vector. It is strongly recommended that
-\code{\link[=check.ErgmTerm]{check.ErgmTerm()}}'s corresponding
+\code{\link[ergm:check.ErgmTerm]{check.ErgmTerm()}}'s corresponding
 \code{vartype="function,formula,character"} (using the
 \code{ERGM_VATTR_SPEC} constant).
 
 \code{ergm.ego_attr_levels} filters the levels of the
-attribute.  It is strongly recommended that \code{\link[=check.ErgmTerm]{check.ErgmTerm()}}'s
+attribute.  It is strongly recommended that \code{\link[ergm:check.ErgmTerm]{check.ErgmTerm()}}'s
 corresponding
 \code{vartype="function,formula,character,numeric,logical,AsIs,NULL"} (using the
 \code{ERGM_LEVELS_SPEC} constant).
@@ -131,7 +132,7 @@ following outputs are defined:
 \describe{
 
 \item{\code{"character"}}{Accept any mode or class (since it can
-beconverted to character).}
+be converted to character).}
 
 \item{\code{"numeric"}}{Accept real, integer, or logical.}
 
@@ -146,9 +147,16 @@ beconverted to character).}
 \item{\code{"nonnegative"}}{Accept a nonnegative number or logical.}
 
 \item{\code{"positive"}}{Accept a strictly positive number or logical.}
+
+\item{\code{"index"}}{Mentioned here for completeness, it does not make
+sense for egocentric data (since networks are constructed) and so
+is not supported.}
+
 }
 
-\describe{
+Given that, the \code{multiple} argument controls how passing multiple
+attributes or functions that result in vectors of appropriate
+dimension are handled: \describe{
 
 \item{\code{"paste"}}{Paste together with dot as the separator.}
 
@@ -160,15 +168,24 @@ beconverted to character).}
 }
 \section{Functions}{
 \itemize{
-\item \code{COLLAPSE_SMALLEST()}: A version of \code{\link[ergm:nodal_attributes]{ergm::COLLAPSE_SMALLEST()}} that can handle both \code{\link{network}} and \code{\link{egodata}} objects.
+\item \code{COLLAPSE_SMALLEST()}: A version of \code{\link[ergm:nodal_attributes]{ergm::COLLAPSE_SMALLEST()}} that can handle both \code{\link[network:network]{network}} and \code{\link{egodata}} objects.
 
 }}
+\note{
+\code{ergm.ego_attr_levels.matrix()} expects \verb{levels=} to be a
+\code{\link{list}} with each element having length 2 and containing the
+values of the two categorical attributes being crossed. It also
+assumes that they are in the same order as the user would like
+them in the matrix.
+}
 \examples{
 data(florentine)
 flomego <- as.egor(flomarriage)
 ergm.ego_get_vattr("priorates", flomego)
 ergm.ego_get_vattr(~priorates, flomego)
+ergm.ego_get_vattr(~cbind(priorates, priorates^2), flomego, multiple="matrix")
 ergm.ego_get_vattr(c("wealth","priorates"), flomego)
+ergm.ego_get_vattr(c("wealth","priorates"), flomego, multiple="matrix")
 ergm.ego_get_vattr(~priorates>30, flomego)
 (a <- ergm.ego_get_vattr(~cut(priorates,c(-Inf,0,20,40,60,Inf),label=FALSE)-1, flomego))
 ergm.ego_attr_levels(NULL, a, flomego)
@@ -176,3 +193,4 @@ ergm.ego_attr_levels(-1, a, flomego)
 ergm.ego_attr_levels(1:2, a, flomego)
 ergm.ego_attr_levels(I(1:2), a, flomego)
 }
+\keyword{internal}

@@ -5,7 +5,7 @@
 %  open source, and has the attribution requirements (GPL Section 7) at
 %  https://statnet.org/attribution .
 %
-%  Copyright 2015-2023 Statnet Commons
+%  Copyright 2015-2024 Statnet Commons
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \name{NEWS}
 \title{NEWS file for the \code{\link[=ergm.ego-package]{ergm.ego}} package}
@@ -63,6 +63,37 @@
   % }
 
 %% }
+
+
+\section{Changes in version 1.1.1}{
+
+  \subsection{NEW FEATURES}{
+    \itemize{
+      \item{
+        An \code{\link{EgoStat}} for \code{\link[ergm:absdiffcat-ergmTerm]{absdiffcat()}} has been added.
+      }
+    }
+  }
+
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item{
+        \code{\link[ergm.ego:degreedist]{degreedist()}} has been fixed.
+      }
+    }
+  }
+
+  \subsection{OTHER USER-VISIBLE CHANGES}{
+    \itemize{
+      \item{
+        \code{\link[stats]{logLik}()} method for \code{\link{ergm.ego}} objects has been added; it produces an informative error message.
+      }
+      \item{
+        Documentation fixes.
+      }
+    }
+  }
+}
 
 
 \section{Changes in version 1.1.0}{

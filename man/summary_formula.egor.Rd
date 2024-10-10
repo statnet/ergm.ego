@@ -6,7 +6,7 @@
 \alias{summary}
 \alias{summary_formula}
 \alias{*.ergm.ego_svystat}
-\title{Calculation of ERGM-style summary statistics for \code{\link{egor}}
+\title{Calculation of ERGM-style summary statistics for \code{\link[egor:egor]{egor}}
 objects.}
 \usage{
 \method{summary_formula}{egor}(object, ..., basis = NULL, individual = FALSE, scaleto = NULL)
@@ -14,15 +14,15 @@ objects.}
 \method{*}{ergm.ego_svystat}(x, y)
 }
 \arguments{
-\item{object}{An \code{\link[ergm]{ergm}}-style formula with a
-\code{\link{egor}} object as the LHS.
+\item{object}{An \code{\link[ergm:ergm]{ergm()}}-style formula with a
+\code{\link[egor:egor]{egor}} object as the LHS.
 
 For a list of currently implemented egocentric terms for the RHS, see
 \code{\link{ergm.ego-terms}}.}
 
 \item{\dots}{Not used at this time.}
 
-\item{basis}{An optional \code{\link{egor}} object relative to which the
+\item{basis}{An optional \code{\link[egor:egor]{egor}} object relative to which the
 statistics should be calculated.}
 
 \item{individual}{If \code{FALSE} (the default), calculate the estimated
@@ -44,7 +44,7 @@ contribution to the network statistic.
 }
 \description{
 Used to calculate the specified network statistics inferred from a
-\code{\link{egor}} object.
+\code{\link[egor:egor]{egor}} object.
 }
 \section{Functions}{
 \itemize{
@@ -81,8 +81,8 @@ Models." \emph{Statistical Methodology}, 8(4): 319–339. \doi{10.1016/j.stamet.
 }
 }
 \seealso{
-\code{\link[ergm]{summary_formula}},
-\code{\link[ergm]{summary_formula.ergm}}
+\code{\link[=summary_formula]{summary_formula()}},
+\code{\link[ergm:summary_formula]{summary_formula.ergm()}}
 }
 \author{
 Pavel N. Krivitsky

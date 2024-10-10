@@ -5,14 +5,14 @@
 #  open source, and has the attribution requirements (GPL Section 7) at
 #  https://statnet.org/attribution .
 #
-#  Copyright 2015-2023 Statnet Commons
+#  Copyright 2015-2024 Statnet Commons
 ################################################################################
 
 
-#' Control parameters for \code{\link{ergm.ego}}.
+#' Control parameters for [ergm.ego()].
 #' 
 #' Constructs and checks the list of control parameters for estimation by
-#' \code{\link{ergm.ego}}.
+#' [ergm.ego()].
 #' 
 #' 
 #' @param ppopsize,ppopsize.mul Parameters to determine the size
@@ -78,12 +78,12 @@
 #'   number of nominations. Used to be `FALSE`, now `TRUE` in light of
 #'   the findings of Krivitsky et. al (2020).
 #' 
-#' @param ergm Control parameters for the \code{\link[ergm]{ergm}()} call
-#' to fit the model, constructed by \code{\link[ergm]{control.ergm}()}.
+#' @param ergm Control parameters for the [ergm()] call
+#' to fit the model, constructed by [control.ergm()].
 #' @param \dots Not used at this time.
 #' @return A list with arguments as components.
 #' @author Pavel N. Krivitsky
-#' @seealso \code{\link[ergm]{control.ergm}()}
+#' @seealso [control.ergm()]
 #' @references
 #' 
 #' Pavel N. Krivitsky and Martina Morris (2017). "Inference for social network models from egocentrically sampled data, with application to understanding persistent racial disparities in HIV prevalence in the US." *Annals of Applied Statistics*, 11(1): 427–455. \doi{10.1214/16-AOAS1010}

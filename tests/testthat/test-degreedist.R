@@ -5,7 +5,7 @@
 #  open source, and has the attribution requirements (GPL Section 7) at
 #  https://statnet.org/attribution .
 #
-#  Copyright 2015-2023 Statnet Commons
+#  Copyright 2015-2024 Statnet Commons
 ################################################################################
 
 ## |----|--------|---|----------|-----------|
@@ -89,3 +89,44 @@ test_that("weighted degreedist by attribute with weights disabled", {
   expect_equal(ignore_attr=TRUE,unclass(degreedist(e, plot=FALSE, by="x", weight=FALSE)), rbind(c(1/2,1/2),
                                                                                c(1/2,1/2)))
 })
+
+
+
+# --------------------------------------------------------------------
+
+# Test proper output depending on `prob`, `by` and `brgmod` arguments.
+# Motivated by statnet/ergm.ego#82.
+
+# Argument configurations to test
+arg_df <- expand.grid(
+  prob = c(FALSE, TRUE),
+  brgmod = c(FALSE, TRUE),
+  by = list(NULL, "Sex")
+)
+for(i in seq(1, nrow(arg_df))) {
+  a <- lapply(arg_df[i,], unlist)
+  test_that(
+    paste0("degreedist(", paste0(names(a), "=", a, collapse=", "), ")"), {
+      with(
+        a, {
+          expect_silent(
+            res <- degreedist(
+              fmh.ego,
+              prob = prob,
+              brgmod = brgmod,
+              by = by,
+              plot = FALSE
+            )
+          )
+          # Conditional probs sum to number of cat. of `by`
+          if(prob && !is.null(by)) 
+            expect_equal(sum(res), length(unique(fmh.ego$ego[[by]]))) 
+          # Unconditional probs sum to 1
+          if(prob && is.null(by)) expect_equal(sum(res), 1)
+          # Counts sum to # of egos
+          if(!prob) expect_equal(sum(res), nrow(fmh.ego$ego))
+        }
+      )
+    }
+  )
+}

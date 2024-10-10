@@ -5,25 +5,25 @@
 #  open source, and has the attribution requirements (GPL Section 7) at
 #  https://statnet.org/attribution .
 #
-#  Copyright 2015-2023 Statnet Commons
+#  Copyright 2015-2024 Statnet Commons
 ################################################################################
 
 
 #' Inference for Exponential-Family Random Graph Models based on Egocentrically
 #' Sampled Data
 #' 
-#' A wrapper around the \code{\link[ergm]{ergm}} to fit an ERGM to an
-#' \code{\link{egor}}.
+#' A wrapper around the [ergm()] to fit an ERGM to an
+#' [`egor`].
 #' 
 #' 
-#' @param formula An \code{\link{formula}} object, of the form \code{e
-#'   ~ <model terms>}, where \code{e} is a \code{\link{egor}}
-#'   object. See \code{\link[ergm]{ergm}} for details and examples.
+#' @param formula A [`formula`] object, of the form \code{e
+#'   ~ <model terms>}, where \code{e} is a [`egor`]
+#'   object. See [ergm()] for details and examples.
 #' 
 #' For a list of currently implemented egocentric terms for the RHS, see
-#' \code{\link{ergm.ego-terms}}.
-#' @param constraints A one-sided formula \code{\link{formula}} giving
-#'   the sample space constraints. See \code{\link[ergm]{ergm}} for
+#' [`ergm.ego-terms`].
+#' @param constraints A one-sided formula [`formula`] giving
+#'   the sample space constraints. See [ergm()] for
 #'   details and examples.
 #'
 #' @param popsize The size \eqn{|N|} of the finite population network
@@ -43,11 +43,11 @@
 #' when the terms need them for  models that scale.
 #' @param na.rm How to handle missing actor attributes in egos or alters,
 #' when the terms need them for models that do not scale.
-#' @param \dots Additional arguments passed to \code{\link[ergm]{ergm}}.
-#' @param control A \code{\link{control.ergm.ego}} control list.
-#' @param do.fit Whether to actually call \code{\link[ergm]{ergm}}
-#' @return An object of class \code{ergm.ego} inheriting from
-#' \code{\link[ergm]{ergm}}, with the following additional or overridden
+#' @param \dots Additional arguments passed to [ergm()].
+#' @param control A [control.ergm.ego()] control list.
+#' @param do.fit Whether to actually call [ergm()]
+#' @return An object of class [`ergm.ego`] inheriting from
+#' [`ergm`], with the following additional or overridden
 #' elements:
 #' \item{"v"}{Variance-covariance matrix of the estimate of the
 #' sufficient statistics}
@@ -55,7 +55,7 @@
 #' statistics}
 #' \item{"egor"}{The [`egor`] object passed}
 #' \item{"popsize"}{Population network size used}
-#' \item{"ppopsize"}{Pseudopopulation size used, see \code{\link{control.ergm.ego}}}
+#' \item{"ppopsize"}{Pseudopopulation size used, see [control.ergm.ego()]}
 #' \item{"coef"}{The
 #' coefficients, along with the network size adjustment \code{netsize.adj}
 #' coefficient.}
@@ -82,7 +82,7 @@
 #' Models." \emph{Statistical Methodology}, 8(4): 319–339. \doi{10.1016/j.stamet.2011.01.005}
 #'
 #' @keywords models
-#' @seealso \code{\link[ergm]{ergm}()}
+#' @seealso [ergm()]
 #' @examples
 #' \donttest{
 #' data(faux.mesa.high)

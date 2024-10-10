@@ -5,7 +5,7 @@
 #  open source, and has the attribution requirements (GPL Section 7) at
 #  https://statnet.org/attribution .
 #
-#  Copyright 2015-2023 Statnet Commons
+#  Copyright 2015-2024 Statnet Commons
 ################################################################################
 # This file contains the following 8 functions for assessing goodness of fit
 #         <gof>              <summary.gofobject>
@@ -84,24 +84,24 @@
 #' Conduct Goodness-of-Fit Diagnostics on a Exponential Family Random Graph
 #' Model fit to Egocentrically Sampled Data
 #' 
-#' \code{\link{gof.ergm.ego}} implements the \code{\link[ergm]{gof}} method for
-#' \code{\link{ergm.ego}} fit objects.
+#' [gof.ergm.ego()] implements the [gof()] method for
+#' [`ergm.ego`] fit objects.
 #' 
 #' 
-#' @param object An \code{\link{ergm.ego}} fit.
+#' @param object An [`ergm.ego`] fit.
 #' @param ... Additional arguments. Unused by [gof.ergm.ego()], passed to
 #'   [ergm::plot.gof()] by [plot.gof.ergm.ego()]
 #' @param GOF A string specifying the statistics whose goodness of fit is to be
 #' evaluated. Currently, only \dQuote{degree}, \dQuote{espartners} and \dQuote{model} are
-#' implemented; see \code{\link[ergm]{gof}} documentation for details.
+#' implemented; see [gof()] documentation for details.
 #' @param control A list to control parameters, constructed using
-#' \code{\link{control.gof.formula}} or \code{\link{control.gof.ergm}} (which
+#' [control.gof.formula()] or [control.gof.ergm()] (which
 #' have different defaults).
 #' @param verbose Provide verbose information on the progress of the
 #' simulation.
-#' @return An object of class [`gof.ergm.ego`], inheriting from \code{\link[ergm:gof.ergm]{gof.ergm}}.
+#' @return An object of class [`gof.ergm.ego`], inheriting from [gof.ergm()].
 #' @author Pavel N. Krivitsky
-#' @seealso For examples, see \code{\link{ergm.ego}}.
+#' @seealso For examples, see [ergm.ego()].
 #' @keywords models
 #' @examples
 #' \donttest{
