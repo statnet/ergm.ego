@@ -27,3 +27,9 @@ print.summary.ergm.ego <- function (x, ...){
   NextMethod("print", object=x, ..., print.deviances=FALSE)
 }
 
+#' @method logLik ergm.ego
+#' @export
+#' @noRd
+logLik.ergm.ego <- function(object, ...){
+  stop("Log-likelihood is not meaningful for moments-based inference used by ", sQuote("ergm.ego()"), ".")
+}
