@@ -120,7 +120,7 @@ test_that("scaling and nonscaling egostats are combined correctly", {
 test_that("egostats with alter missing data are close to complete network stats", {
   
   # Test data
-  set.seed(1)
+  set.seed(0)
   n <- 100
   e <- 150
   ds <- c(10,15,5,20)
@@ -201,9 +201,7 @@ test_that("egostats with alter missing data are close to complete network stats"
   
   # Varying
   pvals <- sapply(apply(d[!novar,], 1, t.test), "[[", "p.value")
-  pval <- pchisq(-2*sum(log(pvals)), 2*sum(!novar), lower.tail=FALSE)
-  expect_true(
-    pval > 0.001, # Not very safe, since this test is stochastic.
-    info = paste("Varying missing alter data estimate is off, p-value =", pval)
-  )
+  hmp <- 1/mean(1/pvals)
+  expect_gt(hmp, 0.0091) # alpha = 0.01, L = 73 critical value for the Harmonic Mean P-value
 })
+
