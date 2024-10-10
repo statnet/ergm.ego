@@ -12,22 +12,23 @@ Authors@R: c(
 	    person("Chad", "Klumb", role=c("ctb"), email="cklumb@gmail.com"))
 Depends:
     R (>= 4.1.0),
-    ergm (>= 4.5.0),
-    egor,
-    network (>= 1.17.1)
-LinkingTo: ergm
+    ergm (>= 4.7.1),
+    egor (>= 1.24.2),
+    network (>= 1.18.2)
 Imports:
-    statnet.common (>= 4.5.0),
-    RColorBrewer (>= 1.1.2),
-    purrr (>= 0.3.2),
-    tibble (>= 2.1.1),
-    dplyr,
-    survey,
+    statnet.common (>= 4.10.0),
+    RColorBrewer (>= 1.1-3),
+    purrr (>= 1.0.2),
+    tibble (>= 3.2.1),
+    dplyr (>= 1.1.4),
+    survey (>= 4.4-2),
     stats,
     methods
+LinkingTo:
+    ergm
 Suggests:
-    testthat (>= 2.1.1),
-    covr (>= 3.2.1)
+    testthat (>= 3.2.1.1),
+    covr (>= 3.6.4)
 Description: Utilities for managing egocentrically sampled network data and a wrapper around the 'ergm' package to facilitate ERGM inference and simulation from such data. See Krivitsky and Morris (2017) <doi:10.1214/16-AOAS1010>.
 License: GPL-3 + file LICENSE
 URL: https://statnet.org
