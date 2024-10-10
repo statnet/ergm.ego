@@ -75,7 +75,6 @@
     }
   }
 
-
   \subsection{BUG FIXES}{
     \itemize{
       \item{
@@ -84,37 +83,16 @@
     }
   }
 
-
   \subsection{OTHER USER-VISIBLE CHANGES}{
     \itemize{
       \item{
+        \code{\link[stats]{logLik}()} method for \code{\link{ergm.ego}} objects has been added; it produces an informative error message.
+      }
+      \item{
+        Documentation fixes.
       }
     }
   }
-
-  \subsection{C-LEVEL FACILITIES}{
-    \itemize{
-    }
-  }
-
-  \subsection{UTILITIES}{
-    \itemize{
-      \item Likewise, "UTILITIES" is probably unnecessary.
-    }
-  }
-
-  \subsection{INSTALLATION}{
-    \itemize{
-      \item ... as is "INSTALLATION".
-    }
-  }
-
-  \subsection{PACKAGE INSTALLATION}{
-    \itemize{
-      \item ditto.
-    }
-  }
-
 }
 
 
