@@ -461,7 +461,7 @@ EgoStat.degree <- function(egor, d, by=NULL, homophily=FALSE, levels=NULL){
     bys <- rep(seq_along(levs),each=length(d))
     bynames <- rep(levs,each=length(d))
     degs <- rep(d,length(levs))
-    cn <- paste0("deg",degs,".",by,bynames)
+    cn <- paste0("deg",degs,".",by,".",bynames)
     h <- .mapply_col(function(e,c) as.numeric(c==degs & e==bys), xe, alterct)
   }else if(homophily){
     cn <-  paste0("deg",d,".homophily.",by)
