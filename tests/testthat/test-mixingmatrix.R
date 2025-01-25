@@ -20,6 +20,10 @@ for( v in varnames ) {
     })
 }
 
+test_that("Vertex attribute not found", {
+  expect_error(mixingmatrix(egor32, "abc"),
+               "vertex attribute 'abc' not found in egocentric dataset 'egor32'")
+})
 
 for( v in varnames ) {
   test_that(
@@ -80,6 +84,24 @@ for ( v in varnames ) {
 
 test_that("mixing matrices for FMH and egoFMH are equivalent", {
   data("faux.mesa.high")
+  fmh.ego <- as.egor(faux.mesa.high)
+  expect_equal(
+    {
+      mm.ego <- mixingmatrix(fmh.ego, "Grade")
+      names(dimnames(mm.ego)) <- c("From", "To")
+      mm.ego
+    },
+    {
+      mm <- mixingmatrix(faux.mesa.high, "Grade")
+      diag(mm) <- diag(mm) * 2
+      mm
+    }
+  )
+})
+
+test_that("mixing matrices for FMH and egoFMH are equivalent with missing data", {
+  data("faux.mesa.high")
+  set.vertex.attribute(faux.mesa.high, "Grade", NA, 1:40)
   fmh.ego <- as.egor(faux.mesa.high)
   expect_equal(
     {

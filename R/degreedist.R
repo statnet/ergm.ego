@@ -158,6 +158,10 @@ degreedist.egor <- function(object, freq = FALSE, prob = !freq,
 #' @param object A [`egor`] object.
 #' @param attrname A character vector containing the name of the network
 #' attribute whose mixing matrix is wanted.
+#' @param useNA One of `"ifany"`, `"no"` or `"always"`, interpreted as
+#'   in [table()]. By default (\code{useNA = "ifany"}) if there are
+#'   any \code{NA}s on the attribute corresponding row \emph{and}
+#'   column will be contained in the result. See Details.
 #' @param rowprob Whether the counts should be normalized by row sums. That is,
 #' whether they should be proportions conditional on the ego's group.
 #' @param weight Whether sampling weights should be incorporated into
@@ -180,18 +184,23 @@ degreedist.egor <- function(object, freq = FALSE, prob = !freq,
 #' (mm.ego <- mixingmatrix(fmh.ego,"Grade"))
 #' 
 #' @export
-mixingmatrix.egor <- function(object, attrname, rowprob = FALSE, weight = TRUE, ...){
+mixingmatrix.egor <- function(object, attrname, useNA = c("ifany", "no", "always"), rowprob = FALSE, weight = TRUE, ...){
+  useNA <- match.arg(useNA)
   ds <- .degreeseq(object)
+  if(! attrname %in% colnames(object$ego) || ! attrname %in% colnames(object$alter))
+    stop("vertex attribute ", sQuote(attrname), " not found in egocentric dataset ", sQuote(deparse1(substitute(object))))
   egos <- rep(.unfactor(as_tibble(object$ego)[[attrname]]), ds)
   alters <- .unfactor(object$alter[[attrname]])
-  levs <- sort(unique(c(egos,alters)))
+  levs <- sort(unique(c(egos, alters, if(useNA == "always") NA)), na.last = if(useNA == "no") NA else TRUE)
+
+  egos <- match(egos, levs, nomatch = 0)
+  alters <- match(alters, levs, nomatch = 0)
 
   w <- if(weight) rep(weights(object),ds) else rep(1, nrow(object$alter))
 
-  mxmat <- outer(levs, levs, Vectorize(function(l1, l2) sum(w[egos==l1&alters==l2])))
+  mxmat <- outer(seq_along(levs), seq_along(levs), Vectorize(function(l1, l2) sum(w[egos==l1&alters==l2])))
 
-  dimnames(mxmat) <- list(ego = levs,  
-                          alter = levs)
+  dimnames(mxmat) <- list(Ego = levs, Alter = levs)
   if(rowprob){
     mxmat <- mxmat/rowSums(mxmat)
   }
