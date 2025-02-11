@@ -1,6 +1,6 @@
 Package: ergm.ego
-Version: 1.1.1
-Date: 2024-11-07
+Version: 1.1.2
+Date: 2025-02-12
 Title: Fit, Simulate and Diagnose Exponential-Family Random Graph Models to Egocentrically Sampled Network Data
 Authors@R: c(
             person(c("Pavel", "N."), "Krivitsky", role=c("aut","cre"), email="pavel@statnet.org", comment=c(ORCID="0000-0002-9101-3362")),
@@ -12,11 +12,11 @@ Authors@R: c(
 	    person("Chad", "Klumb", role=c("ctb"), email="cklumb@gmail.com"))
 Depends:
     R (>= 4.1.0),
-    ergm (>= 4.7.1),
+    ergm (>= 4.8.1),
     egor (>= 1.24.2),
-    network (>= 1.18.2)
+    network (>= 1.19.0)
 Imports:
-    statnet.common (>= 4.10.0),
+    statnet.common (>= 4.11.0),
     RColorBrewer (>= 1.1-3),
     purrr (>= 1.0.2),
     tibble (>= 3.2.1),
@@ -27,7 +27,7 @@ Imports:
 LinkingTo:
     ergm
 Suggests:
-    testthat (>= 3.2.1.1),
+    testthat (>= 3.2.3),
     covr (>= 3.6.4)
 Description: Utilities for managing egocentrically sampled network data and a wrapper around the 'ergm' package to facilitate ERGM inference and simulation from such data. See Krivitsky and Morris (2017) <doi:10.1214/16-AOAS1010>.
 License: GPL-3 + file LICENSE

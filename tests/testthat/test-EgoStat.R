@@ -5,7 +5,7 @@
 #  open source, and has the attribution requirements (GPL Section 7) at
 #  https://statnet.org/attribution .
 #
-#  Copyright 2015-2024 Statnet Commons
+#  Copyright 2015-2025 Statnet Commons
 ################################################################################
 library(purrr)
 library(dplyr)
@@ -80,7 +80,10 @@ test_that("egostats are close to complete network stats", {
     
     meandeg +
 
-    transitiveties + transitiveties("a") + gwdegree(fix=FALSE)
+    transitiveties + transitiveties("a") + gwdegree(fix=FALSE) +
+
+    nodefactor("b", levels = SMALLEST) + nodefactor("b", levels = SMALLEST(2)) + nodefactor("b", levels = LARGEST) + nodefactor("b", levels = LARGEST(2)) +
+    nodefactor("b", levels = -SMALLEST) + nodefactor("b", levels = -SMALLEST(2)) + nodefactor("b", levels = -LARGEST) + nodefactor("b", levels = -LARGEST(2))
 
   f.y <- statnet.common::nonsimp_update.formula(f, y~.)
   f.y.e <- statnet.common::nonsimp_update.formula(f, y.e~.)

@@ -5,7 +5,7 @@
 %  open source, and has the attribution requirements (GPL Section 7) at
 %  https://statnet.org/attribution .
 %
-%  Copyright 2015-2024 Statnet Commons
+%  Copyright 2015-2025 Statnet Commons
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \name{NEWS}
 \title{NEWS file for the \code{\link[=ergm.ego-package]{ergm.ego}} package}
@@ -63,6 +63,24 @@
   % }
 
 %% }
+
+
+\section{Changes in version 1.1.2}{
+
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item{
+        Changes in term naming for the \code{degree} term for consistency with \CRANpkg{ergm} 4.8.
+      }
+      \item{
+        \code{\link[=mixingmatrix.egor]{mixingmatrix}()} method for \code{\link{egor}} objects now behaves more consistently with the method in \CRANpkg{network}.
+      }
+      \item{
+        Categorical \code{EgoStat}s now base their levels selection on egos only; this means that selectors \code{\link[ergm]{LARGEST}} and \code{\link[ergm]{SMALLEST}} now work consistently with \CRANpkg{ergm}. If the alters have levels that egos do not, a warning is produced.
+      }
+    }
+  }
+}
 
 
 \section{Changes in version 1.1.1}{

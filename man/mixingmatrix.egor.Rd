@@ -5,13 +5,25 @@
 \alias{mixingmatrix}
 \title{Summarizing the mixing among groups in an egocentric dataset}
 \usage{
-\method{mixingmatrix}{egor}(object, attrname, rowprob = FALSE, weight = TRUE, ...)
+\method{mixingmatrix}{egor}(
+  object,
+  attrname,
+  useNA = c("ifany", "no", "always"),
+  rowprob = FALSE,
+  weight = TRUE,
+  ...
+)
 }
 \arguments{
 \item{object}{A \code{\link[egor:egor]{egor}} object.}
 
 \item{attrname}{A character vector containing the name of the network
 attribute whose mixing matrix is wanted.}
+
+\item{useNA}{One of \code{"ifany"}, \code{"no"} or \code{"always"}, interpreted as
+in \code{\link[=table]{table()}}. By default (\code{useNA = "ifany"}) if there are
+any \code{NA}s on the attribute corresponding row \emph{and}
+column will be contained in the result. See Details.}
 
 \item{rowprob}{Whether the counts should be normalized by row sums. That is,
 whether they should be proportions conditional on the ego's group.}

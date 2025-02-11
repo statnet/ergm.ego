@@ -5,7 +5,7 @@
 #  open source, and has the attribution requirements (GPL Section 7) at
 #  https://statnet.org/attribution .
 #
-#  Copyright 2015-2024 Statnet Commons
+#  Copyright 2015-2025 Statnet Commons
 ################################################################################
 # An EgoStat.* function takes an egor object and returns a matrix of
 # h(e[i]) values, with egos in rows and elements of h(e[i]) in
@@ -153,6 +153,21 @@ split_aaties_by_ego <- function(x, egor){
   h
 }
 
+check_attr_mismatch <- function(levels, xe, xa){
+  if(inherits(levels, "AsIs") || !(is.null(levels) || is.numeric(levels) || is.logical(levels))) return()
+
+  if(length(na.omit(setdiff(xa, xe)))){
+    egostat <- sys.call(-1)[[1]]
+    pkg <- egostat[[2]]
+    stat <- substr(egostat[[3]], 9, 9999)
+    warning("In ego statistic ", sQuote(stat), " from package ", sQuote(pkg), ", the set of levels of categorical attribute ", sQuote(attr(xe, "name")), " among alters (",
+            paste(sQuote(unique(xa)), collapse = ", "),
+            ") is not a subset of its levels among the egos (",
+            paste(sQuote(unique(xe)), collapse = ", "),
+            "); it is likely that levels and/or the pseudo population network will need to be specified explicitly.", call.=FALSE, immediate.=TRUE)
+  }
+}
+
 #' [ergm()] Terms Implemented for
 #' [`egor`]
 #' 
@@ -283,8 +298,10 @@ EgoStat.nodefactor <- function(egor, attr, base=1, levels=LEVELS_BASE1){
 
   attrname <- attributes(xe)$name
   alt <- !is.null(xa)
+
+  check_attr_mismatch(levels, xe, xa)
   
-  levs <- ergm.ego_attr_levels(levels, c(xe, xa), egor, sort(unique(c(xe, xa))))
+  levs <- ergm.ego_attr_levels(levels, xe, egor, sort(unique(xe)))
   if(!is.null(base) && !identical(base,0) && missing(levels)) levs <- levs[-base]
 
   if(alt){
@@ -312,8 +329,10 @@ EgoStat.nodematch <- function(egor, attr, diff=FALSE, keep=NULL, levels=NULL){
   xa <- ergm.ego_get_vattr(attr, alters)
 
   attrname <- attributes(xe)$name
-  
-  levs <- ergm.ego_attr_levels(levels, c(xe, xa), egor, sort(unique(c(xe, xa))))
+
+  check_attr_mismatch(levels, xe, xa)
+
+  levs <- ergm.ego_attr_levels(levels, xe, egor, sort(unique(xe)))
   if(!is.null(keep) && missing(levels)) levs <- levs[keep]
 
   xe <- match(xe, levs, 0)
@@ -339,8 +358,10 @@ EgoStat.nodemix <- function(egor, attr, base=NULL, levels=NULL, levels2=-1){
   xaval <- ergm.ego_get_vattr(attr, alters)
 
   attrname <- attributes(xeval)$name
-  
-  levs <- ergm.ego_attr_levels(levels, c(xeval, xaval), egor, sort(unique(c(xeval, xaval))))
+
+  check_attr_mismatch(levels, xeval, xaval)
+
+  levs <- ergm.ego_attr_levels(levels, xeval, egor, sort(unique(xeval)))
 
   xe <- match(xeval, levs, 0)
   xa <- .matchNA(xaval, levs, 0)
@@ -440,7 +461,7 @@ EgoStat.degree <- function(egor, d, by=NULL, homophily=FALSE, levels=NULL){
     
     by <- attributes(xe)$name
   
-    levs <- ergm.ego_attr_levels(levels, c(xe, xa), egor, sort(unique(c(xe, xa))))
+    levs <- ergm.ego_attr_levels(levels, xe, egor, sort(unique(xe)))
 
     xe <- match(xe, levs, 0)
     xa <- NVL3(xa, match(., levs, 0))
@@ -450,6 +471,8 @@ EgoStat.degree <- function(egor, d, by=NULL, homophily=FALSE, levels=NULL){
   if(homophily && !alt) stop("Attribute ", sQuote(by), " must be observed on alters if homophily=TRUE.")
 
   if(!is.null(by) && homophily){
+    check_attr_mismatch(levels, xe, xa)
+
     xal <- split_alters_by_ego(xa, egor)
     xal <- mapply(function(e,a) a[e==a], xe, xal, SIMPLIFY=FALSE)
     alterct <- sapply(xal, length)
@@ -461,7 +484,7 @@ EgoStat.degree <- function(egor, d, by=NULL, homophily=FALSE, levels=NULL){
     bys <- rep(seq_along(levs),each=length(d))
     bynames <- rep(levs,each=length(d))
     degs <- rep(d,length(levs))
-    cn <- paste0("deg",degs,".",by,bynames)
+    cn <- paste0("deg",degs,".",by,".",bynames)
     h <- .mapply_col(function(e,c) as.numeric(c==degs & e==bys), xe, alterct)
   }else if(homophily){
     cn <-  paste0("deg",d,".homophily.",by)
@@ -495,7 +518,9 @@ EgoStat.degrange <- function(egor, from=NULL, to=Inf, by=NULL, homophily=FALSE, 
     
     by <- attributes(xe)$name
   
-    levs <- ergm.ego_attr_levels(levels, c(xe, xa), egor, sort(unique(c(xe, xa))))
+    check_attr_mismatch(levels, xe, xa)
+
+    levs <- ergm.ego_attr_levels(levels, xe, egor, sort(unique(xe)))
 
     xe <- match(xe, levs, 0)
     xa <- NVL3(xa, match(., levs, 0))
@@ -505,6 +530,8 @@ EgoStat.degrange <- function(egor, from=NULL, to=Inf, by=NULL, homophily=FALSE, 
   if(homophily && !alt) stop("Attribute ", sQuote(by), " must be observed on alters if homophily=TRUE.")
 
   if(!is.null(by) && homophily){
+    check_attr_mismatch(levels, xe, xa)
+
     xal <- split_alters_by_ego(xa, egor)
     xal <- mapply(function(e,a) a[e==a], xe, xal, SIMPLIFY=FALSE)
     alterct <- sapply(xal, length)
@@ -613,7 +640,8 @@ EgoStat.transitiveties <- function(egor, attr=NULL, diff=FALSE, levels=TRUE){
     xe <- ergm.ego_get_vattr(attr, egos)
     xa <- ergm.ego_get_vattr(attr, alters)
     attrname <- attributes(xe)$name  
-    levs <- ergm.ego_attr_levels(levels, xe, egor, sort(unique(c(xe, xa))))
+    check_attr_mismatch(levels, xe, xa)
+    levs <- ergm.ego_attr_levels(levels, xe, egor, sort(unique(xe)))
     xe <- match(xe, levs, 0)
     xa <- match(xa, levs, 0)
     xa <- tibble(.altID=alters$.altID, x=xa)
