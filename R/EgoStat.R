@@ -284,7 +284,7 @@ EgoStat.nodefactor <- function(egor, attr, base=1, levels=LEVELS_BASE1){
   attrname <- attributes(xe)$name
   alt <- !is.null(xa)
   
-  levs <- ergm.ego_attr_levels(levels, c(xe, xa), egor, sort(unique(c(xe, xa))))
+  levs <- ergm.ego_attr_levels(levels, xe, egor, sort(unique(xe)))
   if(!is.null(base) && !identical(base,0) && missing(levels)) levs <- levs[-base]
 
   if(alt){
@@ -313,7 +313,7 @@ EgoStat.nodematch <- function(egor, attr, diff=FALSE, keep=NULL, levels=NULL){
 
   attrname <- attributes(xe)$name
   
-  levs <- ergm.ego_attr_levels(levels, c(xe, xa), egor, sort(unique(c(xe, xa))))
+  levs <- ergm.ego_attr_levels(levels, xe, egor, sort(unique(xe)))
   if(!is.null(keep) && missing(levels)) levs <- levs[keep]
 
   xe <- match(xe, levs, 0)
@@ -440,7 +440,7 @@ EgoStat.degree <- function(egor, d, by=NULL, homophily=FALSE, levels=NULL){
     
     by <- attributes(xe)$name
   
-    levs <- ergm.ego_attr_levels(levels, c(xe, xa), egor, sort(unique(c(xe, xa))))
+    levs <- ergm.ego_attr_levels(levels, xe, egor, sort(unique(xe)))
 
     xe <- match(xe, levs, 0)
     xa <- NVL3(xa, match(., levs, 0))
@@ -495,7 +495,7 @@ EgoStat.degrange <- function(egor, from=NULL, to=Inf, by=NULL, homophily=FALSE, 
     
     by <- attributes(xe)$name
   
-    levs <- ergm.ego_attr_levels(levels, c(xe, xa), egor, sort(unique(c(xe, xa))))
+    levs <- ergm.ego_attr_levels(levels, xe, egor, sort(unique(xe)))
 
     xe <- match(xe, levs, 0)
     xa <- NVL3(xa, match(., levs, 0))
@@ -613,7 +613,7 @@ EgoStat.transitiveties <- function(egor, attr=NULL, diff=FALSE, levels=TRUE){
     xe <- ergm.ego_get_vattr(attr, egos)
     xa <- ergm.ego_get_vattr(attr, alters)
     attrname <- attributes(xe)$name  
-    levs <- ergm.ego_attr_levels(levels, xe, egor, sort(unique(c(xe, xa))))
+    levs <- ergm.ego_attr_levels(levels, xe, egor, sort(unique(xe)))
     xe <- match(xe, levs, 0)
     xa <- match(xa, levs, 0)
     xa <- tibble(.altID=alters$.altID, x=xa)
