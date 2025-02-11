@@ -76,7 +76,7 @@
         \code{\link[=mixingmatrix.egor]{mixingmatrix}()} method for \code{\link{egor}} objects now behaves more consistently with the method in \CRANpkg{network}.
       }
       \item{
-        Categorical \code{EgoStat}s now base their levels selection on egos only; this means that selectors \code{\link[ergm]{LARGEST}} and \code{\link[ergm]{SMALLEST}} now work consistently with \CRANpkg{ergm}.
+        Categorical \code{EgoStat}s now base their levels selection on egos only; this means that selectors \code{\link[ergm]{LARGEST}} and \code{\link[ergm]{SMALLEST}} now work consistently with \CRANpkg{ergm}. If the alters have levels that egos do not, a warning is produced.
       }
     }
   }
