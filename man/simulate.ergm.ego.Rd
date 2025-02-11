@@ -24,7 +24,7 @@
 \item{nsim}{Number of realizations to simulate.}
 
 \item{seed}{Seed value (integer) for the random number generator.  See
-\code{\link[base]{set.seed}}.}
+\code{\link[=set.seed]{set.seed()}}.}
 
 \item{constraints, \dots}{Additional arguments passed to \code{\link[ergm:san]{san()}} and
 \code{\link[ergm:simulate.formula]{simulate.formula()}}.}
