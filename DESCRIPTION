@@ -1,5 +1,5 @@
 Package: ergm.ego
-Version: 1.1.2-747
+Version: 1.1.2-748
 Date: 2025-04-21
 Title: Fit, Simulate and Diagnose Exponential-Family Random Graph Models to Egocentrically Sampled Network Data
 Authors@R: c(

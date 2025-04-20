@@ -668,22 +668,24 @@ EgoStat.transitiveties <- function(egor, attr=NULL, diff=FALSE, levels=TRUE){
 EgoStat.cyclicalties <- EgoStat.transitiveties
 
 EgoStat.esp <- function(egor, d){
-  egor <- as_nested_egor(egor)
-  h <- function(e){
-    aaties <- unique(
-      cbind(pmin(e$.aaties$.srcID,e$.aaties$.tgtID),
-            pmax(e$.aaties$.srcID,e$.aaties$.tgtID))
-    )
-    sp <- sapply(e$.alts$.altID, # for each alter
-           function(a) length(unique(c(aaties[aaties[,1]==a,2],aaties[aaties[,2]==a,1]))) # Number of shared partners
-           )
-    sapply(d, function(k) sum(sp==k))/2
-  }
-    
-  .eval.h(egor, h,
-          paste0("esp",d),
-          3
-          )
+  egor <- strip_ego_design(egor)
+  altID_by_egoID <- split(egor$alter$.altID, factor(egor$alter$.egoID, levels = egor$ego$.egoID))
+  aaID_by_egoID <- map2(
+    split(egor$aatie$.srcID, factor(egor$aatie$.egoID, levels = egor$ego$.egoID)),
+    split(egor$aatie$.tgtID, factor(egor$aatie$.egoID, levels = egor$ego$.egoID)),
+    function(src, tgt) unique(cbind(pmin(src, tgt), pmax(src, tgt)))
+  )
+
+  h <- map2(altID_by_egoID, aaID_by_egoID,
+            function(a, aa) c(aa) |>
+                            factor(levels = a) |>
+                            table() |>
+                            (`+`)(1L) |>
+                            tabulate(nbins = max(d) + 1L) |>
+                            (`[`)(d + 1L, drop = FALSE)) |>
+    simplify2array(except = NULL) |> t()
+
+  structure(h / 2L, dimnames = list(NULL, paste0("esp",d)), order = 3L)
 }
 
 EgoStat.gwesp <- function(egor, decay=NULL, fixed=FALSE, cutoff=30, alpha=NULL){
