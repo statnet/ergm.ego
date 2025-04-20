@@ -76,7 +76,7 @@ as.egor.network<-function(x,special.cols=c("na"),...){
     # Only keep alters' ties that are with another alter of this ego.
     aa <- lapply(aa, function(ks) ks[ks %in% a])
     # FIXME: Save edge attributes as well.
-    tibble(..Source=rep(a, sapply(aa, length)), ..Target=as.vector(unlist(aa), mode=storage.mode(a)), ..EgoID=rep.int(i, length(unlist(aa))))
+    list(..Source=rep(a, sapply(aa, length)), ..Target=as.vector(unlist(aa), mode=storage.mode(a)), ..EgoID=rep.int(i, length(unlist(aa))))
   }, seq_along(aaties), alters, aaties, SIMPLIFY=FALSE) %>% bind_rows
 
   alters <- mapply(function(i, js) bind_cols(egos[js,,drop=FALSE], ..AlterID=js, ..EgoID=rep.int(i,length(js))), seq_along(alters), alters, SIMPLIFY=FALSE) %>% bind_rows
