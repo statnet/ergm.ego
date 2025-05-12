@@ -58,6 +58,7 @@ and should not be used in the model formula directly.  } } }
 \item \code{cyclicalties}
 \item \code{esp}
 \item \code{gwesp}
+\item \code{triangle}/\code{triangles}
 \item \code{gwdegree}
 \item \code{mm}
 \item \code{meandeg}*

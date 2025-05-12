@@ -217,6 +217,7 @@ check_attr_mismatch <- function(levels, xe, xa){
 #' * `cyclicalties`
 #' * `esp`
 #' * `gwesp`
+#' * `triangle`/`triangles`
 #' * `gwdegree`
 #' * `mm`
 #' * `meandeg`*
@@ -703,6 +704,50 @@ EgoStat.gwesp <- function(egor, decay=NULL, fixed=FALSE, cutoff=30, alpha=NULL){
   colnames(hv) <- paste0("gwesp.fixed.",decay)
   attr(hv, "order") <- 3
   hv
+}
+
+#' @importFrom dplyr filter mutate
+EgoStat.triangle <- EgoStat.triangles <- function(egor, attr=NULL, diff=FALSE, levels=NULL){
+  d <- max(.degreeseq(egor))
+  if(is.null(attr)){
+    h <- EgoStat.esp(egor, seq_len(d))
+    structure(cbind(colSums(t(h) * seq_len(d)) / 3L), dimnames = list(NULL, "triangle"), order = 3L)
+  }else{
+      egos <- as_tibble(egor$ego)
+      alters <- egor$alter
+
+      xe <- ergm.ego_get_vattr(attr, egos)
+      xa <- ergm.ego_get_vattr(attr, alters)
+
+      attrname <- attributes(xe)$name
+
+      check_attr_mismatch(levels, xe, xa)
+
+      levs <- ergm.ego_attr_levels(levels, xe, egor, sort(unique(xe)))
+
+      xe <- match(xe, levs, 0)
+      xa <- match(xa, levs, 0)
+
+      nlevs <- length(levs)
+
+      egor <- egor |> activate("ego") |> mutate(.xe = .env$xe) |>
+        activate("alter") |> mutate(.xa = .env$xa)
+
+      hs <- map(seq_along(levs), function(l) egor |>  activate("ego") |> filter(.data$.xe == .env$l) |>
+                                  activate("alter") |> filter(.data$.xa == .env$l)
+                ) |>
+        map(EgoStat.triangle)
+
+      h <- matrix(0, nrow(egos), nlevs)
+
+      for(l in seq_along(levs)){
+        level <- levs[l]
+        h[xe == l, l] <- hs[[l]]
+      }
+
+      if(diff) structure(h, dimnames = list(NULL, paste("triangle", attrname, levs, sep = ".")), order = 3L)
+      else structure(cbind(rowSums(h)), dimnames = list(NULL, paste("triangle", attrname, sep = ".")), order = 3L)
+  }
 }
 
 EgoStat.gwdegree <- function(egor, decay=NULL, fixed=FALSE, cutoff=30){

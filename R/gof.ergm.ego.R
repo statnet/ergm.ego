@@ -122,7 +122,8 @@
 #' (deggof <- gof(egofit, GOF="degree"))
 #' plot(deggof)
 #' }
-#' @import ergm stats
+#' @import ergm
+#' @importFrom stats confint quantile
 #' @method gof ergm.ego
 #'
 #' @references

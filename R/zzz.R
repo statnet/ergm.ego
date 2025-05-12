@@ -17,7 +17,7 @@
 
 .onLoad <- function(libname, pkgname){
   # . is used as a placeholder by stantet.common::NVL3().
-  utils::globalVariables(".")
+  utils::globalVariables(c(".", ".data", ".env"))
 
   eval(COLLATE_ALL_MY_CONTROLS_EXPR)
 }

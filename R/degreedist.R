@@ -48,6 +48,7 @@
 #' 
 #' @importFrom graphics arrows barplot legend points
 #' @importFrom methods is
+#' @importFrom stats sd xtabs
 #' @export
 degreedist.egor <- function(object, freq = FALSE, prob = !freq, 
                             by = NULL, brgmod = FALSE, main = NULL, plot = brgmod, weight = TRUE, ...){

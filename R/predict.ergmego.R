@@ -13,9 +13,9 @@
 #' @param ... other arguments passed to/from other methods
 #' 
 #' @return See [ergm::predict.ergm()]
-#' 
+#'
+#' @importFrom stats predict
 #' @export
-
 predict.ergm.ego <- function(object, ...) {
   # Extract network
   net <- object$network

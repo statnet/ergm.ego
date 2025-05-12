@@ -103,6 +103,7 @@
 #' 
 #' @import ergm
 #' @importFrom utils modifyList
+#' @importFrom stats as.formula coef cov na.fail setNames var weights
 #' @export
 ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., basis=eval_lhs.formula(formula), control=control.ergm.ego(), na.action=na.fail, na.rm=FALSE, do.fit=TRUE){
   statnet.common::check.control.class("ergm.ego","ergm.ego")
