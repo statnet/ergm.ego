@@ -8,21 +8,15 @@
 #  Copyright 2015-2025 Statnet Commons
 ################################################################################
 #' ERGM-based predicted tie probabilities for the pseudo-population network
-#' 
+#'
 #' @param object model fit as returned by [ergm.ego()]
 #' @param ... other arguments passed to/from other methods
-#' 
+#'
 #' @return See [ergm::predict.ergm()]
 #'
 #' @importFrom stats predict
 #' @export
 predict.ergm.ego <- function(object, ...) {
-  # Extract network
-  net <- object$network
-  # Update formula with pseudo-population network
-  frm <- statnet.common::nonsimp_update.formula(object$ergm.formula, net ~ .)
-  assign("net", object$network, envir=environment(frm))
-  # thetas
-  th <- ergm.eta(coef(object), object$etamap)
-  predict(frm, theta=th, ...)
+  predict(object$ergm.formula, eta = ergm.eta(coef(object), object$etamap),
+          basis = object$network, ...)
 }
