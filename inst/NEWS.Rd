@@ -1,8 +1,8 @@
-%  File inst/NEWS.Rd in package ergm.ego, part of the
-%  Statnet suite of packages for network analysis, https://statnet.org .
+%  File inst/NEWS.Rd in package ergm.ego, part of the Statnet suite of packages
+%  for network analysis, https://statnet.org .
 %
-%  This software is distributed under the GPL-3 license.  It is free,
-%  open source, and has the attribution requirements (GPL Section 7) at
+%  This software is distributed under the GPL-3 license.  It is free, open
+%  source, and has the attribution requirements (GPL Section 7) at
 %  https://statnet.org/attribution .
 %
 %  Copyright 2015-2025 Statnet Commons
@@ -64,6 +64,33 @@
 
 %% }
 
+\section{Changes in version 1.1.3}{
+
+  \subsection{NEW FEATURES}{
+    \itemize{
+      \item{
+        \code{\link[ergm:triangle-ergmTerm]{triangles}()} EgoStat has been added.
+      }
+    }
+  }
+
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item{
+        The package now works under \CRANpkg{ergm} 4.9.0.
+      }
+    }
+  }
+
+  \subsection{OTHER USER-VISIBLE CHANGES}{
+    \itemize{
+      \item{
+        EgoStat \code{\link[ergm:esp-ergmTerm]{esp}}, and function \code{\link{as.egor.network}()} now run much faster.
+      }
+    }
+  }
+}
+
 
 \section{Changes in version 1.1.2}{
 
@@ -76,7 +103,7 @@
         \code{\link[=mixingmatrix.egor]{mixingmatrix}()} method for \code{\link{egor}} objects now behaves more consistently with the method in \CRANpkg{network}.
       }
       \item{
-        Categorical \code{EgoStat}s now base their levels selection on egos only; this means that selectors \code{\link[ergm]{LARGEST}} and \code{\link[ergm]{SMALLEST}} now work consistently with \CRANpkg{ergm}. If the alters have levels that egos do not, a warning is produced.
+        Categorical \code{EgoStat}s now base their levels selection on egos only; this means that selectors \code{\link[ergm]{LARGEST}} and \code{\link[ergm]{SMALLEST}} now work consistently with \CRANpkg{ergm}. If the alters have levels that egos do not, a warning is issued.
       }
     }
   }

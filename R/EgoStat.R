@@ -1,8 +1,8 @@
-#  File R/EgoStat.R in package ergm.ego, part of the
-#  Statnet suite of packages for network analysis, https://statnet.org .
+#  File R/EgoStat.R in package ergm.ego, part of the Statnet suite of packages
+#  for network analysis, https://statnet.org .
 #
-#  This software is distributed under the GPL-3 license.  It is free,
-#  open source, and has the attribution requirements (GPL Section 7) at
+#  This software is distributed under the GPL-3 license.  It is free, open
+#  source, and has the attribution requirements (GPL Section 7) at
 #  https://statnet.org/attribution .
 #
 #  Copyright 2015-2025 Statnet Commons
@@ -217,6 +217,7 @@ check_attr_mismatch <- function(levels, xe, xa){
 #' * `cyclicalties`
 #' * `esp`
 #' * `gwesp`
+#' * `triangle`/`triangles`
 #' * `gwdegree`
 #' * `mm`
 #' * `meandeg`*
@@ -668,22 +669,24 @@ EgoStat.transitiveties <- function(egor, attr=NULL, diff=FALSE, levels=TRUE){
 EgoStat.cyclicalties <- EgoStat.transitiveties
 
 EgoStat.esp <- function(egor, d){
-  egor <- as_nested_egor(egor)
-  h <- function(e){
-    aaties <- unique(
-      cbind(pmin(e$.aaties$.srcID,e$.aaties$.tgtID),
-            pmax(e$.aaties$.srcID,e$.aaties$.tgtID))
-    )
-    sp <- sapply(e$.alts$.altID, # for each alter
-           function(a) length(unique(c(aaties[aaties[,1]==a,2],aaties[aaties[,2]==a,1]))) # Number of shared partners
-           )
-    sapply(d, function(k) sum(sp==k))/2
-  }
-    
-  .eval.h(egor, h,
-          paste0("esp",d),
-          3
-          )
+  egor <- strip_ego_design(egor)
+  altID_by_egoID <- split(egor$alter$.altID, factor(egor$alter$.egoID, levels = egor$ego$.egoID))
+  aaID_by_egoID <- map2(
+    split(egor$aatie$.srcID, factor(egor$aatie$.egoID, levels = egor$ego$.egoID)),
+    split(egor$aatie$.tgtID, factor(egor$aatie$.egoID, levels = egor$ego$.egoID)),
+    function(src, tgt) unique(cbind(pmin(src, tgt), pmax(src, tgt)))
+  )
+
+  h <- map2(altID_by_egoID, aaID_by_egoID,
+            function(a, aa) c(aa) |>
+                            factor(levels = a) |>
+                            table() |>
+                            (`+`)(1L) |>
+                            tabulate(nbins = max(d) + 1L) |>
+                            (`[`)(d + 1L, drop = FALSE)) |>
+    simplify2array(except = NULL) |> t()
+
+  structure(h / 2L, dimnames = list(NULL, paste0("esp",d)), order = 3L)
 }
 
 EgoStat.gwesp <- function(egor, decay=NULL, fixed=FALSE, cutoff=30, alpha=NULL){
@@ -701,6 +704,50 @@ EgoStat.gwesp <- function(egor, decay=NULL, fixed=FALSE, cutoff=30, alpha=NULL){
   colnames(hv) <- paste0("gwesp.fixed.",decay)
   attr(hv, "order") <- 3
   hv
+}
+
+#' @importFrom dplyr filter mutate
+EgoStat.triangle <- EgoStat.triangles <- function(egor, attr=NULL, diff=FALSE, levels=NULL){
+  d <- max(.degreeseq(egor))
+  if(is.null(attr)){
+    h <- EgoStat.esp(egor, seq_len(d))
+    structure(cbind(colSums(t(h) * seq_len(d)) / 3L), dimnames = list(NULL, "triangle"), order = 3L)
+  }else{
+      egos <- as_tibble(egor$ego)
+      alters <- egor$alter
+
+      xe <- ergm.ego_get_vattr(attr, egos)
+      xa <- ergm.ego_get_vattr(attr, alters)
+
+      attrname <- attributes(xe)$name
+
+      check_attr_mismatch(levels, xe, xa)
+
+      levs <- ergm.ego_attr_levels(levels, xe, egor, sort(unique(xe)))
+
+      xe <- match(xe, levs, 0)
+      xa <- match(xa, levs, 0)
+
+      nlevs <- length(levs)
+
+      egor <- egor |> activate("ego") |> mutate(.xe = .env$xe) |>
+        activate("alter") |> mutate(.xa = .env$xa)
+
+      hs <- map(seq_along(levs), function(l) egor |>  activate("ego") |> filter(.data$.xe == .env$l) |>
+                                  activate("alter") |> filter(.data$.xa == .env$l)
+                ) |>
+        map(EgoStat.triangle)
+
+      h <- matrix(0, nrow(egos), nlevs)
+
+      for(l in seq_along(levs)){
+        level <- levs[l]
+        h[xe == l, l] <- hs[[l]]
+      }
+
+      if(diff) structure(h, dimnames = list(NULL, paste("triangle", attrname, levs, sep = ".")), order = 3L)
+      else structure(cbind(rowSums(h)), dimnames = list(NULL, paste("triangle", attrname, sep = ".")), order = 3L)
+  }
 }
 
 EgoStat.gwdegree <- function(egor, decay=NULL, fixed=FALSE, cutoff=30){

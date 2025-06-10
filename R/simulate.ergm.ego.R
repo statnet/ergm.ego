@@ -1,8 +1,8 @@
-#  File R/simulate.ergm.ego.R in package ergm.ego, part of the
-#  Statnet suite of packages for network analysis, https://statnet.org .
+#  File R/simulate.ergm.ego.R in package ergm.ego, part of the Statnet suite of
+#  packages for network analysis, https://statnet.org .
 #
-#  This software is distributed under the GPL-3 license.  It is free,
-#  open source, and has the attribution requirements (GPL Section 7) at
+#  This software is distributed under the GPL-3 license.  It is free, open
+#  source, and has the attribution requirements (GPL Section 7) at
 #  https://statnet.org/attribution .
 #
 #  Copyright 2015-2025 Statnet Commons
@@ -95,10 +95,12 @@ simulate.ergm.ego <- function(object, nsim = 1, seed = NULL, constraints=object$
 
   ergm.formula <- if(nsa) nonsimp_update.formula(object$formula,object$netsize.adj) else object$formula
 
-  out <- simulate(ergm.formula, nsim=nsim, seed=seed, verbose=verbose,
-                  coef=c(netsize.adj=if(nsa) -log(ppopsize/object$popsize),
-                         coef(object)[if(nsa) -1 else TRUE]),
-                  constraints=constraints, control=control$simulate, basis=popnw, ..., output=output)
+  out <- simulate(ergm.formula, nsim = nsim, seed = seed, verbose = verbose,
+                  coef = c(`offset(netsize.adj)` =
+                             if(nsa) -log(ppopsize / object$popsize),
+                           coef(object)[if (nsa) -1 else TRUE]),
+                  constraints = constraints, control = control$simulate,
+                  basis = popnw, ..., output = output)
   if(is.matrix(out)){
     if(nsa)
       out <- structure(out[,-1, drop=FALSE],

@@ -1,8 +1,8 @@
-#  File R/ergm.ego.R in package ergm.ego, part of the
-#  Statnet suite of packages for network analysis, https://statnet.org .
+#  File R/ergm.ego.R in package ergm.ego, part of the Statnet suite of packages
+#  for network analysis, https://statnet.org .
 #
-#  This software is distributed under the GPL-3 license.  It is free,
-#  open source, and has the attribution requirements (GPL Section 7) at
+#  This software is distributed under the GPL-3 license.  It is free, open
+#  source, and has the attribution requirements (GPL Section 7) at
 #  https://statnet.org/attribution .
 #
 #  Copyright 2015-2025 Statnet Commons
@@ -103,6 +103,7 @@
 #' 
 #' @import ergm
 #' @importFrom utils modifyList
+#' @importFrom stats as.formula coef cov na.fail setNames var weights
 #' @export
 ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., basis=eval_lhs.formula(formula), control=control.ergm.ego(), na.action=na.fail, na.rm=FALSE, do.fit=TRUE){
   statnet.common::check.control.class("ergm.ego","ergm.ego")

@@ -1,8 +1,8 @@
-#  File tests/testthat/test-EgoStat.R in package ergm.ego, part of the
-#  Statnet suite of packages for network analysis, https://statnet.org .
+#  File tests/testthat/test-EgoStat.R in package ergm.ego, part of the Statnet
+#  suite of packages for network analysis, https://statnet.org .
 #
-#  This software is distributed under the GPL-3 license.  It is free,
-#  open source, and has the attribution requirements (GPL Section 7) at
+#  This software is distributed under the GPL-3 license.  It is free, open
+#  source, and has the attribution requirements (GPL Section 7) at
 #  https://statnet.org/attribution .
 #
 #  Copyright 2015-2025 Statnet Commons
@@ -76,6 +76,7 @@ test_that("egostats are close to complete network stats", {
     mm("a", levels2=TRUE) + mm("a", levels2=~-1) + mm("a", levels2=-2) + mm("a", levels2=-(2:3)) + mm(~a>7) + mm(a~b) + mm(.~a) + offset(mm(.~a)) + mm("a", levels2 = 1) +
     mm("b", levels = c("a", "c", "e")) + mm("b", levels = c("a", "c", "e"), levels2 = 3) +
     esp(0:6) + gwesp(fix=FALSE) + gwesp(0.5, fix=TRUE) +
+    triangles + triangles("a", diff = TRUE) + triangles("a", diff = FALSE) + triangles("a", diff = TRUE, levels = -2) + triangles("a", diff = FALSE, levels = -2) +
     gwdegree(0.5, fix=TRUE) +
     
     meandeg +
