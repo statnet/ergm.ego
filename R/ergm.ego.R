@@ -279,8 +279,6 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., b
     
     vcov <- matrix(NA, length(coef), length(coef))
 
-    iDtDe <- solve(DtDe[!novar,!novar,drop=FALSE])
-
     # Augment the statistics covariance matrix with 0 rows and columns
     # for offsets, then pre- and post-multiply it by the derivative of
     # theta with to eta.
@@ -289,7 +287,9 @@ ergm.ego <- function(formula, popsize=1, offset.coef=NULL, constraints=~.,..., b
     vaug[!ergm.fit$etamap$offsetmap, !ergm.fit$etamap$offsetmap] <- v[!vdropped,!vdropped]
     vaug <- ergm.etagradmult(coef, t(ergm.etagradmult(coef, vaug, ergm.fit$etamap)), ergm.fit$etamap)
     
-    vcov[!oi,!oi] <- iDtDe%*%vaug[!oi,!oi,drop=FALSE]%*%iDtDe
+    vcov[!oi, !oi] <- sandwich_sginv(DtDe[!novar, !novar, drop = FALSE],
+                                     vaug[!oi, !oi, drop = FALSE],
+                                     tol = .Machine$double.eps^(3 / 4))
 
     rownames(vcov) <- colnames(vcov) <- names(coef)
 
