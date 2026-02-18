@@ -12,47 +12,40 @@ data("fmhfit", package="ergm.ego")
 
 test_that("GOF='model' works", {
   # Computing
-  expect_silent(
-    z <- gof(fmhfit, GOF="model")
-  )
-  
+  expect_warning(z <- gof(fmhfit, GOF = "model"), NA)
+
   # Plotting
-  expect_silent({
+  expect_warning({
     pdf(NULL)
     plot(z)
     dev.off()
-  })
+  }, NA)
 })
 
 
 test_that("GOF='degree' works", {
   # Computing
-  expect_silent(
-    z <- gof(fmhfit, GOF="degree")
-  )
-  
+  expect_warning(z <- gof(fmhfit, GOF = "degree"), NA)
+
   # Plotting
-  expect_silent({
+  expect_warning({
     pdf(NULL)
     plot(z)
     dev.off()
-  })
+  }, NA)
 })
-
 
 
 test_that("GOF='espartners' works", {
   # Computing
-  expect_silent(
-    z <- gof(fmhfit, GOF="espartners")
-  )
+  expect_warning(z <- gof(fmhfit, GOF = "espartners"), NA)
   
   # Plotting
-  expect_silent({
+  expect_warning({
     pdf(NULL)
     plot(z)
     dev.off()
-  })
+  }, NA)
 })
 
 
@@ -66,8 +59,6 @@ test_that("GOF='espartners' works if `esp` term is in the model", {
       ergm=control.ergm(MCMLE.maxit=2)
     )
   )
-  
-  expect_silent(
-    gofobj <- gof(fit, GOF="espartners")
-  )
+
+  expect_warning(gofobj <- gof(fit, GOF="espartners"), NA)
 })

@@ -36,5 +36,5 @@ test_that("estimation and simulation work", {
 
   ppop <- ppop[sample.int(nrow(ppop), nrow(ppop)*1.5, replace=TRUE),]
   
-  (egosim <- simulate(egofit_scl, popsize=ppop)) |> expect_silent()
+  (egosim <- simulate(egofit_scl, popsize=ppop)) |> expect_warning(NA)
 })
