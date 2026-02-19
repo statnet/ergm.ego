@@ -65,7 +65,7 @@ summary_formula.egor <- function(object,..., basis=NULL, individual=FALSE, scale
     if(!is.null(basis)) basis
     else eval_lhs.formula(object)
 
-  stats <- lapply(list_rhs.formula(object), function(trm){
+  stats <- map(list_rhs.formula(object), function(trm) {
     if(is.call(trm)){
       egostat <- locate_prefixed_function(trm[[1]], "EgoStat", "Egocentric statistic", env=environment(object))
       init.call <- list(egostat, egor=egor)
@@ -78,7 +78,7 @@ summary_formula.egor <- function(object,..., basis=NULL, individual=FALSE, scale
     if(attr(stat, "order")==0 && individual)
       stop("Nonscaling statistic detected. Individual contributions are meaningless.")
     stat
-  })
+  }, .progress = "Evaluating ego stats")
 
   orders <- sapply(stats, attr, "order")
 
