@@ -67,9 +67,7 @@ plot(deggof)
 }
 }
 \references{
-Hunter DR, Goodreau SM, Handcock MS (2008). "Goodness of Fit of Social Network
-Models." _Journal of the American Statistical Association_, *103*(481), 248-258.
-doi:10.1198/016214507000000446 <https://doi.org/10.1198/016214507000000446>.
+\insertRef{HuGoHa2008}{ergm.ego}
 }
 \seealso{
 For examples, see \code{\link[=ergm.ego]{ergm.ego()}}.

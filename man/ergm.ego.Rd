@@ -104,27 +104,13 @@ summary(egofit)
 
 }
 \references{
-Krivitsky PN, Morris M (2017). "Inference for social network models from
-egocentrically sampled data, with application to understanding persistent
-racial disparities in HIV prevalence in the US." _Annals of Applied Statistics_,
-*11*(1), 427-455. doi:10.1214/16-AOAS1010
-<https://doi.org/10.1214/16-AOAS1010>.
+\insertRef{KrMo2017}{ergm.ego}
 
-Krivitsky PN, Morris M, Bojanowski M (2019). _Inference for Exponential-Family
-Random Graph Models from Egocentrically-Sampled Data with Alter-Alter Relations_.
-Working Paper 08-19, National Institute for Applied Statistics Research Australia
-(NIASRA), University of Wollongong.
-<https://www.uow.edu.au/niasra/publications/>.
+\insertRef{KrMoBo2019}{ergm.ego}
 
-Krivitsky PN, Bojanowski M, Morris M (2021). "Impact of survey design on
-estimation of exponential-family random graph models from egocentrically-sampled
-data." _Social Networks_, *64*, 69-87. doi:10.1016/j.socnet.2020.10.001
-<https://doi.org/10.1016/j.socnet.2020.10.001>.
+\insertRef{KrBoMo2020}{ergm.ego}
 
-Krivitsky PN, Handcock MS, Morris M (2011). "Adjusting for Network Size and
-Composition Effects in Exponential-Family Random Graph Models." _Statistical
-Methodology_, *8*(4), 319-339. doi:10.1016/j.stamet.2011.01.005
-<https://doi.org/10.1016/j.stamet.2011.01.005>.
+\insertRef{KrHaMo2011}{ergm.ego}
 }
 \seealso{
 \code{\link[ergm:ergm]{ergm()}}
