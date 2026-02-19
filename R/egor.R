@@ -5,7 +5,7 @@
 #  source, and has the attribution requirements (GPL Section 7) at
 #  https://statnet.org/attribution .
 #
-#  Copyright 2015-2025 Statnet Commons
+#  Copyright 2015-2026 Statnet Commons
 ################################################################################
 
 
@@ -67,19 +67,20 @@ as.egor.network<-function(x,special.cols=c("na"),...){
   egos <- as_tibble(egos)
 
   # FIXME: Save edge attributes as well.
-  alters <- lapply(seq_len(N), get.neighborhood, x=x) # so v gets the index variable
+  alters <- map(seq_len(N), get.neighborhood, x = x, .progress = "Extracting alters") # so v gets the index variable
 
-  aaties <- lapply(alters, lapply, get.neighborhood, x=x) # list of lists of alters' nominations
+  aaties <- map(alters, lapply, get.neighborhood, x = x, .progress = "Extracting alter-alter ties") # list of lists of alters' nominations
 
   # Note: Alter ID API is subject to change.
-  aaties <- mapply(function(i, a, aa){
+  aaties <- pmap(list(seq_along(aaties), alters, aaties), function(i, a, aa) {
     # Only keep alters' ties that are with another alter of this ego.
     aa <- lapply(aa, function(ks) ks[ks %in% a])
     # FIXME: Save edge attributes as well.
     list(..Source=rep(a, sapply(aa, length)), ..Target=as.vector(unlist(aa), mode=storage.mode(a)), ..EgoID=rep.int(i, length(unlist(aa))))
-  }, seq_along(aaties), alters, aaties, SIMPLIFY=FALSE) %>% bind_rows
+  }, .progress = "Generating alter-alter tables") %>% bind_rows
 
-  alters <- mapply(function(i, js) bind_cols(egos[js,,drop=FALSE], ..AlterID=js, ..EgoID=rep.int(i,length(js))), seq_along(alters), alters, SIMPLIFY=FALSE) %>% bind_rows
+  alters <- pmap(list(seq_along(alters), alters), function(i, js) bind_cols(egos[js,,drop=FALSE], ..AlterID=js, ..EgoID=rep.int(i,length(js))),
+                 .progress = "Generating alter tables") %>% bind_rows
 
   egos <- bind_cols(egos, ..EgoID=seq_len(N))
   

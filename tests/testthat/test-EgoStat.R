@@ -5,7 +5,7 @@
 #  source, and has the attribution requirements (GPL Section 7) at
 #  https://statnet.org/attribution .
 #
-#  Copyright 2015-2025 Statnet Commons
+#  Copyright 2015-2026 Statnet Commons
 ################################################################################
 library(purrr)
 library(dplyr)
@@ -118,7 +118,7 @@ test_that("egostats are close to complete network stats", {
 
 test_that("scaling and nonscaling egostats are combined correctly", {
   expect_error(summary(y.e~edges + meandeg, individual=TRUE), ".onscaling statistic detected.*meaningless.*")
-  expect_silent(summary(y.e~meandeg, scaleto=1))
+  expect_warning(summary(y.e~meandeg, scaleto=1), NA)
 })
 
 test_that("egostats with alter missing data are close to complete network stats", {

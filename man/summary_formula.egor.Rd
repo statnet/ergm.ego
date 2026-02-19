@@ -38,7 +38,7 @@ statistics. Defaults to the number of egos in the dataset.}
 \item{x, y}{see \code{\link{*.svystat}}.}
 }
 \value{
-If \code{individual==FALSE}, an \code{ergm.ego_svystat} object, which is a subclass of \link[survey:surveysummary]{svystat}---effectively a named vector of statistics. If
+If \code{individual==FALSE}, an \code{ergm.ego_svystat} object, which is a subclass of \code{\link[survey:surveysummary]{svystat}}---effectively a named vector of statistics. If
 \code{individual==TRUE}, a matrix with a row for each ego, giving that ego's
 contribution to the network statistic.
 }
@@ -73,12 +73,9 @@ vcov(ego.summ2 * 2)
 
 }
 \references{
-\itemize{
-\item Pavel N. Krivitsky and Martina Morris (2017). "Inference for social network models from egocentrically sampled data, with application to understanding persistent racial disparities in HIV prevalence in the US." \emph{Annals of Applied Statistics}, 11(1): 427–455. \doi{10.1214/16-AOAS1010}
-\item Pavel N. Krivitsky, Mark S. Handcock, and Martina Morris (2011). "Adjusting for
-Network Size and Composition Effects in Exponential-Family Random Graph
-Models." \emph{Statistical Methodology}, 8(4): 319–339. \doi{10.1016/j.stamet.2011.01.005}
-}
+\insertRef{KrMo2017}{ergm.ego}
+
+\insertRef{KrHaMo2011}{ergm.ego}
 }
 \seealso{
 \code{\link[=summary_formula]{summary_formula()}},

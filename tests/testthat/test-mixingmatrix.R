@@ -5,7 +5,7 @@
 #  source, and has the attribution requirements (GPL Section 7) at
 #  https://statnet.org/attribution .
 #
-#  Copyright 2015-2025 Statnet Commons
+#  Copyright 2015-2026 Statnet Commons
 ################################################################################
 data(egor32, package="egor")
 
@@ -15,7 +15,7 @@ varnames <- c("sex", "age")
 for( v in varnames ) {
   test_that(
     paste0("Sum of mixing matrix for ", v, " is equal to number of alters"), {
-      expect_silent(mm <- mixingmatrix(egor32, v))
+      expect_warning(mm <- mixingmatrix(egor32, v), NA)
       expect_equal(sum(mm), nrow(egor32$alter))
     })
 }
@@ -71,14 +71,14 @@ for ( v in varnames ) {
       sQuote(v), 
       " is equal to the total number of alters"
     ), {
-      expect_silent(mm <- mixingmatrix(edata, v))
+      expect_warning(mm <- mixingmatrix(edata, v), NA)
       expect_equal(sum(mm), nrow(edata$alter))
     })  
 }
 
 # test_that("Rows of mm are properly ordered for factors", {
 #   x <- dplyr::pull(edata, "fac")
-#   expect_silent( mm <- mixingmatrix(edata, "fac"))
+#   expect_warning(mm <- mixingmatrix(edata, "fac"), NA)
 #   expect_identical( rownames(mm), levels(x))
 # })
 

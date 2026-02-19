@@ -5,7 +5,7 @@
 #  source, and has the attribution requirements (GPL Section 7) at
 #  https://statnet.org/attribution .
 #
-#  Copyright 2015-2025 Statnet Commons
+#  Copyright 2015-2026 Statnet Commons
 ################################################################################
 # This file contains the following 8 functions for assessing goodness of fit
 #         <gof>              <summary.gofobject>
@@ -128,7 +128,7 @@
 #'
 #' @references
 #'
-#' * David R. Hunter, Steven M. Goodreau, and Mark S. Handcock (2008). "Goodness of Fit of Social Network Models." *Journal of the American Statistical Association*, 103:481: 248–258. \doi{10.1198/016214507000000446}
+#' \insertRef{HuGoHa2008}{ergm.ego}
 #'
 #' @export
 gof.ergm.ego <- function (object, ..., 

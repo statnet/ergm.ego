@@ -5,7 +5,7 @@
 #  source, and has the attribution requirements (GPL Section 7) at
 #  https://statnet.org/attribution .
 #
-#  Copyright 2015-2025 Statnet Commons
+#  Copyright 2015-2026 Statnet Commons
 ################################################################################
 #' Calculation of ERGM-style summary statistics for [`egor`]
 #' objects.
@@ -31,7 +31,7 @@
 #' specified network statistics.
 #' @param scaleto Size of a hypothetical network to which to scale the
 #' statistics. Defaults to the number of egos in the dataset.
-#' @return If \code{individual==FALSE}, an `ergm.ego_svystat` object, which is a subclass of [svystat][survey::svymean]---effectively a named vector of statistics. If
+#' @return If \code{individual==FALSE}, an `ergm.ego_svystat` object, which is a subclass of [`svystat`][survey::svymean]---effectively a named vector of statistics. If
 #' \code{individual==TRUE}, a matrix with a row for each ego, giving that ego's
 #' contribution to the network statistic.
 #' @author Pavel N. Krivitsky
@@ -39,11 +39,9 @@
 #' [summary_formula.ergm()]
 #' @references
 #'
-#' * Pavel N. Krivitsky and Martina Morris (2017). "Inference for social network models from egocentrically sampled data, with application to understanding persistent racial disparities in HIV prevalence in the US." *Annals of Applied Statistics*, 11(1): 427–455. \doi{10.1214/16-AOAS1010}
+#' \insertRef{KrMo2017}{ergm.ego}
 #'
-#' * Pavel N. Krivitsky, Mark S. Handcock, and Martina Morris (2011). "Adjusting for
-#' Network Size and Composition Effects in Exponential-Family Random Graph
-#' Models." \emph{Statistical Methodology}, 8(4): 319–339. \doi{10.1016/j.stamet.2011.01.005}
+#' \insertRef{KrHaMo2011}{ergm.ego}
 #'
 #' @examples
 #' 
@@ -65,7 +63,7 @@ summary_formula.egor <- function(object,..., basis=NULL, individual=FALSE, scale
     if(!is.null(basis)) basis
     else eval_lhs.formula(object)
 
-  stats <- lapply(list_rhs.formula(object), function(trm){
+  stats <- map(list_rhs.formula(object), function(trm) {
     if(is.call(trm)){
       egostat <- locate_prefixed_function(trm[[1]], "EgoStat", "Egocentric statistic", env=environment(object))
       init.call <- list(egostat, egor=egor)
@@ -78,7 +76,7 @@ summary_formula.egor <- function(object,..., basis=NULL, individual=FALSE, scale
     if(attr(stat, "order")==0 && individual)
       stop("Nonscaling statistic detected. Individual contributions are meaningless.")
     stat
-  })
+  }, .progress = "Evaluating ego stats")
 
   orders <- sapply(stats, attr, "order")
 

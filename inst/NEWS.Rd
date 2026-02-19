@@ -5,7 +5,7 @@
 %  source, and has the attribution requirements (GPL Section 7) at
 %  https://statnet.org/attribution .
 %
-%  Copyright 2015-2025 Statnet Commons
+%  Copyright 2015-2026 Statnet Commons
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \name{NEWS}
 \title{NEWS file for the \code{\link[=ergm.ego-package]{ergm.ego}} package}
@@ -63,6 +63,38 @@
   % }
 
 %% }
+
+\section{Changes in version 1.1.4}{
+
+  \subsection{NEW FEATURES}{
+    \itemize{
+      \item{
+        Some of the slower routines now print progress reports via \CRANpkg{cli}.
+      }
+    }
+  }
+
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item{
+        The package now works under \CRANpkg{ergm} 4.12.0.
+      }
+    }
+  }
+
+  \subsection{OTHER USER-VISIBLE CHANGES}{
+    \itemize{
+      \item{
+        Standard error calculation has been made slightly more robust.
+      }
+      \item{
+        Some bibliographic references in the documentation have been updated.
+      }
+    }
+  }
+
+}
+
 
 \section{Changes in version 1.1.3}{
 

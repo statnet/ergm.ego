@@ -5,7 +5,7 @@
 #  source, and has the attribution requirements (GPL Section 7) at
 #  https://statnet.org/attribution .
 #
-#  Copyright 2015-2025 Statnet Commons
+#  Copyright 2015-2026 Statnet Commons
 ################################################################################
 test_that("estimation and simulation work", {
   data(faux.mesa.high)
@@ -36,5 +36,5 @@ test_that("estimation and simulation work", {
 
   ppop <- ppop[sample.int(nrow(ppop), nrow(ppop)*1.5, replace=TRUE),]
   
-  (egosim <- simulate(egofit_scl, popsize=ppop)) |> expect_silent()
+  (egosim <- simulate(egofit_scl, popsize=ppop)) |> expect_warning(NA)
 })

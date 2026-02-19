@@ -5,7 +5,7 @@
 #  source, and has the attribution requirements (GPL Section 7) at
 #  https://statnet.org/attribution .
 #
-#  Copyright 2015-2025 Statnet Commons
+#  Copyright 2015-2026 Statnet Commons
 ################################################################################
 
 ## |----|--------|---|----------|-----------|
@@ -52,13 +52,13 @@ data("egor32", package="egor")
 
 test_that("degreedist() works on egor::egor32 data", {
   pdf(NULL)
-  expect_silent(degreedist(egor32))
+  expect_warning(degreedist(egor32), NA)
   dev.off()
 })
 
 test_that("degreedist() works on egor::egor32 data with `by=sex` (a factor)", {
   pdf(NULL)
-  expect_silent(degreedist(egor32, by="sex"))
+  expect_warning(degreedist(egor32, by="sex"), NA)
   dev.off()
 })
 
@@ -71,13 +71,13 @@ fmh.ego <- as.egor(faux.mesa.high)
 
 test_that("degreedist() works on data based on faux.mesa.high", {
   pdf(NULL)
-  expect_silent(degreedist(fmh.ego))
+  expect_warning(degreedist(fmh.ego), NA)
   dev.off()
 })
 
 test_that("degreedist() works on data based on faux.mesa.high with `by=Sex`", {
   pdf(NULL)
-  expect_silent(degreedist(fmh.ego, by="Sex"))
+  expect_warning(degreedist(fmh.ego, by="Sex"), NA)
   dev.off()
 })
 
@@ -109,14 +109,15 @@ for(i in seq(1, nrow(arg_df))) {
     paste0("degreedist(", paste0(names(a), "=", a, collapse=", "), ")"), {
       with(
         a, {
-          expect_silent(
+          expect_warning(
             res <- degreedist(
               fmh.ego,
               prob = prob,
               brgmod = brgmod,
               by = by,
               plot = FALSE
-            )
+            ),
+            NA
           )
           # Conditional probs sum to number of cat. of `by`
           if(prob && !is.null(by)) 

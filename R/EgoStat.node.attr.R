@@ -5,7 +5,7 @@
 #  source, and has the attribution requirements (GPL Section 7) at
 #  https://statnet.org/attribution .
 #
-#  Copyright 2015-2025 Statnet Commons
+#  Copyright 2015-2026 Statnet Commons
 ################################################################################
 #' @name nodal_attributes-API
 #' @title Helper functions for specifying nodal attribute levels
@@ -339,32 +339,6 @@ ergm.ego_attr_levels.formula <- function(object, attr, egor, levels=sort(unique(
 }
 
 
-## TODO: Export from `ergm` and remove from here:
-rank_cut <- function(x, n, tie_action = c("warning", "error"), top = FALSE){
-  ordrank <- if(top) function(r) length(x) + 1 - r else identity
-  s1 <- ordrank(rank(x, ties.method="min")) <= n
-  s2 <- ordrank(rank(x, ties.method="max")) <= n
-
-  if(identical(s1, s2)) which(s1)
-  else{
-    tie_action <- match.arg(tie_action)
-    msg <- paste0("Levels ", paste.and(sQuote(names(x)[s1!=s2])), " are tied.")
-    switch(tie_action,
-           error = ergm_Init_stop(msg, " Specify explicitly."),
-           warning = {
-             ergm_Init_warning(msg, " Using the order given.")
-             which(ordrank(rank(x, ties.method="first")) <= n)
-           })
-  }
-}
-
-levels_cut <- function(x, n, lvls = sort(unique(x)), top = FALSE, ...){
-  f <- setNames(tabulate(match(x, lvls)), lvls)
-  sel <- rank_cut(f, n, top=top, ...)
-  if(missing(lvls)) lvls[sel] else sel
-}
-
-
 #' @describeIn nodal_attributes-API
 #' A version of [ergm::COLLAPSE_SMALLEST()] that can handle both [`network`] and [`egodata`] objects.
 #'
@@ -379,7 +353,7 @@ COLLAPSE_SMALLEST <- function(object, n, into){
                ergm_Init_warning(paste(sQuote("COLLAPSE_SMALLEST()"), " may behave unpredictably with egocentric data and is not recommended at this time."))
                ergm.ego_get_vattr(attr, .x, ...)
              }else stop("Unrecognised data type. This indicates a bug.")
-    smallest <- levels_cut(vattr, n)
+    smallest <- ergm_most_frequent_n(vattr, -n)
     vattr[vattr %in% smallest] <- into
     vattr
   }
