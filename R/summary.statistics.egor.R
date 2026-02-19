@@ -31,7 +31,7 @@
 #' specified network statistics.
 #' @param scaleto Size of a hypothetical network to which to scale the
 #' statistics. Defaults to the number of egos in the dataset.
-#' @return If \code{individual==FALSE}, an `ergm.ego_svystat` object, which is a subclass of [svystat][survey::svymean]---effectively a named vector of statistics. If
+#' @return If \code{individual==FALSE}, an `ergm.ego_svystat` object, which is a subclass of [`svystat`][survey::svymean]---effectively a named vector of statistics. If
 #' \code{individual==TRUE}, a matrix with a row for each ego, giving that ego's
 #' contribution to the network statistic.
 #' @author Pavel N. Krivitsky

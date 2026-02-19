@@ -38,7 +38,7 @@ statistics. Defaults to the number of egos in the dataset.}
 \item{x, y}{see \code{\link{*.svystat}}.}
 }
 \value{
-If \code{individual==FALSE}, an \code{ergm.ego_svystat} object, which is a subclass of \link[survey:surveysummary]{svystat}---effectively a named vector of statistics. If
+If \code{individual==FALSE}, an \code{ergm.ego_svystat} object, which is a subclass of \code{\link[survey:surveysummary]{svystat}}---effectively a named vector of statistics. If
 \code{individual==TRUE}, a matrix with a row for each ego, giving that ego's
 contribution to the network statistic.
 }
