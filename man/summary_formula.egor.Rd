@@ -73,12 +73,16 @@ vcov(ego.summ2 * 2)
 
 }
 \references{
-\itemize{
-\item Pavel N. Krivitsky and Martina Morris (2017). "Inference for social network models from egocentrically sampled data, with application to understanding persistent racial disparities in HIV prevalence in the US." \emph{Annals of Applied Statistics}, 11(1): 427–455. \doi{10.1214/16-AOAS1010}
-\item Pavel N. Krivitsky, Mark S. Handcock, and Martina Morris (2011). "Adjusting for
-Network Size and Composition Effects in Exponential-Family Random Graph
-Models." \emph{Statistical Methodology}, 8(4): 319–339. \doi{10.1016/j.stamet.2011.01.005}
-}
+Krivitsky PN, Morris M (2017). "Inference for social network models from
+egocentrically sampled data, with application to understanding persistent
+racial disparities in HIV prevalence in the US." _Annals of Applied Statistics_,
+*11*(1), 427-455. doi:10.1214/16-AOAS1010
+<https://doi.org/10.1214/16-AOAS1010>.
+
+Krivitsky PN, Handcock MS, Morris M (2011). "Adjusting for Network Size and
+Composition Effects in Exponential-Family Random Graph Models." _Statistical
+Methodology_, *8*(4), 319-339. doi:10.1016/j.stamet.2011.01.005
+<https://doi.org/10.1016/j.stamet.2011.01.005>.
 }
 \seealso{
 \code{\link[=summary_formula]{summary_formula()}},
