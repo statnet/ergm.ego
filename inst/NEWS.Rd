@@ -87,6 +87,9 @@
       \item{
         Standard error calculation has been made slightly more robust.
       }
+      \item{
+        Some bibliographic references in the documentation have been updated.
+      }
     }
   }
 
